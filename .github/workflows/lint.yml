@@ -1,0 +1,32 @@
+name: lint
+
+on:
+  push:
+    branches-ignore: [release]
+    paths:
+      - "lib/**"
+      - "test/**"
+      - ".github/workflows/lint.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lib/**"
+      - "test/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+
+    - name: Install RuboCop
+      run: gem install rubocop
+
+    - name: Lint code
+      run: rubocop

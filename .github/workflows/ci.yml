@@ -1,0 +1,105 @@
+name: ci
+
+on:
+  push:
+    branches-ignore: [release]
+    paths:
+      - "lib/**"
+      - "pkgcraft.gemspec"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lib/**"
+      - "pkgcraft.gemspec"
+  workflow_dispatch:
+    inputs:
+      ruby-version:
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      ruby-version:
+        required: false
+        type: string
+      event-type:
+        required: true
+        type: string
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      ruby-version: ${{ steps.vars.outputs.ruby-version }}
+    steps:
+    - name: Checkout code to determine the minimum supported ruby version
+      if: ${{ inputs.ruby-version == '' }}
+      uses: actions/checkout@v3
+      with:
+        repository: pkgcraft/pkgcraft-ruby
+
+    - name: Set ruby versions to test against
+      id: vars
+      run: |
+        if [[ -n "${{ inputs.ruby-version }}" ]]; then
+          echo "ruby-version=$(jq 'split(",")' -Rc <(echo '${{ inputs.ruby-version }}'))" >> $GITHUB_OUTPUT
+        else
+          min_ver=$(sed -rn '/required_ruby_version/ s/.*= ">= ([0-9](\.[0-9])*)"/\1/p' pkgcraft.gemspec)
+          if [[ -n ${min_ver} ]]; then
+            echo "ruby-version=['${min_ver}', '3.2']" >> $GITHUB_OUTPUT
+          else
+            exit 1
+          fi
+        fi
+
+  test:
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        ruby-version: ${{ fromJson(needs.setup.outputs.ruby-version) }}
+
+    steps:
+    - name: Set pkgcraft dir env var
+      run: echo pkgcraft_dir=~/pkgcraft >> $GITHUB_ENV
+
+    - name: Download pkgcraft-c library from most recent run
+      if: ${{ inputs.event-type == '' }}
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{ secrets.PKGCRAFT_CI_TOKEN }}
+        repo: pkgcraft/pkgcraft
+        branch: main
+        workflow: pkgcraft-c.yml
+        workflow_conclusion: ""
+        search_artifacts: true
+        name: pkgcraft-c-${{ runner.os }}
+        path: ${{ env.pkgcraft_dir }}
+
+    - name: Download pkgcraft-c library from running workflow
+      if: ${{ inputs.event-type != '' }}
+      uses: actions/download-artifact@v3
+      with:
+        name: pkgcraft-c-${{ runner.os }}
+        path: ${{ env.pkgcraft_dir }}
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: Install dependencies
+      run: bundle install
+
+    - name: Override build variables
+      run: |
+        echo "PKG_CONFIG_PATH=${pkgcraft_dir}" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=${pkgcraft_dir}/lib" >> $GITHUB_ENV
+        echo "DYLD_LIBRARY_PATH=${pkgcraft_dir}/lib" >> $GITHUB_ENV
+
+    - run: bundle exec rake
