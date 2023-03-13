@@ -24,6 +24,14 @@ module Pkgcraft
         obj
       end
 
+      def revision
+        s, ptr = C.pkgcraft_version_revision(@ptr)
+        return if ptr.null?
+
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def to_s
         s, ptr = C.pkgcraft_version_str(@ptr)
         C.pkgcraft_str_free(ptr)
