@@ -25,7 +25,7 @@ module Pkgcraft
       end
 
       def <=>(other)
-        C.pkgcraft_version_cmp(ptr, other.ptr)
+        C.pkgcraft_version_cmp(@ptr, other.ptr)
       end
 
       def self.release(ptr)

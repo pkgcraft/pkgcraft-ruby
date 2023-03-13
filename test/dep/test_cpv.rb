@@ -5,10 +5,13 @@ require "test_helper"
 class TestCpv < Minitest::Test
   def test_new
     # valid
-    cpv = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
-    assert_equal(cpv.category, "cat")
-    assert_equal(cpv.package, "pkg")
-    assert_equal(cpv.version, Pkgcraft::Dep::Version.new("1"))
+    cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    assert_equal(cpv1.category, "cat")
+    assert_equal(cpv1.package, "pkg")
+    assert_equal(cpv1.version, Pkgcraft::Dep::Version.new("1"))
+
+    cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-2")
+    assert(cpv1 < cpv2)
 
     # invalid
     assert_raises RuntimeError do

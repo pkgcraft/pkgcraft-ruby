@@ -20,6 +20,7 @@ module C
   attach_function :pkgcraft_cpv_category, [:pointer], :strptr
   attach_function :pkgcraft_cpv_package, [:pointer], :strptr
   attach_function :pkgcraft_cpv_version, [:pointer], :pointer
+  attach_function :pkgcraft_cpv_cmp, [:pointer, :pointer], :int
 
   # version support
   attach_function :pkgcraft_version_free, [:pointer], :void
