@@ -2,7 +2,7 @@
 
 require "ffi"
 
-require_relative "../../pkgcraft_c"
+require_relative "../../_pkgcraft_c"
 
 module Pkgcraft
   module Dep
