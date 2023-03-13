@@ -7,6 +7,8 @@ on:
       - "lib/**"
       - "test/**"
       - "pkgcraft.gemspec"
+      - "Gemfile"
+      - "Rakefile"
       - ".github/workflows/ci.yml"
   pull_request:
     branches: [main]
@@ -14,6 +16,8 @@ on:
       - "lib/**"
       - "test/**"
       - "pkgcraft.gemspec"
+      - "Gemfile"
+      - "Rakefile"
   workflow_dispatch:
     inputs:
       ruby-version:
