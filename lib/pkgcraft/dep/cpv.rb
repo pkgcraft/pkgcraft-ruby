@@ -55,6 +55,12 @@ module Pkgcraft
         C.pkgcraft_cpv_cmp(@ptr, other.ptr)
       end
 
+      alias eql? ==
+
+      def hash
+        C.pkgcraft_cpv_hash(@ptr)
+      end
+
       def self.release(ptr)
         C.pkgcraft_cpv_free(ptr)
       end

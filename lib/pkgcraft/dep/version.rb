@@ -42,6 +42,12 @@ module Pkgcraft
         C.pkgcraft_version_cmp(@ptr, other.ptr)
       end
 
+      alias eql? ==
+
+      def hash
+        C.pkgcraft_version_hash(@ptr)
+      end
+
       def self.release(ptr)
         C.pkgcraft_version_free(ptr)
       end

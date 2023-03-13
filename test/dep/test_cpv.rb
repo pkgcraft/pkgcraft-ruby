@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 require "test_helper"
 
 class TestCpv < Minitest::Test
@@ -19,5 +21,20 @@ class TestCpv < Minitest::Test
     assert_raises RuntimeError do
       Pkgcraft::Dep::Cpv.new("=cat/pkg-1")
     end
+  end
+
+  # TODO: use shared toml test data
+  def test_hash
+    # equal
+    cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1-r0")
+    cpvs = Set.new([cpv1, cpv2])
+    assert_equal(cpvs.length, 1)
+
+    # unequal
+    cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1.0")
+    cpvs = Set.new([cpv1, cpv2])
+    assert_equal(cpvs.length, 2)
   end
 end

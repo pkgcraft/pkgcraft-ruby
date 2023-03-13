@@ -20,6 +20,7 @@ module C
   attach_function :pkgcraft_cpv_category, [:pointer], :strptr
   attach_function :pkgcraft_cpv_package, [:pointer], :strptr
   attach_function :pkgcraft_cpv_version, [:pointer], :pointer
+  attach_function :pkgcraft_cpv_hash, [:pointer], :uint64
   attach_function :pkgcraft_cpv_cmp, [:pointer, :pointer], :int
   attach_function :pkgcraft_cpv_str, [:pointer], :strptr
 
@@ -27,6 +28,7 @@ module C
   attach_function :pkgcraft_version_free, [:pointer], :void
   attach_function :pkgcraft_version_new, [:string], :pointer
   attach_function :pkgcraft_version_cmp, [:pointer, :pointer], :int
+  attach_function :pkgcraft_version_hash, [:pointer], :uint64
   attach_function :pkgcraft_version_revision, [:pointer], :strptr
   attach_function :pkgcraft_version_str, [:pointer], :strptr
 end
