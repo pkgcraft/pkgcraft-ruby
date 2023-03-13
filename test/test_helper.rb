@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+# optionally enable coverage support
 begin
   require "simplecov"
-  SimpleCov.start
+  # ignore test files
+  SimpleCov.start do
+    add_filter "/test/"
+  end
 
   require "simplecov-cobertura"
   SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
