@@ -10,6 +10,9 @@ class TestVersion < Minitest::Test
     v1 = Pkgcraft::Dep::Version.new("1")
     assert_nil(v1.revision)
     assert_equal(v1.to_s, "1")
+    v1 = Pkgcraft::Dep::Version.new("1-r2")
+    assert_equal(v1.revision, "2")
+    assert_equal(v1.to_s, "1-r2")
 
     v2 = Pkgcraft::Dep::Version.new("2")
     assert(v1 < v2)
