@@ -8,7 +8,7 @@ class TestPkgcraft < Minitest::Test
   end
 
   def test_pkgcraft_c_version
-    version = Gem::Version.new(Pkgcraft.pkgcraft_lib_version)
+    version = Gem::Version.new(C.pkgcraft_lib_version)
     minver = Gem::Version.new(Pkgcraft::MINVER)
     maxver = Gem::Version.new(Pkgcraft::MAXVER)
     assert(version >= minver, "pkgcraft C library #{version} fails requirement >=#{minver}")
