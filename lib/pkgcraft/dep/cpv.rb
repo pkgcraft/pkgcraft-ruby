@@ -16,11 +16,15 @@ module Pkgcraft
       end
 
       def category
-        C.pkgcraft_cpv_category(@ptr)
+        s, ptr = C.pkgcraft_cpv_category(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
       end
 
       def package
-        C.pkgcraft_cpv_package(@ptr)
+        s, ptr = C.pkgcraft_cpv_package(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
       end
 
       def self.release(ptr)
