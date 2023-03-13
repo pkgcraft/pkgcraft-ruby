@@ -8,8 +8,13 @@ begin
     add_filter "/test/"
   end
 
-  require "simplecov-cobertura"
-  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+  # optionally enable codecov support
+  begin
+    require "simplecov-cobertura"
+    SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+  rescue LoadError
+    puts "codecov support disabled"
+  end
 rescue LoadError
   puts "code coverage disabled"
 end
