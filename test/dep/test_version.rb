@@ -24,6 +24,19 @@ class TestVersion < Minitest::Test
   end
 
   # TODO: use shared toml test data
+  def test_intersects
+    # equal
+    v1 = Pkgcraft::Dep::Version.new("1")
+    v2 = Pkgcraft::Dep::Version.new("1-r0")
+    assert(v1.intersects(v2))
+
+    # unequal
+    v1 = Pkgcraft::Dep::Version.new("1")
+    v2 = Pkgcraft::Dep::Version.new("1.0")
+    assert(!v1.intersects(v2))
+  end
+
+  # TODO: use shared toml test data
   def test_hash
     # equal
     v1 = Pkgcraft::Dep::Version.new("1")
@@ -52,6 +65,30 @@ class TestVersionWithOp < Minitest::Test
     # invalid
     assert_raises RuntimeError do
       Pkgcraft::Dep::VersionWithOp.new("1")
+    end
+  end
+
+  # TODO: use shared toml test data
+  def test_intersects
+    # overlapping
+    v1 = Pkgcraft::Dep::VersionWithOp.new("<1")
+    v2 = Pkgcraft::Dep::VersionWithOp.new("<1.0")
+    assert(v1.intersects(v2))
+    v1 = Pkgcraft::Dep::Version.new("1")
+    v2 = Pkgcraft::Dep::VersionWithOp.new("<1.0")
+    assert(v1.intersects(v2))
+
+    # non-overlapping
+    v1 = Pkgcraft::Dep::VersionWithOp.new(">1")
+    v2 = Pkgcraft::Dep::VersionWithOp.new("=1-r0")
+    assert(!v1.intersects(v2))
+    v1 = Pkgcraft::Dep::VersionWithOp.new(">=1.0")
+    v2 = Pkgcraft::Dep::Version.new("1")
+    assert(!v1.intersects(v2))
+
+    # invalid type
+    assert_raises RuntimeError do
+      v1.intersects("1")
     end
   end
 end

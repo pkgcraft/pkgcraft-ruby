@@ -24,6 +24,19 @@ class TestCpv < Minitest::Test
   end
 
   # TODO: use shared toml test data
+  def test_intersects
+    # equal
+    cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1-r0")
+    assert(cpv1.intersects(cpv2))
+
+    # unequal
+    cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1.0")
+    assert(!cpv1.intersects(cpv2))
+  end
+
+  # TODO: use shared toml test data
   def test_hash
     # equal
     cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")

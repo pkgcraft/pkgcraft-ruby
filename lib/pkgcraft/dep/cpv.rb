@@ -14,7 +14,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_cpv_new(str)
-        raise "Invalid Cpv!" if ptr.null?
+        raise "Invalid CPV: #{str}" if ptr.null?
 
         self.ptr = ptr
       end
@@ -43,6 +43,12 @@ module Pkgcraft
 
       def revision
         version.revision
+      end
+
+      def intersects(other)
+        return C.pkgcraft_cpv_intersects(@ptr, other.ptr) if other.is_a? Cpv
+
+        raise "Invalid type: #{other.class}"
       end
 
       def to_s
