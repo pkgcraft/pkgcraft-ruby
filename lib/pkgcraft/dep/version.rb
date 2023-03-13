@@ -60,5 +60,21 @@ module Pkgcraft
         @ptr = FFI::AutoPointer.new(ptr, self.class.method(:release))
       end
     end
+
+    # Package version with an operator
+    class VersionWithOp < Version
+      def initialize(str)
+        ptr = C.pkgcraft_version_with_op(str)
+        raise "Invalid Version!" if ptr.null?
+
+        self.ptr = ptr
+      end
+
+      def to_s
+        s, ptr = C.pkgcraft_version_str_with_op(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+    end
   end
 end

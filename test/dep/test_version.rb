@@ -35,3 +35,20 @@ class TestVersion < Minitest::Test
     assert_equal(versions.length, 2)
   end
 end
+
+class TestVersionWithOp < Minitest::Test
+  def test_new
+    # valid
+    v1 = Pkgcraft::Dep::VersionWithOp.new(">1")
+    assert_nil(v1.revision)
+    assert_equal(v1.to_s, ">1")
+
+    v2 = Pkgcraft::Dep::VersionWithOp.new("=2")
+    assert(v1 < v2)
+
+    # invalid
+    assert_raises RuntimeError do
+      Pkgcraft::Dep::VersionWithOp.new("1")
+    end
+  end
+end

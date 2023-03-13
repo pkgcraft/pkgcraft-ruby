@@ -5,6 +5,9 @@ AllCops:
 Metrics:
   Enabled: false
 
+Lint/MissingSuper:
+  Enabled: false
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
