@@ -8,6 +8,7 @@ class TestCpv < Minitest::Test
     cpv = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
     assert_equal(cpv.category, "cat")
     assert_equal(cpv.package, "pkg")
+    assert_equal(cpv.version, Pkgcraft::Dep::Version.new("1"))
 
     # invalid
     assert_raises RuntimeError do
