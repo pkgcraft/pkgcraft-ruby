@@ -41,6 +41,12 @@ module Pkgcraft
         Version.from_ptr(C.pkgcraft_cpv_version(@ptr))
       end
 
+      def to_s
+        s, ptr = C.pkgcraft_cpv_str(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def <=>(other)
         C.pkgcraft_cpv_cmp(@ptr, other.ptr)
       end

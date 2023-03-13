@@ -24,6 +24,12 @@ module Pkgcraft
         obj
       end
 
+      def to_s
+        s, ptr = C.pkgcraft_version_str(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def <=>(other)
         C.pkgcraft_version_cmp(@ptr, other.ptr)
       end

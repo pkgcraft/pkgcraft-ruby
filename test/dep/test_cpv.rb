@@ -9,6 +9,7 @@ class TestCpv < Minitest::Test
     assert_equal(cpv1.category, "cat")
     assert_equal(cpv1.package, "pkg")
     assert_equal(cpv1.version, Pkgcraft::Dep::Version.new("1"))
+    assert_equal(cpv1.to_s, "cat/pkg-1")
 
     cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-2")
     assert(cpv1 < cpv2)
