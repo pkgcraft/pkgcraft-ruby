@@ -61,9 +61,11 @@ module Pkgcraft
         C.pkgcraft_cpv_hash(@ptr)
       end
 
+      # :nocov:
       def self.release(ptr)
         C.pkgcraft_cpv_free(ptr)
       end
+      # :nocov:
 
       private_class_method :release
 

@@ -48,9 +48,11 @@ module Pkgcraft
         C.pkgcraft_version_hash(@ptr)
       end
 
+      # :nocov:
       def self.release(ptr)
         C.pkgcraft_version_free(ptr)
       end
+      # :nocov:
 
       private_class_method :release
 
