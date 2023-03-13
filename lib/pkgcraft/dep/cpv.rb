@@ -16,7 +16,13 @@ module Pkgcraft
         ptr = C.pkgcraft_cpv_new(str)
         raise "Invalid Cpv!" if ptr.null?
 
-        @ptr = FFI::AutoPointer.new(ptr, self.class.method(:release))
+        self.ptr = ptr
+      end
+
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.send(:ptr=, ptr)
+        obj
       end
 
       def category
@@ -32,8 +38,7 @@ module Pkgcraft
       end
 
       def version
-        ptr = C.pkgcraft_cpv_version(@ptr)
-        Version.from_ptr(ptr)
+        Version.from_ptr(C.pkgcraft_cpv_version(@ptr))
       end
 
       def <=>(other)
@@ -45,6 +50,12 @@ module Pkgcraft
       end
 
       private_class_method :release
+
+      private
+
+      def ptr=(ptr)
+        @ptr = FFI::AutoPointer.new(ptr, self.class.method(:release))
+      end
     end
   end
 end
