@@ -96,7 +96,15 @@ jobs:
         bundler-cache: true
 
     - name: Install dependencies
-      run: bundle install
+      run: |
+        # inject coverage deps
+        cat >> Gemfile <<-EOF
+          gem "simplecov"
+          gem "simplecov-cobertura"
+        EOF
+
+        # install deps from Gemfile
+        bundle install
 
     - name: Override build variables
       run: |
