@@ -2,6 +2,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.0
 
+Metrics:
+  Enabled: false
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
@@ -15,4 +18,4 @@ Style/SymbolArray:
   EnforcedStyle: brackets
 
 Layout/LineLength:
-  Max: 120
+  Max: 100
