@@ -5,12 +5,14 @@ on:
     branches-ignore: [release]
     paths:
       - "lib/**"
+      - "test/**"
       - "pkgcraft.gemspec"
       - ".github/workflows/ci.yml"
   pull_request:
     branches: [main]
     paths:
       - "lib/**"
+      - "test/**"
       - "pkgcraft.gemspec"
   workflow_dispatch:
     inputs:
@@ -102,4 +104,9 @@ jobs:
         echo "LD_LIBRARY_PATH=${pkgcraft_dir}/lib" >> $GITHUB_ENV
         echo "DYLD_LIBRARY_PATH=${pkgcraft_dir}/lib" >> $GITHUB_ENV
 
-    - run: bundle exec rake
+    - name: Run tests
+      run: bundle exec rake
+
+    - name: Upload coverage to Codecov
+      if: ${{ inputs.ruby-version == '' }}
+      uses: codecov/codecov-action@v3
