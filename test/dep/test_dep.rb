@@ -34,6 +34,19 @@ class TestDep < Minitest::Test
     assert_equal(dep2.to_s, "=cat/pkg-2")
     assert(dep1 < dep2)
 
+    # no version
+    dep = Pkgcraft::Dep::Dep.new("cat/pkg")
+    assert_nil(dep.version)
+    assert_nil(dep.revision)
+    assert_equal(dep.p, "pkg")
+    assert_equal(dep.pf, "pkg")
+    assert_nil(dep.pr)
+    assert_nil(dep.pv)
+    assert_nil(dep.pvr)
+    assert_equal(dep.cpn, "cat/pkg")
+    assert_equal(dep.cpv, "cat/pkg")
+    assert_equal(dep.to_s, "cat/pkg")
+
     # invalid
     assert_raises RuntimeError do
       Pkgcraft::Dep::Dep.new("cat/pkg-1")

@@ -15,6 +15,8 @@ module Pkgcraft
       end
 
       def self.from_ptr(ptr)
+        return if ptr.null?
+
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
