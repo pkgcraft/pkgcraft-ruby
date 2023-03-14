@@ -58,18 +58,24 @@ module Pkgcraft
 
       def pr
         s, ptr = C.pkgcraft_dep_pr(@ptr)
+        return if ptr.null?
+
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pv
         s, ptr = C.pkgcraft_dep_pv(@ptr)
+        return if ptr.null?
+
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pvr
         s, ptr = C.pkgcraft_dep_pvr(@ptr)
+        return if ptr.null?
+
         C.pkgcraft_str_free(ptr)
         s
       end
