@@ -30,6 +30,11 @@ class TestCpv < Minitest::Test
     cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1-r0")
     assert(cpv1.intersects(cpv2))
 
+    # dep
+    cpv = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    dep = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r0")
+    assert(cpv.intersects(dep))
+
     # unequal
     cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
     cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1.0")

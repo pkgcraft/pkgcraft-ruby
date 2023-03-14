@@ -21,9 +21,23 @@ module C
   attach_function :pkgcraft_cpv_package, [:pointer], :strptr
   attach_function :pkgcraft_cpv_version, [:pointer], :pointer
   attach_function :pkgcraft_cpv_intersects, [:pointer, :pointer], :bool
+  attach_function :pkgcraft_cpv_intersects_dep, [:pointer, :pointer], :bool
   attach_function :pkgcraft_cpv_hash, [:pointer], :uint64
   attach_function :pkgcraft_cpv_cmp, [:pointer, :pointer], :int
   attach_function :pkgcraft_cpv_str, [:pointer], :strptr
+
+  # dep support
+  attach_function :pkgcraft_dep_free, [:pointer], :void
+  attach_function :pkgcraft_dep_new, [:string, :pointer], :pointer
+  attach_function :pkgcraft_dep_category, [:pointer], :strptr
+  attach_function :pkgcraft_dep_package, [:pointer], :strptr
+  attach_function :pkgcraft_dep_version, [:pointer], :pointer
+  attach_function :pkgcraft_dep_revision, [:pointer], :strptr
+  attach_function :pkgcraft_dep_intersects, [:pointer, :pointer], :bool
+  attach_function :pkgcraft_dep_intersects_cpv, [:pointer, :pointer], :bool
+  attach_function :pkgcraft_dep_hash, [:pointer], :uint64
+  attach_function :pkgcraft_dep_cmp, [:pointer, :pointer], :int
+  attach_function :pkgcraft_dep_str, [:pointer], :strptr
 
   # version support
   attach_function :pkgcraft_version_free, [:pointer], :void

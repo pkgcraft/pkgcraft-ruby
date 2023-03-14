@@ -2,14 +2,14 @@
 
 module Pkgcraft
   module Dep
-    # CPV object support (category/package-version)
-    class Cpv
+    # Package dependency
+    class Dep
       include Comparable
       attr_reader :ptr
 
       def initialize(str)
-        ptr = C.pkgcraft_cpv_new(str)
-        raise "Invalid CPV: #{str}" if ptr.null?
+        ptr = C.pkgcraft_dep_new(str, nil)
+        raise "Invalid dep: #{str}" if ptr.null?
 
         self.ptr = ptr
       end
@@ -21,19 +21,19 @@ module Pkgcraft
       end
 
       def category
-        s, ptr = C.pkgcraft_cpv_category(@ptr)
+        s, ptr = C.pkgcraft_dep_category(@ptr)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def package
-        s, ptr = C.pkgcraft_cpv_package(@ptr)
+        s, ptr = C.pkgcraft_dep_package(@ptr)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def version
-        Version.from_ptr(C.pkgcraft_cpv_version(@ptr))
+        Version.from_ptr(C.pkgcraft_dep_version(@ptr))
       end
 
       def revision
@@ -41,32 +41,32 @@ module Pkgcraft
       end
 
       def intersects(other)
-        return C.pkgcraft_cpv_intersects(@ptr, other.ptr) if other.is_a? Cpv
+        return C.pkgcraft_dep_intersects(@ptr, other.ptr) if other.is_a? Dep
 
-        return C.pkgcraft_cpv_intersects_dep(@ptr, other.ptr) if other.is_a? Dep
+        return C.pkgcraft_dep_intersects_cpv(@ptr, other.ptr) if other.is_a? Cpv
 
         raise "Invalid type: #{other.class}"
       end
 
       def to_s
-        s, ptr = C.pkgcraft_cpv_str(@ptr)
+        s, ptr = C.pkgcraft_dep_str(@ptr)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def <=>(other)
-        C.pkgcraft_cpv_cmp(@ptr, other.ptr)
+        C.pkgcraft_dep_cmp(@ptr, other.ptr)
       end
 
       alias eql? ==
 
       def hash
-        C.pkgcraft_cpv_hash(@ptr)
+        C.pkgcraft_dep_hash(@ptr)
       end
 
       # :nocov:
       def self.release(ptr)
-        C.pkgcraft_cpv_free(ptr)
+        C.pkgcraft_dep_free(ptr)
       end
       # :nocov:
 
