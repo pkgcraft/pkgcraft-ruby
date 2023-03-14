@@ -38,7 +38,13 @@ module C
   attach_function :pkgcraft_dep_category, [:pointer], :strptr
   attach_function :pkgcraft_dep_package, [:pointer], :strptr
   attach_function :pkgcraft_dep_version, [:pointer], :pointer
-  attach_function :pkgcraft_dep_revision, [:pointer], :strptr
+  attach_function :pkgcraft_dep_p, [:pointer], :strptr
+  attach_function :pkgcraft_dep_pf, [:pointer], :strptr
+  attach_function :pkgcraft_dep_pr, [:pointer], :strptr
+  attach_function :pkgcraft_dep_pv, [:pointer], :strptr
+  attach_function :pkgcraft_dep_pvr, [:pointer], :strptr
+  attach_function :pkgcraft_dep_cpn, [:pointer], :strptr
+  attach_function :pkgcraft_dep_cpv, [:pointer], :strptr
   attach_function :pkgcraft_dep_intersects, [:pointer, :pointer], :bool
   attach_function :pkgcraft_dep_intersects_cpv, [:pointer, :pointer], :bool
   attach_function :pkgcraft_dep_hash, [:pointer], :uint64

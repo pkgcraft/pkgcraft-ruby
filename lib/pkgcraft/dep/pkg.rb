@@ -42,6 +42,48 @@ module Pkgcraft
         version.revision
       end
 
+      def p
+        s, ptr = C.pkgcraft_dep_p(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pf
+        s, ptr = C.pkgcraft_dep_pf(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pr
+        s, ptr = C.pkgcraft_dep_pr(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pv
+        s, ptr = C.pkgcraft_dep_pv(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pvr
+        s, ptr = C.pkgcraft_dep_pvr(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def cpn
+        s, ptr = C.pkgcraft_dep_cpn(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def cpv
+        s, ptr = C.pkgcraft_dep_cpv(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def intersects(other)
         return C.pkgcraft_dep_intersects(@ptr, other.ptr) if other.is_a? Dep
 

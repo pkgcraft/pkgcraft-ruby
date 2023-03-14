@@ -6,15 +6,32 @@ require "test_helper"
 
 class TestDep < Minitest::Test
   def test_new
-    # valid
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
+    # revision
+    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r2")
     assert_equal(dep1.category, "cat")
     assert_equal(dep1.package, "pkg")
-    assert_equal(dep1.version, Pkgcraft::Dep::VersionWithOp.new("=1"))
-    assert_nil(dep1.revision)
-    assert_equal(dep1.to_s, "=cat/pkg-1")
+    assert_equal(dep1.version, Pkgcraft::Dep::VersionWithOp.new("=1-r2"))
+    assert_equal(dep1.revision, "2")
+    assert_equal(dep1.p, "pkg-1")
+    assert_equal(dep1.pf, "pkg-1-r2")
+    assert_equal(dep1.pr, "r2")
+    assert_equal(dep1.pv, "1")
+    assert_equal(dep1.pvr, "1-r2")
+    assert_equal(dep1.cpn, "cat/pkg")
+    assert_equal(dep1.cpv, "cat/pkg-1-r2")
+    assert_equal(dep1.to_s, "=cat/pkg-1-r2")
 
+    # no revision
     dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-2")
+    assert_nil(dep2.revision)
+    assert_equal(dep2.p, "pkg-2")
+    assert_equal(dep2.pf, "pkg-2")
+    assert_equal(dep2.pr, "r0")
+    assert_equal(dep2.pv, "2")
+    assert_equal(dep2.pvr, "2")
+    assert_equal(dep2.cpn, "cat/pkg")
+    assert_equal(dep2.cpv, "cat/pkg-2")
+    assert_equal(dep2.to_s, "=cat/pkg-2")
     assert(dep1 < dep2)
 
     # invalid
