@@ -9,7 +9,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_cpv_new(str)
-        raise InvalidCpv.new("invalid CPV: #{str}") if ptr.null?
+        raise InvalidCpv if ptr.null?
 
         self.ptr = ptr
       end

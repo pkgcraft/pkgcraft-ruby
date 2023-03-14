@@ -11,6 +11,15 @@ module C
   # generic library support
   attach_function :pkgcraft_lib_version, [], :string
 
+  # error support
+  class Error < FFI::Struct
+    layout :message, :string,
+           :kind, :int
+  end
+
+  attach_function :pkgcraft_error_last, [], Error.by_ref
+  attach_function :pkgcraft_error_free, [Error.by_ref], :void
+
   # string support
   attach_function :pkgcraft_str_free, [:pointer], :void
 

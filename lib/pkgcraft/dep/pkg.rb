@@ -9,7 +9,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_dep_new(str, nil)
-        raise InvalidDep.new("invalid dep: #{str}") if ptr.null?
+        raise InvalidDep if ptr.null?
 
         self.ptr = ptr
       end
