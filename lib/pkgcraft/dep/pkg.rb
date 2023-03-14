@@ -118,18 +118,10 @@ module Pkgcraft
         @_hash
       end
 
-      # :nocov:
-      def self.release(ptr)
-        C.pkgcraft_dep_free(ptr)
-      end
-      # :nocov:
-
-      private_class_method :release
-
       private
 
       def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, self.class.method(:release))
+        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_dep_free))
       end
     end
   end
