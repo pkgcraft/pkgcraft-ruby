@@ -42,6 +42,42 @@ module Pkgcraft
         version.revision
       end
 
+      def p
+        s, ptr = C.pkgcraft_cpv_p(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pf
+        s, ptr = C.pkgcraft_cpv_pf(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pr
+        s, ptr = C.pkgcraft_cpv_pr(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pv
+        s, ptr = C.pkgcraft_cpv_pv(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def pvr
+        s, ptr = C.pkgcraft_cpv_pvr(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def cpn
+        s, ptr = C.pkgcraft_cpv_cpn(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def intersects(other)
         return C.pkgcraft_cpv_intersects(@ptr, other.ptr) if other.is_a? Cpv
 

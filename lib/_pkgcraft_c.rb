@@ -20,6 +20,12 @@ module C
   attach_function :pkgcraft_cpv_category, [:pointer], :strptr
   attach_function :pkgcraft_cpv_package, [:pointer], :strptr
   attach_function :pkgcraft_cpv_version, [:pointer], :pointer
+  attach_function :pkgcraft_cpv_p, [:pointer], :strptr
+  attach_function :pkgcraft_cpv_pf, [:pointer], :strptr
+  attach_function :pkgcraft_cpv_pr, [:pointer], :strptr
+  attach_function :pkgcraft_cpv_pv, [:pointer], :strptr
+  attach_function :pkgcraft_cpv_pvr, [:pointer], :strptr
+  attach_function :pkgcraft_cpv_cpn, [:pointer], :strptr
   attach_function :pkgcraft_cpv_intersects, [:pointer, :pointer], :bool
   attach_function :pkgcraft_cpv_intersects_dep, [:pointer, :pointer], :bool
   attach_function :pkgcraft_cpv_hash, [:pointer], :uint64
