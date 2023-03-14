@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "_pkgcraft_c"
 require_relative "pkgcraft/dep"
 require_relative "pkgcraft/_version"
 
