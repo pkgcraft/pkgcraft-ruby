@@ -61,7 +61,9 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        C.pkgcraft_cpv_hash(@ptr)
+        @_hash = C.pkgcraft_cpv_hash(@ptr) if @_hash.nil?
+
+        @_hash
       end
 
       # :nocov:
