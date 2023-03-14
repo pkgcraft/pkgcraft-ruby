@@ -4,8 +4,19 @@ module Pkgcraft
   module Dep
     # Package version
     class Version
+      extend FFI::Library
       include Comparable
       attr_reader :ptr
+
+      Operator = enum(
+        :Less, 1,
+        :LessOrEqual,
+        :Equal,
+        :EqualGlob,
+        :Approximate,
+        :GreaterOrEqual,
+        :Greater
+      )
 
       def initialize(str)
         ptr = C.pkgcraft_version_new(str)
@@ -20,6 +31,13 @@ module Pkgcraft
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
+      end
+
+      def op
+        op = C.pkgcraft_version_op(@ptr)
+        return if op.zero?
+
+        Operator[op]
       end
 
       def revision

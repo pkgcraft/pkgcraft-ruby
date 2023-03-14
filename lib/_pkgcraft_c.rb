@@ -58,6 +58,7 @@ module C
   attach_function :pkgcraft_version_hash, [:pointer], :uint64
   attach_function :pkgcraft_version_intersects, [:pointer, :pointer], :bool
   attach_function :pkgcraft_version_revision, [:pointer], :strptr
+  attach_function :pkgcraft_version_op, [:pointer], :int
   attach_function :pkgcraft_version_str, [:pointer], :strptr
   attach_function :pkgcraft_version_str_with_op, [:pointer], :strptr
   attach_function :pkgcraft_version_with_op, [:string], :pointer

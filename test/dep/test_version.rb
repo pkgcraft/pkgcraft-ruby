@@ -11,6 +11,7 @@ class TestVersion < Minitest::Test
     assert_nil(v1.revision)
     assert_equal(v1.to_s, "1")
     v1 = Pkgcraft::Dep::Version.new("1-r2")
+    assert_nil(v1.op)
     assert_equal(v1.revision, "2")
     assert_equal(v1.to_s, "1-r2")
 
@@ -56,10 +57,12 @@ class TestVersionWithOp < Minitest::Test
   def test_new
     # valid
     v1 = Pkgcraft::Dep::VersionWithOp.new(">1")
+    assert_equal(v1.op, :Greater)
     assert_nil(v1.revision)
     assert_equal(v1.to_s, ">1")
 
     v2 = Pkgcraft::Dep::VersionWithOp.new("=2")
+    assert_equal(v2.op, :Equal)
     assert(v1 < v2)
 
     # invalid
