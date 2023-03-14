@@ -4,8 +4,10 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "minitest", "~> 5.0"
-gem "rake", "~> 13.0"
+# test deps
+gem "minitest", "~> 5.0", require: false, group: :test
+gem "rake", "~> 13.0", require: false, group: :test
 
-gem "simplecov", require: false, group: :test
-gem "simplecov-cobertura", require: false, group: :test
+# coverage deps
+gem "simplecov", require: false, group: :dev
+gem "simplecov-cobertura", require: false, group: :dev
