@@ -33,7 +33,9 @@ module Pkgcraft
       end
 
       def version
-        Version.from_ptr(C.pkgcraft_cpv_version(@ptr))
+        @_version = Version.from_ptr(C.pkgcraft_cpv_version(@ptr)) if @_version.nil?
+
+        @_version
       end
 
       def revision
