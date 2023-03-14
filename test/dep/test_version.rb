@@ -19,7 +19,7 @@ class TestVersion < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises RuntimeError do
+    assert_raises Pkgcraft::InvalidVersion do
       Pkgcraft::Dep::Version.new("=1")
     end
   end
@@ -66,7 +66,7 @@ class TestVersionWithOp < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises RuntimeError do
+    assert_raises Pkgcraft::InvalidVersion do
       Pkgcraft::Dep::VersionWithOp.new("1")
     end
   end
@@ -90,7 +90,7 @@ class TestVersionWithOp < Minitest::Test
     assert(!v1.intersects(v2))
 
     # invalid type
-    assert_raises RuntimeError do
+    assert_raises TypeError do
       v1.intersects("1")
     end
   end

@@ -8,6 +8,10 @@ Metrics:
 Lint/MissingSuper:
   Enabled: false
 
+Style/RaiseArgs:
+  Enabled: true
+  EnforcedStyle: compact
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes

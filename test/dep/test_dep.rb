@@ -48,7 +48,7 @@ class TestDep < Minitest::Test
     assert_equal(dep.to_s, "cat/pkg")
 
     # invalid
-    assert_raises RuntimeError do
+    assert_raises Pkgcraft::InvalidDep do
       Pkgcraft::Dep::Dep.new("cat/pkg-1")
     end
   end
@@ -69,6 +69,11 @@ class TestDep < Minitest::Test
     dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
     dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-1.0")
     assert(!dep1.intersects(dep2))
+
+    # invalid type
+    assert_raises TypeError do
+      dep1.intersects("=cat/pkg-1")
+    end
   end
 
   # TODO: use shared toml test data

@@ -33,7 +33,7 @@ class TestCpv < Minitest::Test
     assert(cpv1 < cpv2)
 
     # invalid
-    assert_raises RuntimeError do
+    assert_raises Pkgcraft::InvalidCpv do
       Pkgcraft::Dep::Cpv.new("=cat/pkg-1")
     end
   end
@@ -54,6 +54,11 @@ class TestCpv < Minitest::Test
     cpv1 = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
     cpv2 = Pkgcraft::Dep::Cpv.new("cat/pkg-1.0")
     assert(!cpv1.intersects(cpv2))
+
+    # invalid type
+    assert_raises TypeError do
+      cpv1.intersects("cat/pkg-1")
+    end
   end
 
   # TODO: use shared toml test data

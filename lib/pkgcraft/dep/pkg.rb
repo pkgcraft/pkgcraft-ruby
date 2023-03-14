@@ -9,7 +9,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_dep_new(str, nil)
-        raise "Invalid dep: #{str}" if ptr.null?
+        raise InvalidDep.new("invalid dep: #{str}") if ptr.null?
 
         self.ptr = ptr
       end
@@ -97,7 +97,7 @@ module Pkgcraft
 
         return C.pkgcraft_dep_intersects_cpv(@ptr, other.ptr) if other.is_a? Cpv
 
-        raise "Invalid type: #{other.class}"
+        raise TypeError.new("Invalid type: #{other.class}")
       end
 
       def to_s

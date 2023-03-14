@@ -20,7 +20,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_version_new(str)
-        raise "Invalid version: #{str}" if ptr.null?
+        raise InvalidVersion.new("invalid version: #{str}") if ptr.null?
 
         self.ptr = ptr
       end
@@ -49,7 +49,7 @@ module Pkgcraft
       end
 
       def intersects(other)
-        raise "Invalid type: #{other.class}" unless other.is_a? Version
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Version
 
         C.pkgcraft_version_intersects(@ptr, other.ptr)
       end
@@ -91,7 +91,7 @@ module Pkgcraft
     class VersionWithOp < Version
       def initialize(str)
         ptr = C.pkgcraft_version_with_op(str)
-        raise "Invalid Version!" if ptr.null?
+        raise InvalidVersion.new("invalid version: #{str}") if ptr.null?
 
         self.ptr = ptr
       end
