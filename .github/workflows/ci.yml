@@ -92,6 +92,9 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        repository: pkgcraft/pkgcraft-ruby
+        submodules: true
 
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
