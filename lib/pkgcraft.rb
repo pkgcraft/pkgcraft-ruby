@@ -2,6 +2,7 @@
 
 require_relative "_pkgcraft_c"
 require_relative "pkgcraft/dep"
+require_relative "pkgcraft/eapi"
 require_relative "pkgcraft/error"
 require_relative "pkgcraft/_version"
 

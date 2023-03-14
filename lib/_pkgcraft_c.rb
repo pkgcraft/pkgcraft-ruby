@@ -11,6 +11,11 @@ module C
   # generic library support
   attach_function :pkgcraft_lib_version, [], :string
 
+  # array length pointer for working with array return values
+  class LenPtr < FFI::Struct
+    layout :value, :size_t
+  end
+
   # error support
   class Error < FFI::Struct
     layout :message, :string,
@@ -19,6 +24,15 @@ module C
 
   attach_function :pkgcraft_error_last, [], Error.by_ref
   attach_function :pkgcraft_error_free, [Error.by_ref], :void
+
+  # eapi support
+  attach_function :pkgcraft_eapi_as_str, [:pointer], :strptr
+  attach_function :pkgcraft_eapi_cmp, [:pointer, :pointer], :int
+  attach_function :pkgcraft_eapi_has, [:pointer, :string], :bool
+  attach_function :pkgcraft_eapi_hash, [:pointer], :uint64
+  attach_function :pkgcraft_eapis_official, [LenPtr], :pointer
+  attach_function :pkgcraft_eapis, [LenPtr], :pointer
+  attach_function :pkgcraft_eapis_free, [:buffer_in, :size_t], :void
 
   # string support
   attach_function :pkgcraft_str_free, [:pointer], :void

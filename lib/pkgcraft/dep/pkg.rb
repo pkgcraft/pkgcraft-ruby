@@ -7,8 +7,9 @@ module Pkgcraft
       include Comparable
       attr_reader :ptr
 
-      def initialize(str)
-        ptr = C.pkgcraft_dep_new(str, nil)
+      def initialize(str, eapi = nil)
+        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        ptr = C.pkgcraft_dep_new(str, eapi)
         raise InvalidDep if ptr.null?
 
         self.ptr = ptr
