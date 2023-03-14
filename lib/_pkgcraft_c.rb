@@ -30,8 +30,8 @@ module C
   attach_function :pkgcraft_eapi_cmp, [:pointer, :pointer], :int
   attach_function :pkgcraft_eapi_has, [:pointer, :string], :bool
   attach_function :pkgcraft_eapi_hash, [:pointer], :uint64
-  attach_function :pkgcraft_eapis_official, [LenPtr], :pointer
-  attach_function :pkgcraft_eapis, [LenPtr], :pointer
+  attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
+  attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
   attach_function :pkgcraft_eapis_free, [:buffer_in, :size_t], :void
 
   # string support
