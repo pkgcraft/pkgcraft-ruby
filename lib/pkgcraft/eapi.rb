@@ -89,17 +89,18 @@ module Pkgcraft
     private_class_method :eapis_official
 
     # Hash of all official EAPIs.
-    EAPIS_OFFICIAL = eapis_official
+    EAPIS_OFFICIAL = eapis_official.freeze
 
     # Reference to the most recent, official EAPI.
-    EAPI_LATEST_OFFICIAL = @eapi_latest_official
+    EAPI_LATEST_OFFICIAL = @eapi_latest_official.freeze
 
     # Return the mapping of all EAPIs.
     def self.eapis
       length = C::LenPtr.new
       ptr = C.pkgcraft_eapis(length)
       c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
-      eapis = EAPIS_OFFICIAL.clone
+      eapis = {}
+      eapis.update(EAPIS_OFFICIAL)
       (eapis.length...length[:value]).each do |i|
         eapi = Eapi.new(c_eapis[i])
         eapis[eapi.to_s] = eapi
@@ -112,9 +113,9 @@ module Pkgcraft
     private_class_method :eapis
 
     # Hash of all EAPIs.
-    EAPIS = eapis
+    EAPIS = eapis.freeze
 
     # Reference to the most recent EAPI.
-    EAPI_LATEST = @eapi_latest
+    EAPI_LATEST = @eapi_latest.freeze
   end
 end
