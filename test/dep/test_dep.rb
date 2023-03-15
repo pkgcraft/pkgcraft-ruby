@@ -47,6 +47,38 @@ class TestDep < Minitest::Test
     assert_equal(dep.cpv, "cat/pkg")
     assert_equal(dep.to_s, "cat/pkg")
 
+    # all fields -- extended EAPI default allows repo deps
+    dep = Pkgcraft::Dep::Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
+    assert dep.category == "cat"
+    assert dep.package == "pkg"
+    # assert dep.blocker == Blocker.Strong
+    # assert dep.blocker == "!!"
+    # assert dep.slot == "0"
+    # assert dep.subslot == "2"
+    # assert dep.slot_op == SlotOperator.Equal
+    # assert dep.slot_op == "="
+    # assert dep.use == ("a", "b", "c")
+    # assert dep.repo == "repo"
+    assert dep.version == Pkgcraft::Dep::VersionWithOp.new(">=1-r2")
+    # assert dep.op == Operator.GreaterOrEqual
+    # assert dep.op == ">="
+    assert dep.revision == "2"
+    assert dep.p == "pkg-1"
+    assert dep.pf == "pkg-1-r2"
+    assert dep.pr == "r2"
+    assert dep.pv == "1"
+    assert dep.pvr == "1-r2"
+    assert dep.cpn == "cat/pkg"
+    assert dep.cpv == "cat/pkg-1-r2"
+    assert dep.to_s == "!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo"
+
+    # explicitly specifying an official EAPI fails
+    ["8", Pkgcraft::Eapi.EAPIS["8"]].each do |eapi|
+      assert_raises Pkgcraft::InvalidDep do
+        Pkgcraft::Dep::Dep.new("cat/pkg::repo", eapi)
+      end
+    end
+
     # invalid
     assert_raises Pkgcraft::InvalidDep do
       Pkgcraft::Dep::Dep.new("cat/pkg-1")
