@@ -22,9 +22,8 @@ class TestEapi < Minitest::Test
   end
 
   def test_from_obj
-    eapi0 = EAPIS["0"]
-    assert(Eapi.from_obj(eapi0).equal?(eapi0))
-    assert(Eapi.from_obj("0").equal?(eapi0))
+    assert(Eapi.from_obj(EAPI0).equal?(EAPI0))
+    assert(Eapi.from_obj("0").equal?(EAPI0))
 
     # unknown
     assert_raises RuntimeError do
@@ -41,13 +40,11 @@ class TestEapi < Minitest::Test
     eapis = Eapis.range("..")
     assert_equal(eapis, EAPIS.values)
 
-    eapi0 = EAPIS["0"]
-    eapi1 = EAPIS["1"]
     eapis = Eapis.range("..2")
-    assert_equal(eapis, [eapi0, eapi1])
+    assert_equal(eapis, [EAPI0, EAPI1])
 
     eapis = Eapis.range("1..2")
-    assert_equal(eapis, [eapi1])
+    assert_equal(eapis, [EAPI1])
 
     assert_raises PkgcraftError do
       Eapis.range("..9999")
@@ -56,31 +53,26 @@ class TestEapi < Minitest::Test
 
   def test_has
     assert(!EAPI_LATEST.has("nonexistent_feature"))
-    assert(!EAPIS["0"].has("slot_deps"))
-    assert(EAPIS["1"].has("slot_deps"))
-    assert(!EAPIS["1"].has(nil))
+    assert(!EAPI0.has("slot_deps"))
+    assert(EAPI1.has("slot_deps"))
+    assert(!EAPI1.has(nil))
   end
 
   def test_cmp
-    eapi0 = EAPIS["0"]
-    eapi1 = EAPIS["1"]
     latest = EAPI_LATEST
     latest_official = EAPI_LATEST_OFFICIAL
-    assert(eapi0 < eapi1)
-    assert(latest_official > eapi1)
+    assert(EAPI0 < EAPI1)
+    assert(latest_official > EAPI1)
     assert(latest >= latest_official)
   end
 
   def test_hash
-    eapi0 = EAPIS["0"]
-    eapi1 = EAPIS["1"]
-
     # equal
-    eapis = Set.new([eapi0, eapi0])
+    eapis = Set.new([EAPI0, EAPI0])
     assert_equal(eapis.length, 1)
 
     # unequal
-    eapis = Set.new([eapi0, eapi1])
+    eapis = Set.new([EAPI0, EAPI1])
     assert_equal(eapis.length, 2)
   end
 end

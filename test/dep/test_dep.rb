@@ -77,7 +77,7 @@ class TestDep < Minitest::Test
     assert dep.to_s == "!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo"
 
     # explicitly specifying an official EAPI fails
-    ["8", EAPIS["8"]].each do |eapi|
+    ["8", EAPI8].each do |eapi|
       assert_raises InvalidDep do
         Dep.new("cat/pkg::repo", eapi)
       end

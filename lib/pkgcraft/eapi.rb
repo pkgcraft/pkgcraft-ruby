@@ -71,6 +71,8 @@ module Pkgcraft
       eapis = {}
       (0...length[:value]).each do |i|
         eapi = Eapi.new(c_eapis[i])
+        # set constants for all official EAPIs, e.g. EAPI0, EAPI1, ...
+        Eapis.const_set("EAPI#{i}", eapi)
         eapis[eapi.to_s] = eapi
         @eapi_latest_official = eapi if i == length[:value] - 1
       end
