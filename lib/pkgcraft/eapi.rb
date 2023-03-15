@@ -19,10 +19,12 @@ module Pkgcraft
       def self.from_obj(obj)
         return obj if obj.is_a? Eapi
 
-        eapi = EAPIS[obj.to_s]
-        return eapi unless eapi.nil?
+        if obj.is_a? String
+          eapi = EAPIS[obj]
+          return eapi unless eapi.nil?
 
-        raise "unknown EAPI: #{obj}" if obj.is_a? String
+          raise "unknown EAPI: #{obj}"
+        end
 
         raise TypeError.new("unsupported Eapi type: #{obj.class}")
       end
@@ -62,6 +64,7 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
         eapis.append(EAPIS[id])
       end
+
       C.pkgcraft_eapis_free(ptr, length[:value])
       eapis
     end
