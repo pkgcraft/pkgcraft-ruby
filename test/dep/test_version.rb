@@ -90,28 +90,4 @@ class TestVersionWithOp < Minitest::Test
       VersionWithOp.new("1")
     end
   end
-
-  # TODO: use shared toml test data
-  def test_intersects
-    # overlapping
-    v1 = VersionWithOp.new("<1")
-    v2 = VersionWithOp.new("<1.0")
-    assert(v1.intersects(v2))
-    v1 = Version.new("1")
-    v2 = VersionWithOp.new("<1.0")
-    assert(v1.intersects(v2))
-
-    # non-overlapping
-    v1 = VersionWithOp.new(">1")
-    v2 = VersionWithOp.new("=1-r0")
-    assert(!v1.intersects(v2))
-    v1 = VersionWithOp.new(">=1.0")
-    v2 = Version.new("1")
-    assert(!v1.intersects(v2))
-
-    # invalid type
-    assert_raises TypeError do
-      v1.intersects("1")
-    end
-  end
 end
