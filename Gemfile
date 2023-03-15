@@ -7,6 +7,7 @@ gemspec
 # test deps
 gem "minitest", "~> 5.0", require: false, group: :test
 gem "rake", "~> 13.0", require: false, group: :test
+gem "toml-rb", "~> 2.2.0", require: false, group: :test
 
 # coverage deps
 gem "simplecov", require: false, group: :dev

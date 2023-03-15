@@ -19,6 +19,18 @@ rescue LoadError
   puts "code coverage disabled"
 end
 
+# load shared test data
+require "toml-rb"
+def parse_toml
+  data = {}
+  Dir.glob("testdata/toml/**/*.toml").each do |path|
+    key = File.basename(path, ".toml")
+    data[key] = TomlRB.load_file(path)
+  end
+  data
+end
+TOML = parse_toml.freeze
+
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "pkgcraft"
 

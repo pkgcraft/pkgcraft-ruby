@@ -27,17 +27,31 @@ class TestVersion < Minitest::Test
     end
   end
 
-  # TODO: use shared toml test data
-  def test_intersects
-    # equal
-    v1 = Version.new("1")
-    v2 = Version.new("1-r0")
-    assert(v1.intersects(v2))
+  # Convert string to op-ed version falling back to non-op version.
+  def parse(str)
+    VersionWithOp.new(str)
+  rescue InvalidVersion
+    Version.new(str)
+  end
 
-    # unequal
-    v1 = Version.new("1")
-    v2 = Version.new("1.0")
-    assert(!v1.intersects(v2))
+  def test_intersects
+    TOML["version"]["intersects"].each do |d|
+      d["vals"].combination(2).each do |s1, s2|
+        v1 = parse(s1)
+        v2 = parse(s2)
+
+        # elements intersect themselves
+        assert(v1.intersects(v1))
+        assert(v2.intersects(v2))
+
+        # intersects depending on status
+        if d["status"]
+          assert(v1.intersects(v2))
+        else
+          assert(!v1.intersects(v2))
+        end
+      end
+    end
   end
 
   # TODO: use shared toml test data
