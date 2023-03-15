@@ -5,12 +5,15 @@ require "set"
 require "test_helper"
 
 class TestDep < Minitest::Test
+  include Pkgcraft::Dep
+  include Pkgcraft::Error
+
   def test_new
     # revision
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r2")
+    dep1 = Dep.new("=cat/pkg-1-r2")
     assert_equal(dep1.category, "cat")
     assert_equal(dep1.package, "pkg")
-    assert_equal(dep1.version, Pkgcraft::Dep::VersionWithOp.new("=1-r2"))
+    assert_equal(dep1.version, VersionWithOp.new("=1-r2"))
     assert_equal(dep1.revision, "2")
     assert_equal(dep1.p, "pkg-1")
     assert_equal(dep1.pf, "pkg-1-r2")
@@ -22,7 +25,7 @@ class TestDep < Minitest::Test
     assert_equal(dep1.to_s, "=cat/pkg-1-r2")
 
     # no revision
-    dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-2")
+    dep2 = Dep.new("=cat/pkg-2")
     assert_nil(dep2.revision)
     assert_equal(dep2.p, "pkg-2")
     assert_equal(dep2.pf, "pkg-2")
@@ -35,7 +38,7 @@ class TestDep < Minitest::Test
     assert(dep1 < dep2)
 
     # no version
-    dep = Pkgcraft::Dep::Dep.new("cat/pkg")
+    dep = Dep.new("cat/pkg")
     assert_nil(dep.version)
     assert_nil(dep.revision)
     assert_equal(dep.p, "pkg")
@@ -48,7 +51,7 @@ class TestDep < Minitest::Test
     assert_equal(dep.to_s, "cat/pkg")
 
     # all fields -- extended EAPI default allows repo deps
-    dep = Pkgcraft::Dep::Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
+    dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
     assert dep.category == "cat"
     assert dep.package == "pkg"
     # assert dep.blocker == Blocker.Strong
@@ -59,7 +62,7 @@ class TestDep < Minitest::Test
     # assert dep.slot_op == "="
     # assert dep.use == ("a", "b", "c")
     # assert dep.repo == "repo"
-    assert dep.version == Pkgcraft::Dep::VersionWithOp.new(">=1-r2")
+    assert dep.version == VersionWithOp.new(">=1-r2")
     # assert dep.op == Operator.GreaterOrEqual
     # assert dep.op == ">="
     assert dep.revision == "2"
@@ -74,32 +77,32 @@ class TestDep < Minitest::Test
 
     # explicitly specifying an official EAPI fails
     ["8", Pkgcraft::Eapi.EAPIS["8"]].each do |eapi|
-      assert_raises Pkgcraft::Error::InvalidDep do
-        Pkgcraft::Dep::Dep.new("cat/pkg::repo", eapi)
+      assert_raises InvalidDep do
+        Dep.new("cat/pkg::repo", eapi)
       end
     end
 
     # invalid
-    assert_raises Pkgcraft::Error::InvalidDep do
-      Pkgcraft::Dep::Dep.new("cat/pkg-1")
+    assert_raises InvalidDep do
+      Dep.new("cat/pkg-1")
     end
   end
 
   # TODO: use shared toml test data
   def test_intersects
     # equal
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
-    dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r0")
+    dep1 = Dep.new("=cat/pkg-1")
+    dep2 = Dep.new("=cat/pkg-1-r0")
     assert(dep1.intersects(dep2))
 
     # cpv
-    dep = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r0")
-    cpv = Pkgcraft::Dep::Cpv.new("cat/pkg-1")
+    dep = Dep.new("=cat/pkg-1-r0")
+    cpv = Cpv.new("cat/pkg-1")
     assert(dep.intersects(cpv))
 
     # unequal
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
-    dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-1.0")
+    dep1 = Dep.new("=cat/pkg-1")
+    dep2 = Dep.new("=cat/pkg-1.0")
     assert(!dep1.intersects(dep2))
 
     # invalid type
@@ -111,14 +114,14 @@ class TestDep < Minitest::Test
   # TODO: use shared toml test data
   def test_hash
     # equal
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
-    dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-1-r0")
+    dep1 = Dep.new("=cat/pkg-1")
+    dep2 = Dep.new("=cat/pkg-1-r0")
     deps = Set.new([dep1, dep2])
     assert_equal(deps.length, 1)
 
     # unequal
-    dep1 = Pkgcraft::Dep::Dep.new("=cat/pkg-1")
-    dep2 = Pkgcraft::Dep::Dep.new("=cat/pkg-1.0")
+    dep1 = Dep.new("=cat/pkg-1")
+    dep2 = Dep.new("=cat/pkg-1.0")
     deps = Set.new([dep1, dep2])
     assert_equal(deps.length, 2)
   end

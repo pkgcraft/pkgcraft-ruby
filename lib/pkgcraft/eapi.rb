@@ -101,18 +101,18 @@ module Pkgcraft
       @eapis
     end
 
-    # rubocop:enable Naming/MethodName
-
     # Reference to the most recent, official EAPI.
-    def self.latest_official
+    def self.LATEST_OFFICIAL
       self.EAPIS_OFFICIAL if @eapi_latest_official.nil?
       @eapi_latest_official
     end
 
     # Reference to the most recent EAPI.
-    def self.latest
+    def self.LATEST
       self.EAPIS if @eapi_latest.nil?
       @eapi_latest
     end
+
+    # rubocop:enable Naming/MethodName
   end
 end
