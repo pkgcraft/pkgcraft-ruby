@@ -17,6 +17,22 @@ class TestEapi < Minitest::Test
     assert(!eapi_latest_official.equal?(eapi_latest))
   end
 
+  def test_from_obj
+    eapi0 = Pkgcraft::Eapi.EAPIS["0"]
+    assert(Pkgcraft::Eapi.from_obj(eapi0).equal?(eapi0))
+    assert(Pkgcraft::Eapi.from_obj("0").equal?(eapi0))
+
+    # unknown
+    assert_raises RuntimeError do
+      Pkgcraft::Eapi.from_obj("unknown")
+    end
+
+    # invalid
+    assert_raises TypeError do
+      Pkgcraft::Eapi.from_obj(nil)
+    end
+  end
+
   def test_has
     assert(!Pkgcraft::Eapi.latest.has("nonexistent_feature"))
     assert(!Pkgcraft::Eapi.EAPIS["0"].has("slot_deps"))

@@ -14,14 +14,6 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
       end
 
-      def self.from_obj(obj)
-        return obj if obj.is_a? Eapi
-
-        return EAPIS[obj] if obj.is_a? String
-
-        raise TypeError.new("invalid type: #{obj.class}")
-      end
-
       # Check if an EAPI has a given feature.
       def has(feature)
         C.pkgcraft_eapi_has(@ptr, feature.to_s)
@@ -42,6 +34,18 @@ module Pkgcraft
 
         @_hash
       end
+    end
+
+    # Try to convert an object to an Eapi object.
+    def self.from_obj(obj)
+      return obj if obj.is_a? Eapi
+
+      eapi = self.EAPIS[obj.to_s]
+      return eapi unless eapi.nil?
+
+      raise "unknown EAPI: #{obj}" if obj.is_a? String
+
+      raise TypeError.new("unsupported Eapi type: #{obj.class}")
     end
 
     # rubocop:disable Naming/MethodName
