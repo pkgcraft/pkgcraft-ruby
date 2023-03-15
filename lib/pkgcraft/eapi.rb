@@ -3,11 +3,6 @@
 module Pkgcraft
   # EAPI support
   module Eapi
-    @eapis_official = nil
-    @eapi_latest_official = nil
-    @eapis = nil
-    @eapi_latest = nil
-
     # EAPI object
     class Eapi
       include Comparable
