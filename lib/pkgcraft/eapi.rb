@@ -8,6 +8,7 @@ module Pkgcraft
       include Comparable
       attr_reader :ptr
 
+      # Create a new Eapi object from a given pointer.
       def initialize(ptr)
         @ptr = ptr
         @id, c_str = C.pkgcraft_eapi_as_str(ptr)
