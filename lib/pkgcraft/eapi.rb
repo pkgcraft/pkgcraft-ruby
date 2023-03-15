@@ -2,7 +2,7 @@
 
 module Pkgcraft
   # EAPI support
-  module Eapi
+  module Eapis
     # EAPI object
     class Eapi
       include Comparable
@@ -12,6 +12,18 @@ module Pkgcraft
         @ptr = ptr
         @id, c_str = C.pkgcraft_eapi_as_str(ptr)
         C.pkgcraft_str_free(c_str)
+      end
+
+      # Try to convert an object to an Eapi object.
+      def self.from_obj(obj)
+        return obj if obj.is_a? Eapi
+
+        eapi = EAPIS[obj.to_s]
+        return eapi unless eapi.nil?
+
+        raise "unknown EAPI: #{obj}" if obj.is_a? String
+
+        raise TypeError.new("unsupported Eapi type: #{obj.class}")
       end
 
       # Check if an EAPI has a given feature.
@@ -36,18 +48,6 @@ module Pkgcraft
       end
     end
 
-    # Try to convert an object to an Eapi object.
-    def self.from_obj(obj)
-      return obj if obj.is_a? Eapi
-
-      eapi = self.EAPIS[obj.to_s]
-      return eapi unless eapi.nil?
-
-      raise "unknown EAPI: #{obj}" if obj.is_a? String
-
-      raise TypeError.new("unsupported Eapi type: #{obj.class}")
-    end
-
     # Convert an EAPI range into an ordered set of Eapi objects.
     def self.range(str)
       length = C::LenPtr.new
@@ -63,56 +63,50 @@ module Pkgcraft
       eapis
     end
 
-    # rubocop:disable Naming/MethodName
+    # Return the mapping of all official EAPIs.
+    def self.eapis_official
+      length = C::LenPtr.new
+      ptr = C.pkgcraft_eapis_official(length)
+      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      eapis = {}
+      (0...length[:value]).each do |i|
+        eapi = Eapi.new(c_eapis[i])
+        eapis[eapi.to_s] = eapi
+        @eapi_latest_official = eapi if i == length[:value] - 1
+      end
+      C.pkgcraft_eapis_free(ptr, length[:value])
+      eapis
+    end
+
+    private_class_method :eapis_official
 
     # Hash of all official EAPIs.
-    def self.EAPIS_OFFICIAL
-      if @eapis_official.nil?
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_eapis_official(length)
-        c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
-        eapis = {}
-        (0...length[:value]).each do |i|
-          eapi = Eapi.new(c_eapis[i])
-          eapis[eapi.to_s] = eapi
-          @eapi_latest_official = eapi if i == length[:value] - 1
-        end
-        C.pkgcraft_eapis_free(ptr, length[:value])
-        @eapis_official = eapis
-      end
-      @eapis_official
-    end
-
-    # Has of all EAPIs.
-    def self.EAPIS
-      if @eapis.nil?
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_eapis(length)
-        c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
-        eapis = self.EAPIS_OFFICIAL.clone
-        (eapis.length...length[:value]).each do |i|
-          eapi = Eapi.new(c_eapis[i])
-          eapis[eapi.to_s] = eapi
-          @eapi_latest = eapi if i == length[:value] - 1
-        end
-        C.pkgcraft_eapis_free(ptr, length[:value])
-        @eapis = eapis
-      end
-      @eapis
-    end
+    EAPIS_OFFICIAL = eapis_official
 
     # Reference to the most recent, official EAPI.
-    def self.LATEST_OFFICIAL
-      self.EAPIS_OFFICIAL if @eapi_latest_official.nil?
-      @eapi_latest_official
+    EAPI_LATEST_OFFICIAL = @eapi_latest_official
+
+    # Return the mapping of all EAPIs.
+    def self.eapis
+      length = C::LenPtr.new
+      ptr = C.pkgcraft_eapis(length)
+      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      eapis = EAPIS_OFFICIAL.clone
+      (eapis.length...length[:value]).each do |i|
+        eapi = Eapi.new(c_eapis[i])
+        eapis[eapi.to_s] = eapi
+        @eapi_latest = eapi if i == length[:value] - 1
+      end
+      C.pkgcraft_eapis_free(ptr, length[:value])
+      eapis
     end
+
+    private_class_method :eapis
+
+    # Hash of all EAPIs.
+    EAPIS = eapis
 
     # Reference to the most recent EAPI.
-    def self.LATEST
-      self.EAPIS if @eapi_latest.nil?
-      @eapi_latest
-    end
-
-    # rubocop:enable Naming/MethodName
+    EAPI_LATEST = @eapi_latest
   end
 end
