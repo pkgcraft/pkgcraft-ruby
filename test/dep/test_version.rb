@@ -54,6 +54,15 @@ class TestVersion < Minitest::Test
     end
   end
 
+  def test_cmp
+    TOML["version"]["compares"].each do |s|
+      s1, op, s2 = s.split
+      v1 = Version.new(s1)
+      v2 = Version.new(s2)
+      assert(v1.public_send(op, v2))
+    end
+  end
+
   def test_sort
     TOML["version"]["sorting"].each do |d|
       expected = d["sorted"].map { |s| Version.new(s) }.compact
