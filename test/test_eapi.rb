@@ -33,6 +33,23 @@ class TestEapi < Minitest::Test
     end
   end
 
+  def test_range
+    eapis = Pkgcraft::Eapi.range("..")
+    assert_equal(eapis, Pkgcraft::Eapi.EAPIS.values)
+
+    eapi0 = Pkgcraft::Eapi.EAPIS["0"]
+    eapi1 = Pkgcraft::Eapi.EAPIS["1"]
+    eapis = Pkgcraft::Eapi.range("..2")
+    assert_equal(eapis, [eapi0, eapi1])
+
+    eapis = Pkgcraft::Eapi.range("1..2")
+    assert_equal(eapis, [eapi1])
+
+    assert_raises Pkgcraft::Error::PkgcraftError do
+      Pkgcraft::Eapi.range("..9999")
+    end
+  end
+
   def test_has
     assert(!Pkgcraft::Eapi.latest.has("nonexistent_feature"))
     assert(!Pkgcraft::Eapi.EAPIS["0"].has("slot_deps"))

@@ -48,6 +48,21 @@ module Pkgcraft
       raise TypeError.new("unsupported Eapi type: #{obj.class}")
     end
 
+    # Convert an EAPI range into an ordered set of Eapi objects.
+    def self.range(str)
+      length = C::LenPtr.new
+      ptr = C.pkgcraft_eapis_range(str, length)
+      raise Error::PkgcraftError if ptr.null?
+
+      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      eapis = []
+      (0...length[:value]).each do |i|
+        eapi = Eapi.new(c_eapis[i])
+        eapis.append(eapi)
+      end
+      eapis
+    end
+
     # rubocop:disable Naming/MethodName
 
     # Hash of all official EAPIs.
