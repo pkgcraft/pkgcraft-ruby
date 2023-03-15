@@ -4,7 +4,7 @@ module Pkgcraft
   # Error support
   module Error
     # Generic pkgcraft error
-    class Error < StandardError
+    class PkgcraftError < StandardError
       def initialize(msg = nil)
         if msg.nil?
           err = C.pkgcraft_error_last
@@ -18,8 +18,8 @@ module Pkgcraft
       end
     end
 
-    class InvalidCpv < Error; end
-    class InvalidDep < Error; end
-    class InvalidVersion < Error; end
+    class InvalidCpv < PkgcraftError; end
+    class InvalidDep < PkgcraftError; end
+    class InvalidVersion < PkgcraftError; end
   end
 end
