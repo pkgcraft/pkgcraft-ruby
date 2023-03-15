@@ -5,22 +5,8 @@ require "ffi"
 module Pkgcraft
   # FFI bindings for pkgcraft-c
   module C
-    # version requirements for pkgcraft C library
-    MINVER = "0.0.7"
-    MAXVER = "0.0.7"
-
     extend FFI::Library
     ffi_lib ["pkgcraft"]
-
-    # generic library support
-    attach_function :pkgcraft_lib_version, [], :string
-
-    # Version of pkgcraft-c library.
-    def self.version
-      s, ptr = pkgcraft_lib_version
-      C.pkgcraft_str_free(ptr)
-      Gem::Version.new(s)
-    end
 
     # array length pointer for working with array return values
     class LenPtr < FFI::Struct
@@ -97,5 +83,30 @@ module Pkgcraft
     attach_function :pkgcraft_version_str, [:pointer], :strptr
     attach_function :pkgcraft_version_str_with_op, [:pointer], :strptr
     attach_function :pkgcraft_version_with_op, [:string], :pointer
+
+    # Return the pkgcraft-c library version.
+    def self.version
+      attach_function :pkgcraft_lib_version, [], :string
+
+      s, ptr = pkgcraft_lib_version
+      pkgcraft_str_free(ptr)
+      version = Gem::Version.new(s)
+
+      # verify version requirements for pkgcraft C library
+      minver = Gem::Version.new("0.0.7")
+      maxver = Gem::Version.new("0.0.7")
+      if version < minver
+        raise "pkgcraft C library #{version} fails requirement >=#{minver}"
+      elsif version > maxver
+        raise "pkgcraft C library #{version} fails requirement <=#{maxver}"
+      end
+
+      version
+    end
+
+    private_class_method :version
+
+    # Version of the pkgcraft-c library.
+    VERSION = version
   end
 end
