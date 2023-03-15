@@ -46,6 +46,7 @@ module Pkgcraft
 
     # rubocop:disable Naming/MethodName
 
+    # Hash of all official EAPIs.
     def self.EAPIS_OFFICIAL
       if @eapis_official.nil?
         length = C::LenPtr.new
@@ -63,11 +64,7 @@ module Pkgcraft
       @eapis_official
     end
 
-    def self.latest_official
-      self.EAPIS_OFFICIAL if @eapi_latest_official.nil?
-      @eapi_latest_official
-    end
-
+    # Has of all EAPIs.
     def self.EAPIS
       if @eapis.nil?
         length = C::LenPtr.new
@@ -85,11 +82,18 @@ module Pkgcraft
       @eapis
     end
 
+    # rubocop:enable Naming/MethodName
+
+    # Reference to the most recent, official EAPI.
+    def self.latest_official
+      self.EAPIS_OFFICIAL if @eapi_latest_official.nil?
+      @eapi_latest_official
+    end
+
+    # Reference to the most recent EAPI.
     def self.latest
       self.EAPIS if @eapi_latest.nil?
       @eapi_latest
     end
-
-    # rubocop:enable Naming/MethodName
   end
 end
