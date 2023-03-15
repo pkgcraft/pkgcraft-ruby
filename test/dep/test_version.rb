@@ -65,19 +65,12 @@ class TestVersion < Minitest::Test
     end
   end
 
-  # TODO: use shared toml test data
   def test_hash
-    # equal
-    v1 = Version.new("1")
-    v2 = Version.new("1-r0")
-    versions = Set.new([v1, v2])
-    assert_equal(versions.length, 1)
-
-    # unequal
-    v1 = Version.new("1")
-    v2 = Version.new("1.0")
-    versions = Set.new([v1, v2])
-    assert_equal(versions.length, 2)
+    TOML["version"]["hashing"].each do |d|
+      versions = Set.new(d["versions"].map { |s| Version.new(s) }.compact)
+      length = d["equal"] ? 1 : d["versions"].length
+      assert_equal(versions.length, length)
+    end
   end
 end
 
