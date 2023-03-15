@@ -16,4 +16,11 @@ class TestEapi < Minitest::Test
     assert(Pkgcraft::Eapi.EAPIS[eapi_latest.to_s].equal?(eapi_latest))
     assert(!eapi_latest_official.equal?(eapi_latest))
   end
+
+  def test_has
+    assert(!Pkgcraft::Eapi.latest.has("nonexistent_feature"))
+    assert(!Pkgcraft::Eapi.EAPIS["0"].has("slot_deps"))
+    assert(Pkgcraft::Eapi.EAPIS["1"].has("slot_deps"))
+    assert(!Pkgcraft::Eapi.EAPIS["1"].has(nil))
+  end
 end

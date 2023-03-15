@@ -22,8 +22,9 @@ module Pkgcraft
         raise TypeError.new("invalid type: #{obj.class}")
       end
 
-      def has(str)
-        C.pkgcraft_eapi_has(@ptr, str)
+      # Check if an EAPI has a given feature.
+      def has(feature)
+        C.pkgcraft_eapi_has(@ptr, feature.to_s)
       end
 
       def to_s
