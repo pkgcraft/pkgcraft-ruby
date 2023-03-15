@@ -39,4 +39,27 @@ class TestEapi < Minitest::Test
     assert(Pkgcraft::Eapi.EAPIS["1"].has("slot_deps"))
     assert(!Pkgcraft::Eapi.EAPIS["1"].has(nil))
   end
+
+  def test_cmp
+    eapi0 = Pkgcraft::Eapi.EAPIS["0"]
+    eapi1 = Pkgcraft::Eapi.EAPIS["1"]
+    latest = Pkgcraft::Eapi.latest
+    latest_official = Pkgcraft::Eapi.latest_official
+    assert(eapi0 < eapi1)
+    assert(latest_official > eapi1)
+    assert(latest >= latest_official)
+  end
+
+  def test_hash
+    eapi0 = Pkgcraft::Eapi.EAPIS["0"]
+    eapi1 = Pkgcraft::Eapi.EAPIS["1"]
+
+    # equal
+    eapis = Set.new([eapi0, eapi0])
+    assert_equal(eapis.length, 1)
+
+    # unequal
+    eapis = Set.new([eapi0, eapi1])
+    assert_equal(eapis.length, 2)
+  end
 end
