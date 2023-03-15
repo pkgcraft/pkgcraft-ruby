@@ -62,7 +62,7 @@ module Pkgcraft
       @eapis_official
     end
 
-    def self.EAPI_LATEST_OFFICIAL
+    def self.latest_official
       self.EAPIS_OFFICIAL if @eapi_latest_official.nil?
       @eapi_latest_official
     end
@@ -84,7 +84,7 @@ module Pkgcraft
       @eapis
     end
 
-    def self.EAPI_LATEST
+    def self.latest
       self.EAPIS if @eapi_latest.nil?
       @eapi_latest
     end

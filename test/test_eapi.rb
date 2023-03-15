@@ -10,8 +10,8 @@ class TestEapi < Minitest::Test
       assert(eapi.equal?(Pkgcraft::Eapi.EAPIS[id]))
     end
 
-    eapi_latest = Pkgcraft::Eapi.EAPI_LATEST
-    eapi_latest_official = Pkgcraft::Eapi.EAPI_LATEST_OFFICIAL
+    eapi_latest = Pkgcraft::Eapi.latest
+    eapi_latest_official = Pkgcraft::Eapi.latest_official
     assert(Pkgcraft::Eapi.EAPIS[eapi_latest_official.to_s].equal?(eapi_latest_official))
     assert(Pkgcraft::Eapi.EAPIS[eapi_latest.to_s].equal?(eapi_latest))
     assert(!eapi_latest_official.equal?(eapi_latest))
