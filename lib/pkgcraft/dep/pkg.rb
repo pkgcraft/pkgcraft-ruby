@@ -10,7 +10,7 @@ module Pkgcraft
       def initialize(str, eapi = Pkgcraft::Eapi.latest)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
         ptr = C.pkgcraft_dep_new(str, eapi.ptr)
-        raise InvalidDep if ptr.null?
+        raise Error::InvalidDep if ptr.null?
 
         self.ptr = ptr
       end

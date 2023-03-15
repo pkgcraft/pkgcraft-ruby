@@ -20,7 +20,7 @@ module Pkgcraft
 
       def initialize(str)
         ptr = C.pkgcraft_version_new(str)
-        raise InvalidVersion if ptr.null?
+        raise Error::InvalidVersion if ptr.null?
 
         self.ptr = ptr
       end
@@ -83,7 +83,7 @@ module Pkgcraft
     class VersionWithOp < Version
       def initialize(str)
         ptr = C.pkgcraft_version_with_op(str)
-        raise InvalidVersion if ptr.null?
+        raise Error::InvalidVersion if ptr.null?
 
         self.ptr = ptr
       end

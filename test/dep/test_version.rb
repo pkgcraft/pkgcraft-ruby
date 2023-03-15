@@ -19,7 +19,7 @@ class TestVersion < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises Pkgcraft::InvalidVersion do
+    assert_raises Pkgcraft::Error::InvalidVersion do
       Pkgcraft::Dep::Version.new("=1")
     end
   end
@@ -66,7 +66,7 @@ class TestVersionWithOp < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises Pkgcraft::InvalidVersion do
+    assert_raises Pkgcraft::Error::InvalidVersion do
       Pkgcraft::Dep::VersionWithOp.new("1")
     end
   end

@@ -74,13 +74,13 @@ class TestDep < Minitest::Test
 
     # explicitly specifying an official EAPI fails
     ["8", Pkgcraft::Eapi.EAPIS["8"]].each do |eapi|
-      assert_raises Pkgcraft::InvalidDep do
+      assert_raises Pkgcraft::Error::InvalidDep do
         Pkgcraft::Dep::Dep.new("cat/pkg::repo", eapi)
       end
     end
 
     # invalid
-    assert_raises Pkgcraft::InvalidDep do
+    assert_raises Pkgcraft::Error::InvalidDep do
       Pkgcraft::Dep::Dep.new("cat/pkg-1")
     end
   end

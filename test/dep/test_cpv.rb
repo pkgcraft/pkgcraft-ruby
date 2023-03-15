@@ -33,7 +33,7 @@ class TestCpv < Minitest::Test
     assert(cpv1 < cpv2)
 
     # invalid
-    assert_raises Pkgcraft::InvalidCpv do
+    assert_raises Pkgcraft::Error::InvalidCpv do
       Pkgcraft::Dep::Cpv.new("=cat/pkg-1")
     end
   end
