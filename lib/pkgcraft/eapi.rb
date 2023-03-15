@@ -57,10 +57,12 @@ module Pkgcraft
 
       c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
       eapis = []
-      (0...length[:value]).each do |i|
-        eapi = Eapi.new(c_eapis[i])
-        eapis.append(eapi)
+      c_eapis.each do |eapi_ptr|
+        id, c_str = C.pkgcraft_eapi_as_str(eapi_ptr)
+        C.pkgcraft_str_free(c_str)
+        eapis.append(EAPIS[id])
       end
+      C.pkgcraft_eapis_free(ptr, length[:value])
       eapis
     end
 
