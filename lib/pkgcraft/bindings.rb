@@ -85,6 +85,8 @@ module Pkgcraft
     attach_function :pkgcraft_dep_category, [:pointer], :strptr
     attach_function :pkgcraft_dep_package, [:pointer], :strptr
     attach_function :pkgcraft_dep_version, [:pointer], :pointer
+    attach_function :pkgcraft_dep_slot, [:pointer], :strptr
+    attach_function :pkgcraft_dep_subslot, [:pointer], :strptr
     attach_function :pkgcraft_dep_p, [:pointer], :strptr
     attach_function :pkgcraft_dep_pf, [:pointer], :strptr
     attach_function :pkgcraft_dep_pr, [:pointer], :strptr

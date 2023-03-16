@@ -44,6 +44,22 @@ module Pkgcraft
         return version.revision unless version.nil?
       end
 
+      def op
+        return version.op unless version.nil?
+      end
+
+      def slot
+        s, ptr = C.pkgcraft_dep_slot(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def subslot
+        s, ptr = C.pkgcraft_dep_subslot(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
       def p
         s, ptr = C.pkgcraft_dep_p(@ptr)
         C.pkgcraft_str_free(ptr)
