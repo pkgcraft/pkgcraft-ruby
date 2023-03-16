@@ -134,6 +134,17 @@ class TestDep < Minitest::Test
     end
   end
 
+  def test_sort
+    TOML["dep"]["sorting"].each do |d|
+      expected = d["sorted"].map { |s| Dep.new(s) }.compact
+      reversed = expected.reverse
+      ordered = reversed.sort
+      # equal objects aren't sorted so reversing should restore original order
+      ordered = ordered.reverse if d["equal"]
+      assert_equal(ordered, expected)
+    end
+  end
+
   # TODO: use shared toml test data
   def test_hash
     # equal

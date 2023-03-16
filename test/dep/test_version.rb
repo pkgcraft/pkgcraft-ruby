@@ -68,7 +68,7 @@ class TestVersion < Minitest::Test
       expected = d["sorted"].map { |s| Version.new(s) }.compact
       reversed = expected.reverse
       ordered = reversed.sort
-      # equal versions aren't sorted so reversing should restore original order
+      # equal objects aren't sorted so reversing should restore original order
       ordered = ordered.reverse if d["equal"]
       assert_equal(ordered, expected)
     end
