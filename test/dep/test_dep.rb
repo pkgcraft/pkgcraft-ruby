@@ -36,7 +36,6 @@ class TestDep < Minitest::Test
     assert_equal(dep2.cpn, "cat/pkg")
     assert_equal(dep2.cpv, "cat/pkg-2")
     assert_equal(dep2.to_s, "=cat/pkg-2")
-    assert(dep1 < dep2)
 
     # no version
     dep = Dep.new("cat/pkg")
@@ -109,6 +108,22 @@ class TestDep < Minitest::Test
     # invalid type
     assert_raises TypeError do
       dep1.intersects("=cat/pkg-1")
+    end
+  end
+
+  def test_cmp
+    TOML["dep"]["compares"].each do |s|
+      s1, op, s2 = s.split
+      d1 = Dep.new(s1)
+      d2 = Dep.new(s2)
+      assert(d1.public_send(op, d2))
+    end
+
+    TOML["version"]["compares"].each do |s|
+      s1, op, s2 = s.split
+      d1 = Dep.new("=cat/pkg-#{s1}")
+      d2 = Dep.new("=cat/pkg-#{s2}")
+      assert(d1.public_send(op, d2))
     end
   end
 
