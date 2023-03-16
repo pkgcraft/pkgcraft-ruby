@@ -91,6 +91,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_slot, [:pointer], :strptr
     attach_function :pkgcraft_dep_subslot, [:pointer], :strptr
     attach_function :pkgcraft_dep_slot_op, [:pointer], :int
+    attach_function :pkgcraft_dep_slot_op_from_str, [:string], :int
     attach_function :pkgcraft_dep_use_deps, [:pointer, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_dep_repo, [:pointer], :strptr
     attach_function :pkgcraft_dep_p, [:pointer], :strptr

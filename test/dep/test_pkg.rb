@@ -5,6 +5,7 @@ require "set"
 require "test_helper"
 
 class TestDep < Minitest::Test
+  include Pkgcraft
   include Pkgcraft::Dep
   include Pkgcraft::Eapis
   include Pkgcraft::Error
@@ -82,6 +83,73 @@ class TestDep < Minitest::Test
     # invalid
     assert_raises InvalidDep do
       Dep.new("cat/pkg-1")
+    end
+  end
+
+  def test_parse
+    TOML["dep"]["valid"].each do |d|
+      s = d["dep"]
+      passing_eapis = Set.new(Eapis.range(d["eapis"]))
+      EAPIS.each_value do |eapi|
+        if passing_eapis.include?(eapi)
+          dep = Dep.new(s, eapi)
+          assert_equal(d["category"], dep.category)
+          assert_equal(d["package"], dep.package)
+          if d["blocker"].nil?
+            assert_nil(dep.blocker)
+          else
+            assert_equal(Blocker.from_str(d["blocker"]), dep.blocker)
+          end
+          if d["version"].nil?
+            assert_nil(dep.version)
+          else
+            assert_equal(VersionWithOp.new(d["version"]), dep.version)
+          end
+          if d["revision"].nil?
+            assert_nil(dep.revision)
+          else
+            assert_equal(d["revision"], dep.revision)
+          end
+          if d["slot"].nil?
+            assert_nil(dep.slot)
+          else
+            assert_equal(d["slot"], dep.slot)
+          end
+          if d["subslot"].nil?
+            assert_nil(dep.subslot)
+          else
+            assert_equal(d["subslot"], dep.subslot)
+          end
+          if d["slot_op"].nil?
+            assert_nil(dep.slot_op)
+          else
+            assert_equal(SlotOperator.from_str(d["slot_op"]), dep.slot_op)
+          end
+          if d["use"].nil?
+            assert_nil(dep.use)
+          else
+            assert_equal(d["use"], dep.use)
+          end
+          if d["repo"].nil?
+            assert_nil(dep.repo)
+          else
+            assert_equal(d["repo"], dep.repo)
+          end
+          assert_equal(s, dep.to_s)
+        else
+          assert_raises InvalidDep do
+            Dep.new(s, eapi)
+          end
+        end
+      end
+    end
+
+    TOML["dep"]["invalid"].each do |s|
+      EAPIS.each_value do |eapi|
+        assert_raises InvalidDep do
+          Dep.new(s, eapi)
+        end
+      end
     end
   end
 

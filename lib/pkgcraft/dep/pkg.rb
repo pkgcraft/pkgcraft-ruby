@@ -53,7 +53,7 @@ module Pkgcraft
       end
 
       def self.from_str(str)
-        val = C.pkgcraft_dep_blocker_from_str(str)
+        val = C.pkgcraft_dep_slot_op_from_str(str)
         return @enum[val] unless val.zero?
 
         raise "unknown value: #{val}"
@@ -134,7 +134,7 @@ module Pkgcraft
       end
 
       def slot_op
-        val = C.pkgcraft_dep_blocker(@ptr)
+        val = C.pkgcraft_dep_slot_op(@ptr)
         return SlotOperator[val] unless val.zero?
       end
 

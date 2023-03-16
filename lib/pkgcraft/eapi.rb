@@ -7,10 +7,12 @@ module Pkgcraft
     class Eapi
       include Comparable
       attr_reader :ptr
+      attr_reader :hash
 
       # Create a new Eapi object from a given pointer.
       def initialize(ptr)
         @ptr = ptr
+        @hash = C.pkgcraft_eapi_hash(ptr)
         @id, c_str = C.pkgcraft_eapi_as_str(ptr)
         C.pkgcraft_str_free(c_str)
       end
@@ -43,12 +45,6 @@ module Pkgcraft
       end
 
       alias eql? ==
-
-      def hash
-        @_hash = C.pkgcraft_eapi_hash(@ptr) if @_hash.nil?
-
-        @_hash
-      end
     end
 
     # Convert an EAPI range into an ordered set of Eapi objects.
