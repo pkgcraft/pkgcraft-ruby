@@ -4,9 +4,15 @@ module Pkgcraft
   module Dep
     # Package dependency
     class Dep
+      extend FFI::Library
       include Comparable
       include Eapis
       attr_reader :ptr
+
+      Blocker = enum(
+        :Strong, 1,
+        :Weak
+      )
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
@@ -20,6 +26,11 @@ module Pkgcraft
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
+      end
+
+      def blocker
+        b = C.pkgcraft_dep_blocker(@ptr)
+        return Blocker[b] unless b.zero?
       end
 
       def category

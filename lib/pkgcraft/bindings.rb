@@ -82,6 +82,7 @@ module Pkgcraft
     # dep support
     attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_new, [:string, :pointer], :pointer
+    attach_function :pkgcraft_dep_blocker, [:pointer], :int
     attach_function :pkgcraft_dep_category, [:pointer], :strptr
     attach_function :pkgcraft_dep_package, [:pointer], :strptr
     attach_function :pkgcraft_dep_version, [:pointer], :pointer

@@ -54,7 +54,7 @@ class TestDep < Minitest::Test
     dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
     assert_equal("cat", dep.category)
     assert_equal("pkg", dep.package)
-    # assert dep.blocker == Blocker.Strong
+    assert_equal(:Strong, dep.blocker)
     # assert dep.blocker == "!!"
     assert_equal("0", dep.slot)
     assert_equal("2", dep.subslot)
