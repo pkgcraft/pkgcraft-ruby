@@ -4,11 +4,19 @@ source "https://rubygems.org"
 
 gemspec
 
-# test deps
-gem "minitest", "~> 5.0", require: false, group: :test
-gem "rake", "~> 13.0", require: false, group: :test
-gem "toml-rb", "~> 2.2.0", require: false, group: :test
+group :test do
+  gem "minitest", "~> 5.0", require: false
+  gem "rake", "~> 13.0", require: false
+  gem "toml-rb", "~> 2.2.0", require: false
+end
 
-# coverage deps
-gem "simplecov", require: false, group: :dev
-gem "simplecov-cobertura", require: false, group: :dev
+group :development do
+  # lint
+  gem "rubocop", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-rake", require: false
+
+  # coverage
+  gem "simplecov", require: false
+  gem "simplecov-cobertura", require: false
+end

@@ -11,28 +11,28 @@ class TestCpv < Minitest::Test
   def test_new
     # revision
     cpv1 = Cpv.new("cat/pkg-1-r2")
-    assert_equal(cpv1.category, "cat")
-    assert_equal(cpv1.package, "pkg")
+    assert_equal("cat", cpv1.category)
+    assert_equal("pkg", cpv1.package)
     assert_equal(cpv1.version, Version.new("1-r2"))
-    assert_equal(cpv1.revision, "2")
-    assert_equal(cpv1.p, "pkg-1")
-    assert_equal(cpv1.pf, "pkg-1-r2")
-    assert_equal(cpv1.pr, "r2")
-    assert_equal(cpv1.pv, "1")
-    assert_equal(cpv1.pvr, "1-r2")
-    assert_equal(cpv1.cpn, "cat/pkg")
-    assert_equal(cpv1.to_s, "cat/pkg-1-r2")
+    assert_equal("2", cpv1.revision)
+    assert_equal("pkg-1", cpv1.p)
+    assert_equal("pkg-1-r2", cpv1.pf)
+    assert_equal("r2", cpv1.pr)
+    assert_equal("1", cpv1.pv)
+    assert_equal("1-r2", cpv1.pvr)
+    assert_equal("cat/pkg", cpv1.cpn)
+    assert_equal("cat/pkg-1-r2", cpv1.to_s)
 
     # no revision
     cpv2 = Cpv.new("cat/pkg-2")
     assert_nil(cpv2.revision)
-    assert_equal(cpv2.p, "pkg-2")
-    assert_equal(cpv2.pf, "pkg-2")
-    assert_equal(cpv2.pr, "r0")
-    assert_equal(cpv2.pv, "2")
-    assert_equal(cpv2.pvr, "2")
-    assert_equal(cpv2.cpn, "cat/pkg")
-    assert_equal(cpv2.to_s, "cat/pkg-2")
+    assert_equal("pkg-2", cpv2.p)
+    assert_equal("pkg-2", cpv2.pf)
+    assert_equal("r0", cpv2.pr)
+    assert_equal("2", cpv2.pv)
+    assert_equal("2", cpv2.pvr)
+    assert_equal("cat/pkg", cpv2.cpn)
+    assert_equal("cat/pkg-2", cpv2.to_s)
     assert(cpv1 < cpv2)
 
     # invalid
@@ -56,7 +56,7 @@ class TestCpv < Minitest::Test
     # unequal
     cpv1 = Cpv.new("cat/pkg-1")
     cpv2 = Cpv.new("cat/pkg-1.0")
-    assert(!cpv1.intersects(cpv2))
+    refute(cpv1.intersects(cpv2))
 
     # invalid type
     assert_raises TypeError do
@@ -70,12 +70,12 @@ class TestCpv < Minitest::Test
     cpv1 = Cpv.new("cat/pkg-1")
     cpv2 = Cpv.new("cat/pkg-1-r0")
     cpvs = Set.new([cpv1, cpv2])
-    assert_equal(cpvs.length, 1)
+    assert_equal(1, cpvs.length)
 
     # unequal
     cpv1 = Cpv.new("cat/pkg-1")
     cpv2 = Cpv.new("cat/pkg-1.0")
     cpvs = Set.new([cpv1, cpv2])
-    assert_equal(cpvs.length, 2)
+    assert_equal(2, cpvs.length)
   end
 end

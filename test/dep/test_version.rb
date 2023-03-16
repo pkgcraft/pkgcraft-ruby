@@ -12,11 +12,11 @@ class TestVersion < Minitest::Test
     # valid
     v1 = Version.new("1")
     assert_nil(v1.revision)
-    assert_equal(v1.to_s, "1")
+    assert_equal("1", v1.to_s)
     v1 = Version.new("1-r2")
     assert_nil(v1.op)
-    assert_equal(v1.revision, "2")
-    assert_equal(v1.to_s, "1-r2")
+    assert_equal("2", v1.revision)
+    assert_equal("1-r2", v1.to_s)
 
     v2 = Version.new("2")
     assert(v1 < v2)
@@ -48,7 +48,7 @@ class TestVersion < Minitest::Test
         if d["status"]
           assert(v1.intersects(v2))
         else
-          assert(!v1.intersects(v2))
+          refute(v1.intersects(v2))
         end
       end
     end
@@ -90,12 +90,12 @@ class TestVersionWithOp < Minitest::Test
   def test_new
     # valid
     v1 = VersionWithOp.new(">1")
-    assert_equal(v1.op, :Greater)
+    assert_equal(:Greater, v1.op)
     assert_nil(v1.revision)
-    assert_equal(v1.to_s, ">1")
+    assert_equal(">1", v1.to_s)
 
     v2 = VersionWithOp.new("=2")
-    assert_equal(v2.op, :Equal)
+    assert_equal(:Equal, v2.op)
     assert(v1 < v2)
 
     # invalid

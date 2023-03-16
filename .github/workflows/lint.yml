@@ -32,9 +32,10 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.2
+        bundler-cache: true
 
-    - name: Install RuboCop
-      run: gem install rubocop
+    - name: Install dependencies
+      run: bundle install
 
     - name: Lint code
-      run: rubocop
+      run: bundle exec rake rubocop

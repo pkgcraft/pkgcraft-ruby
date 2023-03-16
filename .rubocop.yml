@@ -1,8 +1,16 @@
+require:
+  - rubocop-minitest
+  - rubocop-rake
+
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.0
+  SuggestExtensions: false
 
 Metrics:
+  Enabled: false
+
+Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
 
 Lint/MissingSuper:

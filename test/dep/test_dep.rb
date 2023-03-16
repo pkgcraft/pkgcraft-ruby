@@ -12,48 +12,48 @@ class TestDep < Minitest::Test
   def test_new
     # revision
     dep1 = Dep.new("=cat/pkg-1-r2")
-    assert_equal(dep1.category, "cat")
-    assert_equal(dep1.package, "pkg")
+    assert_equal("cat", dep1.category)
+    assert_equal("pkg", dep1.package)
     assert_equal(dep1.version, VersionWithOp.new("=1-r2"))
-    assert_equal(dep1.revision, "2")
-    assert_equal(dep1.p, "pkg-1")
-    assert_equal(dep1.pf, "pkg-1-r2")
-    assert_equal(dep1.pr, "r2")
-    assert_equal(dep1.pv, "1")
-    assert_equal(dep1.pvr, "1-r2")
-    assert_equal(dep1.cpn, "cat/pkg")
-    assert_equal(dep1.cpv, "cat/pkg-1-r2")
-    assert_equal(dep1.to_s, "=cat/pkg-1-r2")
+    assert_equal("2", dep1.revision)
+    assert_equal("pkg-1", dep1.p)
+    assert_equal("pkg-1-r2", dep1.pf)
+    assert_equal("r2", dep1.pr)
+    assert_equal("1", dep1.pv)
+    assert_equal("1-r2", dep1.pvr)
+    assert_equal("cat/pkg", dep1.cpn)
+    assert_equal("cat/pkg-1-r2", dep1.cpv)
+    assert_equal("=cat/pkg-1-r2", dep1.to_s)
 
     # no revision
     dep2 = Dep.new("=cat/pkg-2")
     assert_nil(dep2.revision)
-    assert_equal(dep2.p, "pkg-2")
-    assert_equal(dep2.pf, "pkg-2")
-    assert_equal(dep2.pr, "r0")
-    assert_equal(dep2.pv, "2")
-    assert_equal(dep2.pvr, "2")
-    assert_equal(dep2.cpn, "cat/pkg")
-    assert_equal(dep2.cpv, "cat/pkg-2")
-    assert_equal(dep2.to_s, "=cat/pkg-2")
+    assert_equal("pkg-2", dep2.p)
+    assert_equal("pkg-2", dep2.pf)
+    assert_equal("r0", dep2.pr)
+    assert_equal("2", dep2.pv)
+    assert_equal("2", dep2.pvr)
+    assert_equal("cat/pkg", dep2.cpn)
+    assert_equal("cat/pkg-2", dep2.cpv)
+    assert_equal("=cat/pkg-2", dep2.to_s)
 
     # no version
     dep = Dep.new("cat/pkg")
     assert_nil(dep.version)
     assert_nil(dep.revision)
-    assert_equal(dep.p, "pkg")
-    assert_equal(dep.pf, "pkg")
+    assert_equal("pkg", dep.p)
+    assert_equal("pkg", dep.pf)
     assert_nil(dep.pr)
     assert_nil(dep.pv)
     assert_nil(dep.pvr)
-    assert_equal(dep.cpn, "cat/pkg")
-    assert_equal(dep.cpv, "cat/pkg")
-    assert_equal(dep.to_s, "cat/pkg")
+    assert_equal("cat/pkg", dep.cpn)
+    assert_equal("cat/pkg", dep.cpv)
+    assert_equal("cat/pkg", dep.to_s)
 
     # all fields -- extended EAPI default allows repo deps
     dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
-    assert dep.category == "cat"
-    assert dep.package == "pkg"
+    assert_equal("cat", dep.category)
+    assert_equal("pkg", dep.package)
     # assert dep.blocker == Blocker.Strong
     # assert dep.blocker == "!!"
     # assert dep.slot == "0"
@@ -62,18 +62,18 @@ class TestDep < Minitest::Test
     # assert dep.slot_op == "="
     # assert dep.use == ("a", "b", "c")
     # assert dep.repo == "repo"
-    assert dep.version == VersionWithOp.new(">=1-r2")
+    assert_equal dep.version, VersionWithOp.new(">=1-r2")
     # assert dep.op == Operator.GreaterOrEqual
     # assert dep.op == ">="
-    assert dep.revision == "2"
-    assert dep.p == "pkg-1"
-    assert dep.pf == "pkg-1-r2"
-    assert dep.pr == "r2"
-    assert dep.pv == "1"
-    assert dep.pvr == "1-r2"
-    assert dep.cpn == "cat/pkg"
-    assert dep.cpv == "cat/pkg-1-r2"
-    assert dep.to_s == "!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo"
+    assert_equal("2", dep.revision)
+    assert_equal("pkg-1", dep.p)
+    assert_equal("pkg-1-r2", dep.pf)
+    assert_equal("r2", dep.pr)
+    assert_equal("1", dep.pv)
+    assert_equal("1-r2", dep.pvr)
+    assert_equal("cat/pkg", dep.cpn)
+    assert_equal("cat/pkg-1-r2", dep.cpv)
+    assert_equal("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo", dep.to_s)
 
     # explicitly specifying an official EAPI fails
     ["8", EAPI8].each do |eapi|
@@ -103,7 +103,7 @@ class TestDep < Minitest::Test
     # unequal
     dep1 = Dep.new("=cat/pkg-1")
     dep2 = Dep.new("=cat/pkg-1.0")
-    assert(!dep1.intersects(dep2))
+    refute(dep1.intersects(dep2))
 
     # invalid type
     assert_raises TypeError do
@@ -133,12 +133,12 @@ class TestDep < Minitest::Test
     dep1 = Dep.new("=cat/pkg-1")
     dep2 = Dep.new("=cat/pkg-1-r0")
     deps = Set.new([dep1, dep2])
-    assert_equal(deps.length, 1)
+    assert_equal(1, deps.length)
 
     # unequal
     dep1 = Dep.new("=cat/pkg-1")
     dep2 = Dep.new("=cat/pkg-1.0")
     deps = Set.new([dep1, dep2])
-    assert_equal(deps.length, 2)
+    assert_equal(2, deps.length)
   end
 end

@@ -11,19 +11,19 @@ class TestEapi < Minitest::Test
     # verify objects are shared between EAPIS_OFFICIAL and EAPIS
     assert(EAPIS.length > EAPIS_OFFICIAL.length)
     EAPIS_OFFICIAL.each do |id, eapi|
-      assert(eapi.equal?(EAPIS[id]))
+      assert_same(eapi, EAPIS[id])
     end
 
     eapi_latest = EAPI_LATEST
     eapi_latest_official = EAPI_LATEST_OFFICIAL
-    assert(EAPIS[eapi_latest_official.to_s].equal?(eapi_latest_official))
-    assert(EAPIS[eapi_latest.to_s].equal?(eapi_latest))
-    assert(!eapi_latest_official.equal?(eapi_latest))
+    assert_same(EAPIS[eapi_latest_official.to_s], eapi_latest_official)
+    assert_same(EAPIS[eapi_latest.to_s], eapi_latest)
+    refute_same(eapi_latest_official, eapi_latest)
   end
 
   def test_from_obj
-    assert(Eapi.from_obj(EAPI0).equal?(EAPI0))
-    assert(Eapi.from_obj("0").equal?(EAPI0))
+    assert_same(Eapi.from_obj(EAPI0), EAPI0)
+    assert_same(Eapi.from_obj("0"), EAPI0)
 
     # unknown
     assert_raises RuntimeError do
@@ -52,10 +52,10 @@ class TestEapi < Minitest::Test
   end
 
   def test_has
-    assert(!EAPI_LATEST.has("nonexistent_feature"))
-    assert(!EAPI0.has("slot_deps"))
+    refute(EAPI_LATEST.has("nonexistent_feature"))
+    refute(EAPI0.has("slot_deps"))
     assert(EAPI1.has("slot_deps"))
-    assert(!EAPI1.has(nil))
+    refute(EAPI1.has(nil))
   end
 
   def test_cmp
@@ -69,10 +69,10 @@ class TestEapi < Minitest::Test
   def test_hash
     # equal
     eapis = Set.new([EAPI0, EAPI0])
-    assert_equal(eapis.length, 1)
+    assert_equal(1, eapis.length)
 
     # unequal
     eapis = Set.new([EAPI0, EAPI1])
-    assert_equal(eapis.length, 2)
+    assert_equal(2, eapis.length)
   end
 end
