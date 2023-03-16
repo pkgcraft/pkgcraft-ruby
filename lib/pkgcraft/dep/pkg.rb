@@ -41,9 +41,7 @@ module Pkgcraft
       end
 
       def revision
-        return if version.nil?
-
-        version.revision
+        return version.revision unless version.nil?
       end
 
       def p
