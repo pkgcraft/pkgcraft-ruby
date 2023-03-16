@@ -145,18 +145,11 @@ class TestDep < Minitest::Test
     end
   end
 
-  # TODO: use shared toml test data
   def test_hash
-    # equal
-    dep1 = Dep.new("=cat/pkg-1")
-    dep2 = Dep.new("=cat/pkg-1-r0")
-    deps = Set.new([dep1, dep2])
-    assert_equal(1, deps.length)
-
-    # unequal
-    dep1 = Dep.new("=cat/pkg-1")
-    dep2 = Dep.new("=cat/pkg-1.0")
-    deps = Set.new([dep1, dep2])
-    assert_equal(2, deps.length)
+    TOML["version"]["hashing"].each do |d|
+      deps = Set.new(d["versions"].map { |s| Dep.new("=cat/pkg-#{s}") }.compact)
+      length = d["equal"] ? 1 : d["versions"].length
+      assert_equal(deps.length, length)
+    end
   end
 end
