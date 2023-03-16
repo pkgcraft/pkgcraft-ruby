@@ -81,8 +81,10 @@ class TestDep < Minitest::Test
     end
 
     # invalid
-    assert_raises InvalidDep do
-      Dep.new("cat/pkg-1")
+    ["cat/pkg-1", "", nil].each do |s|
+      assert_raises InvalidDep do
+        Dep.new(s)
+      end
     end
   end
 

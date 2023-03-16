@@ -8,7 +8,7 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(str)
-        ptr = C.pkgcraft_cpv_new(str)
+        ptr = C.pkgcraft_cpv_new(str.to_s)
         raise Error::InvalidCpv if ptr.null?
 
         self.ptr = ptr

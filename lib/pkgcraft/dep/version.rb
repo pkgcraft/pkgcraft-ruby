@@ -47,7 +47,7 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(str)
-        ptr = C.pkgcraft_version_new(str)
+        ptr = C.pkgcraft_version_new(str.to_s)
         raise Error::InvalidVersion if ptr.null?
 
         self.ptr = ptr
@@ -110,7 +110,7 @@ module Pkgcraft
     # Package version with an operator
     class VersionWithOp < Version
       def initialize(str)
-        ptr = C.pkgcraft_version_with_op(str)
+        ptr = C.pkgcraft_version_with_op(str.to_s)
         raise Error::InvalidVersion if ptr.null?
 
         self.ptr = ptr

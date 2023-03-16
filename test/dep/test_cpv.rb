@@ -36,8 +36,10 @@ class TestCpv < Minitest::Test
     assert(cpv1 < cpv2)
 
     # invalid
-    assert_raises InvalidCpv do
-      Cpv.new("=cat/pkg-1")
+    ["=cat/pkg-1", "", nil].each do |s|
+      assert_raises InvalidCpv do
+        Cpv.new(s)
+      end
     end
   end
 

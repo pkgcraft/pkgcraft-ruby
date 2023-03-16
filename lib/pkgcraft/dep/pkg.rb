@@ -78,7 +78,7 @@ module Pkgcraft
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
-        ptr = C.pkgcraft_dep_new(str, eapi.ptr)
+        ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
         raise Error::InvalidDep if ptr.null?
 
         self.ptr = ptr

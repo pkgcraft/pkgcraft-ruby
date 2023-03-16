@@ -22,8 +22,10 @@ class TestVersion < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises InvalidVersion do
-      Version.new("=1")
+    ["=1", "", nil].each do |s|
+      assert_raises InvalidVersion do
+        Version.new(s)
+      end
     end
   end
 
@@ -99,8 +101,10 @@ class TestVersionWithOp < Minitest::Test
     assert(v1 < v2)
 
     # invalid
-    assert_raises InvalidVersion do
-      VersionWithOp.new("1")
+    ["1", "", nil].each do |s|
+      assert_raises InvalidVersion do
+        VersionWithOp.new(s)
+      end
     end
   end
 end
