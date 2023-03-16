@@ -85,29 +85,6 @@ class TestDep < Minitest::Test
     end
   end
 
-  # TODO: use shared toml test data
-  def test_intersects
-    # equal
-    dep1 = Dep.new("=cat/pkg-1")
-    dep2 = Dep.new("=cat/pkg-1-r0")
-    assert(dep1.intersects(dep2))
-
-    # cpv
-    dep = Dep.new("=cat/pkg-1-r0")
-    cpv = Cpv.new("cat/pkg-1")
-    assert(dep.intersects(cpv))
-
-    # unequal
-    dep1 = Dep.new("=cat/pkg-1")
-    dep2 = Dep.new("=cat/pkg-1.0")
-    refute(dep1.intersects(dep2))
-
-    # invalid type
-    assert_raises TypeError do
-      dep1.intersects("=cat/pkg-1")
-    end
-  end
-
   def test_cmp
     TOML["dep"]["compares"].each do |s|
       s1, op, s2 = s.split
@@ -121,6 +98,39 @@ class TestDep < Minitest::Test
       d1 = Dep.new("=cat/pkg-#{s1}")
       d2 = Dep.new("=cat/pkg-#{s2}")
       assert(d1.public_send(op, d2))
+    end
+  end
+
+  # Convert string to Dep falling back to Cpv.
+  def parse(str)
+    Dep.new(str)
+  rescue InvalidDep
+    Cpv.new(str)
+  end
+
+  def test_intersects
+    TOML["dep"]["intersects"].each do |d|
+      d["vals"].combination(2).each do |s1, s2|
+        obj1 = parse(s1)
+        obj2 = parse(s2)
+
+        # elements intersect themselves
+        assert(obj1.intersects(obj1))
+        assert(obj2.intersects(obj2))
+
+        # intersects depending on status
+        if d["status"]
+          assert(obj1.intersects(obj2))
+        else
+          refute(obj1.intersects(obj2))
+        end
+      end
+    end
+
+    # invalid type
+    dep = Dep.new("=cat/pkg-1")
+    assert_raises TypeError do
+      dep.intersects("=cat/pkg-1")
     end
   end
 

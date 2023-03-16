@@ -37,18 +37,18 @@ class TestVersion < Minitest::Test
   def test_intersects
     TOML["version"]["intersects"].each do |d|
       d["vals"].combination(2).each do |s1, s2|
-        v1 = parse(s1)
-        v2 = parse(s2)
+        obj1 = parse(s1)
+        obj2 = parse(s2)
 
         # elements intersect themselves
-        assert(v1.intersects(v1))
-        assert(v2.intersects(v2))
+        assert(obj1.intersects(obj1))
+        assert(obj2.intersects(obj2))
 
         # intersects depending on status
         if d["status"]
-          assert(v1.intersects(v2))
+          assert(obj1.intersects(obj2))
         else
-          refute(v1.intersects(v2))
+          refute(obj1.intersects(obj2))
         end
       end
     end
