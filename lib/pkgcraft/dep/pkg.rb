@@ -2,17 +2,79 @@
 
 module Pkgcraft
   module Dep
-    # Package dependency
-    class Dep
+    # Dependency blocker
+    class Blocker
       extend FFI::Library
-      include Comparable
-      include Eapis
-      attr_reader :ptr
 
-      Blocker = enum(
+      @enum = enum(
         :Strong, 1,
         :Weak
       )
+
+      def self.[](val)
+        val = @enum[val]
+        return val unless val.nil?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.from_str(str)
+        val = C.pkgcraft_dep_blocker_from_str(str)
+        return @enum[val] unless val.zero?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.const_missing(symbol)
+        # look up symbol as an enum
+        value = enum_value(symbol)
+
+        # if nonexistent, raise an exception via the default behavior
+        return super unless value
+
+        @enum[value]
+      end
+    end
+
+    # Slot operator
+    class SlotOperator
+      extend FFI::Library
+
+      @enum = enum(
+        :Equal, 1,
+        :Star
+      )
+
+      def self.[](val)
+        val = @enum[val]
+        return val unless val.nil?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.from_str(str)
+        val = C.pkgcraft_dep_blocker_from_str(str)
+        return @enum[val] unless val.zero?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.const_missing(symbol)
+        # look up symbol as an enum
+        value = enum_value(symbol)
+
+        # if nonexistent, raise an exception via the default behavior
+        return super unless value
+
+        @enum[value]
+      end
+    end
+
+    # Package dependency
+    class Dep
+      include Comparable
+      include Eapis
+      attr_reader :ptr
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
@@ -29,8 +91,8 @@ module Pkgcraft
       end
 
       def blocker
-        b = C.pkgcraft_dep_blocker(@ptr)
-        return Blocker[b] unless b.zero?
+        val = C.pkgcraft_dep_blocker(@ptr)
+        return Blocker[val] unless val.zero?
       end
 
       def category
@@ -67,6 +129,17 @@ module Pkgcraft
 
       def subslot
         s, ptr = C.pkgcraft_dep_subslot(@ptr)
+        C.pkgcraft_str_free(ptr)
+        s
+      end
+
+      def slot_op
+        val = C.pkgcraft_dep_blocker(@ptr)
+        return SlotOperator[val] unless val.zero?
+      end
+
+      def repo
+        s, ptr = C.pkgcraft_dep_repo(@ptr)
         C.pkgcraft_str_free(ptr)
         s
       end

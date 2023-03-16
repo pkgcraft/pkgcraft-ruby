@@ -2,13 +2,11 @@
 
 module Pkgcraft
   module Dep
-    # Package version
-    class Version
+    # Version operator
+    class Operator
       extend FFI::Library
-      include Comparable
-      attr_reader :ptr
 
-      Operator = enum(
+      @enum = enum(
         :Less, 1,
         :LessOrEqual,
         :Equal,
@@ -17,6 +15,36 @@ module Pkgcraft
         :GreaterOrEqual,
         :Greater
       )
+
+      def self.[](val)
+        val = @enum[val]
+        return val unless val.nil?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.from_str(str)
+        val = C.pkgcraft_version_op_from_str(str)
+        return @enum[val] unless val.zero?
+
+        raise "unknown value: #{val}"
+      end
+
+      def self.const_missing(symbol)
+        # look up symbol as an enum
+        value = enum_value(symbol)
+
+        # if nonexistent, raise an exception via the default behavior
+        return super unless value
+
+        @enum[value]
+      end
+    end
+
+    # Package version
+    class Version
+      include Comparable
+      attr_reader :ptr
 
       def initialize(str)
         ptr = C.pkgcraft_version_new(str)

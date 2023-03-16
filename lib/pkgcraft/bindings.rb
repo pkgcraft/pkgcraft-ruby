@@ -83,11 +83,14 @@ module Pkgcraft
     attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_new, [:string, :pointer], :pointer
     attach_function :pkgcraft_dep_blocker, [:pointer], :int
+    attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
     attach_function :pkgcraft_dep_category, [:pointer], :strptr
     attach_function :pkgcraft_dep_package, [:pointer], :strptr
     attach_function :pkgcraft_dep_version, [:pointer], :pointer
     attach_function :pkgcraft_dep_slot, [:pointer], :strptr
     attach_function :pkgcraft_dep_subslot, [:pointer], :strptr
+    attach_function :pkgcraft_dep_slot_op, [:pointer], :int
+    attach_function :pkgcraft_dep_repo, [:pointer], :strptr
     attach_function :pkgcraft_dep_p, [:pointer], :strptr
     attach_function :pkgcraft_dep_pf, [:pointer], :strptr
     attach_function :pkgcraft_dep_pr, [:pointer], :strptr
@@ -109,6 +112,7 @@ module Pkgcraft
     attach_function :pkgcraft_version_intersects, [:pointer, :pointer], :bool
     attach_function :pkgcraft_version_revision, [:pointer], :strptr
     attach_function :pkgcraft_version_op, [:pointer], :int
+    attach_function :pkgcraft_version_op_from_str, [:string], :int
     attach_function :pkgcraft_version_str, [:pointer], :strptr
     attach_function :pkgcraft_version_str_with_op, [:pointer], :strptr
     attach_function :pkgcraft_version_with_op, [:string], :pointer

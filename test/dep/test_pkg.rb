@@ -54,17 +54,14 @@ class TestDep < Minitest::Test
     dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
     assert_equal("cat", dep.category)
     assert_equal("pkg", dep.package)
-    assert_equal(:Strong, dep.blocker)
-    # assert dep.blocker == "!!"
+    assert_equal(Blocker::Strong, dep.blocker)
     assert_equal("0", dep.slot)
     assert_equal("2", dep.subslot)
-    # assert dep.slot_op == SlotOperator.Equal
-    # assert dep.slot_op == "="
+    assert_equal(SlotOperator::Equal, dep.slot_op)
     # assert dep.use == ("a", "b", "c")
-    # assert dep.repo == "repo"
-    assert_equal dep.version, VersionWithOp.new(">=1-r2")
-    assert_equal(:GreaterOrEqual, dep.op)
-    # assert_equal(">=", dep.op)
+    assert_equal("repo", dep.repo)
+    assert_equal(dep.version, VersionWithOp.new(">=1-r2"))
+    assert_equal(Operator::GreaterOrEqual, dep.op)
     assert_equal("2", dep.revision)
     assert_equal("pkg-1", dep.p)
     assert_equal("pkg-1-r2", dep.pf)
