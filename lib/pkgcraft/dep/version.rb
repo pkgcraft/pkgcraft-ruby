@@ -24,7 +24,7 @@ module Pkgcraft
       end
 
       def self.from_str(str)
-        val = C.pkgcraft_version_op_from_str(str)
+        val = C.pkgcraft_version_op_from_str(str.to_s)
         return @enum[val] unless val.zero?
 
         raise "unknown value: #{val}"

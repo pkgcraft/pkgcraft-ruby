@@ -50,7 +50,7 @@ module Pkgcraft
     # Convert an EAPI range into an ordered set of Eapi objects.
     def self.range(str)
       length = C::LenPtr.new
-      ptr = C.pkgcraft_eapis_range(str, length)
+      ptr = C.pkgcraft_eapis_range(str.to_s, length)
       raise Error::PkgcraftError if ptr.null?
 
       c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
