@@ -53,7 +53,8 @@ module Pkgcraft
         self.ptr = ptr
       end
 
-      def self.from_ptr(ptr)
+      # Create a Version from a pointer.
+      def self._from_ptr(ptr)
         return if ptr.null?
 
         obj = allocate

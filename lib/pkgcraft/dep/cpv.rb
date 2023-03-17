@@ -14,7 +14,8 @@ module Pkgcraft
         self.ptr = ptr
       end
 
-      def self.from_ptr(ptr)
+      # Create a Cpv from a pointer.
+      def self._from_ptr(ptr)
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
@@ -33,7 +34,7 @@ module Pkgcraft
       end
 
       def version
-        @_version = Version.from_ptr(C.pkgcraft_cpv_version(@ptr)) if @_version.nil?
+        @_version = Version._from_ptr(C.pkgcraft_cpv_version(@ptr)) if @_version.nil?
 
         @_version
       end
