@@ -88,6 +88,14 @@ class TestDep < Minitest::Test
     end
   end
 
+  def optional_value(expected, value)
+    if expected.nil?
+      assert_nil(value)
+    else
+      assert_equal(expected, value)
+    end
+  end
+
   def test_parse
     TOML["dep"]["valid"].each do |d|
       s = d["dep"]
@@ -107,36 +115,16 @@ class TestDep < Minitest::Test
           else
             assert_equal(VersionWithOp.new(d["version"]), dep.version)
           end
-          if d["revision"].nil?
-            assert_nil(dep.revision)
-          else
-            assert_equal(d["revision"], dep.revision)
-          end
-          if d["slot"].nil?
-            assert_nil(dep.slot)
-          else
-            assert_equal(d["slot"], dep.slot)
-          end
-          if d["subslot"].nil?
-            assert_nil(dep.subslot)
-          else
-            assert_equal(d["subslot"], dep.subslot)
-          end
+          optional_value(d["revision"], dep.revision)
+          optional_value(d["slot"], dep.slot)
+          optional_value(d["subslot"], dep.subslot)
           if d["slot_op"].nil?
             assert_nil(dep.slot_op)
           else
             assert_equal(SlotOperator.from_str(d["slot_op"]), dep.slot_op)
           end
-          if d["use"].nil?
-            assert_nil(dep.use)
-          else
-            assert_equal(d["use"], dep.use)
-          end
-          if d["repo"].nil?
-            assert_nil(dep.repo)
-          else
-            assert_equal(d["repo"], dep.repo)
-          end
+          optional_value(d["use"], dep.use)
+          optional_value(d["repo"], dep.repo)
           assert_equal(s, dep.to_s)
         else
           assert_raises InvalidDep do
