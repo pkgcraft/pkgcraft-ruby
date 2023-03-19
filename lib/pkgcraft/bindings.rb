@@ -3,7 +3,7 @@
 require "ffi"
 
 module Pkgcraft
-  # FFI bindings for pkgcraft-c
+  # FFI bindings for pkgcraft
   module C
     # version requirements for pkgcraft-c
     MINVER = "0.0.7"

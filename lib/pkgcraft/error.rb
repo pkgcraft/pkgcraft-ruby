@@ -8,7 +8,7 @@ module Pkgcraft
       def initialize(msg = nil)
         if msg.nil?
           err = C.pkgcraft_error_last
-          raise "no pkgcraft-c error occurred" if err.null?
+          raise "no pkgcraft error occurred" if err.null?
 
           msg = err[:message]
           C.pkgcraft_error_free(err)
