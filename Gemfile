@@ -11,6 +11,9 @@ group :test do
 end
 
 group :development do
+  # benchmark
+  gem "benchmark-ips", require: false
+
   # lint
   gem "rubocop", require: false
   gem "rubocop-minitest", require: false

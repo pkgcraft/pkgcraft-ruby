@@ -20,4 +20,9 @@ rescue LoadError
   # rubocop task disabled
 end
 
+desc "Run benchmarks"
+task :bench do
+  Dir.glob("benches/**/*.rb").each { |file| system("ruby #{file}") }
+end
+
 task default: [:test]
