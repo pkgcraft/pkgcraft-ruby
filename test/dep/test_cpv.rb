@@ -63,6 +63,16 @@ class TestCpv < Minitest::Test
         refute(cpv1.intersects(cpv2))
       end
     end
+
+    # dep
+    cpv = Cpv.new("cat/pkg-1")
+    dep = Dep.new("=cat/pkg-1-r0")
+    assert(cpv.intersects(dep))
+
+    # invalid type
+    assert_raises TypeError do
+      cpv.intersects("cat/pkg-1")
+    end
   end
 
   def test_hash
