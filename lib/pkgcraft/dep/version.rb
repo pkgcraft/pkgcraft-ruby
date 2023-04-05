@@ -97,7 +97,6 @@ module Pkgcraft
 
       def hash
         @_hash = C.pkgcraft_version_hash(@ptr) if @_hash.nil?
-
         @_hash
       end
 

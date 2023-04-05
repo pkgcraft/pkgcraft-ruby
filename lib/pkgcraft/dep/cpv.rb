@@ -22,20 +22,19 @@ module Pkgcraft
       end
 
       def category
-        s, ptr = C.pkgcraft_cpv_category(@ptr)
+        @_category, ptr = C.pkgcraft_cpv_category(@ptr) if @_category.nil?
         C.pkgcraft_str_free(ptr)
-        s
+        @_category
       end
 
       def package
-        s, ptr = C.pkgcraft_cpv_package(@ptr)
+        @_package, ptr = C.pkgcraft_cpv_package(@ptr) if @_package.nil?
         C.pkgcraft_str_free(ptr)
-        s
+        @_package
       end
 
       def version
         @_version = Version._from_ptr(C.pkgcraft_cpv_version(@ptr)) if @_version.nil?
-
         @_version
       end
 
@@ -101,7 +100,6 @@ module Pkgcraft
 
       def hash
         @_hash = C.pkgcraft_cpv_hash(@ptr) if @_hash.nil?
-
         @_hash
       end
 
