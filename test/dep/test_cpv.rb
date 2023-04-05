@@ -43,6 +43,15 @@ class TestCpv < Minitest::Test
     end
   end
 
+  def test_cmp
+    TOML["version"]["compares"].each do |s|
+      s1, op, s2 = s.split
+      cpv1 = Cpv.new("cat/pkg-#{s1}")
+      cpv2 = Cpv.new("cat/pkg-#{s2}")
+      assert(cpv1.public_send(op, cpv2))
+    end
+  end
+
   # TODO: use shared toml test data
   def test_intersects
     # equal
