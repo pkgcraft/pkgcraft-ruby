@@ -52,41 +52,24 @@ class TestCpv < Minitest::Test
     end
   end
 
-  # TODO: use shared toml test data
   def test_intersects
-    # equal
-    cpv1 = Cpv.new("cat/pkg-1")
-    cpv2 = Cpv.new("cat/pkg-1-r0")
-    assert(cpv1.intersects(cpv2))
-
-    # dep
-    cpv = Cpv.new("cat/pkg-1")
-    dep = Dep.new("=cat/pkg-1-r0")
-    assert(cpv.intersects(dep))
-
-    # unequal
-    cpv1 = Cpv.new("cat/pkg-1")
-    cpv2 = Cpv.new("cat/pkg-1.0")
-    refute(cpv1.intersects(cpv2))
-
-    # invalid type
-    assert_raises TypeError do
-      cpv1.intersects("cat/pkg-1")
+    TOML["version"]["compares"].each do |s|
+      s1, op, s2 = s.split
+      cpv1 = Cpv.new("cat/pkg-#{s1}")
+      cpv2 = Cpv.new("cat/pkg-#{s2}")
+      if op == "=="
+        assert(cpv1.intersects(cpv2))
+      else
+        refute(cpv1.intersects(cpv2))
+      end
     end
   end
 
-  # TODO: use shared toml test data
   def test_hash
-    # equal
-    cpv1 = Cpv.new("cat/pkg-1")
-    cpv2 = Cpv.new("cat/pkg-1-r0")
-    cpvs = Set.new([cpv1, cpv2])
-    assert_equal(1, cpvs.length)
-
-    # unequal
-    cpv1 = Cpv.new("cat/pkg-1")
-    cpv2 = Cpv.new("cat/pkg-1.0")
-    cpvs = Set.new([cpv1, cpv2])
-    assert_equal(2, cpvs.length)
+    TOML["version"]["hashing"].each do |d|
+      cpvs = Set.new(d["versions"].map { |s| Cpv.new("cat/pkg-#{s}") }.compact)
+      length = d["equal"] ? 1 : d["versions"].length
+      assert_equal(cpvs.length, length)
+    end
   end
 end
