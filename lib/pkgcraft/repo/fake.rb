@@ -3,7 +3,7 @@
 module Pkgcraft
   module Repo
     # Fake package repo.
-    class Fake < Base
+    class Fake < Repo
     end
   end
 end

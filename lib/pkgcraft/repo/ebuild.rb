@@ -3,7 +3,7 @@
 module Pkgcraft
   module Repo
     # Ebuild package repo.
-    class Ebuild < Base
+    class Ebuild < Repo
     end
   end
 end

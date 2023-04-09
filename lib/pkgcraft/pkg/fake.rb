@@ -3,7 +3,7 @@
 module Pkgcraft
   module Pkg
     # Fake package.
-    class Fake < Base
+    class Fake < Pkg
     end
   end
 end

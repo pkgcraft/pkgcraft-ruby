@@ -3,7 +3,7 @@
 module Pkgcraft
   module Pkg
     # Ebuild package.
-    class Ebuild < Base
+    class Ebuild < Pkg
     end
   end
 end

@@ -3,7 +3,7 @@
 require "pathname"
 
 module Pkgcraft
-  # Error support
+  # Config support
   module Config
     PORTAGE_REPOS_CONF_DEFAULTS = [
       "/etc/portage/repos.conf",
@@ -16,7 +16,7 @@ module Pkgcraft
       repos = {}
       (0...length).each do |i|
         ptr = c_repos[i]
-        repo = Repo::Base._from_ptr(ptr, ref)
+        repo = Repo._from_ptr(ptr, ref)
         repos[repo.id] = repo
       end
       repos
