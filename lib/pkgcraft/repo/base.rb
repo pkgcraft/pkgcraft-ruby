@@ -64,6 +64,14 @@ module Pkgcraft
         @_path
       end
 
+      def categories
+        length = C::LenPtr.new
+        ptr = C.pkgcraft_repo_categories(@ptr, length)
+        categories = ptr.get_array_of_string(0, length[:value])
+        C.pkgcraft_str_array_free(ptr, length[:value])
+        categories.freeze
+      end
+
       def <=>(other)
         return C.pkgcraft_repo_cmp(@ptr, other.ptr) if other.is_a? Repo
 
