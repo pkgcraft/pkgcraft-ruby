@@ -64,6 +64,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_repo_hash, [:pointer], :uint64
     attach_function :pkgcraft_repo_id, [:pointer], :strptr
+    attach_function :pkgcraft_repo_path, [:pointer], :strptr
     attach_function :pkgcraft_repo_iter, [:pointer], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], :pointer

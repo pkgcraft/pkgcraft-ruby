@@ -55,6 +55,15 @@ module Pkgcraft
         Iter.new(self).each(&block)
       end
 
+      def path
+        if @_path.nil?
+          path, c_str = C.pkgcraft_repo_path(@ptr)
+          @_path = Pathname.new(path)
+          C.pkgcraft_str_free(c_str)
+        end
+        @_path
+      end
+
       def <=>(other)
         return C.pkgcraft_repo_cmp(@ptr, other.ptr) if other.is_a? Repo
 
