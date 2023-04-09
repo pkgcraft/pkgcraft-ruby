@@ -32,6 +32,25 @@ module Pkgcraft
       attr_reader :id
       attr_reader :ptr
 
+      # Iterator over a repo.
+      class Iter
+        def initialize(repo)
+          ptr = C.pkgcraft_repo_iter(repo.ptr)
+          @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_free))
+        end
+
+        def each
+          loop do
+            ptr = C.pkgcraft_repo_iter_next(@ptr)
+            break if ptr.null?
+
+            yield Pkg.send(:from_ptr, ptr)
+          end
+        end
+      end
+
+      private_constant :Iter
+
       def each(&block)
         Iter.new(self).each(&block)
       end
@@ -51,24 +70,5 @@ module Pkgcraft
         @id
       end
     end
-
-    # Package repo.
-    class Iter
-      def initialize(repo)
-        ptr = C.pkgcraft_repo_iter(repo.ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_free))
-      end
-
-      def each
-        loop do
-          ptr = C.pkgcraft_repo_iter_next(@ptr)
-          break if ptr.null?
-
-          yield Pkg.send(:from_ptr, ptr)
-        end
-      end
-    end
-
-    private_constant :Iter
   end
 end
