@@ -4,7 +4,7 @@ module Pkgcraft
   # Repo support
   module Repo
     # Create a Repo from a pointer.
-    def self._from_ptr(ptr, ref)
+    def self.from_ptr(ptr, ref)
       format = C.pkgcraft_repo_format(ptr)
       case format
       when 0
@@ -22,6 +22,8 @@ module Pkgcraft
       obj.instance_variable_set(:@id, id)
       obj
     end
+
+    private_class_method :from_ptr
 
     # Package repo.
     class Repo
@@ -62,7 +64,7 @@ module Pkgcraft
           ptr = C.pkgcraft_repo_iter_next(@ptr)
           break if ptr.null?
 
-          yield Pkg._from_ptr(ptr)
+          yield Pkg.send(:from_ptr, ptr)
         end
       end
     end

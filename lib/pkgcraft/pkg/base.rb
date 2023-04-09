@@ -4,7 +4,7 @@ module Pkgcraft
   # Package support
   module Pkg
     # Create a Pkg from a pointer.
-    def self._from_ptr(ptr)
+    def self.from_ptr(ptr)
       format = C.pkgcraft_pkg_format(ptr)
       case format
       when 0
@@ -19,6 +19,8 @@ module Pkgcraft
       obj.instance_variable_set(:@ptr, ptr)
       obj
     end
+
+    private_class_method :from_ptr
 
     # Generic package.
     class Pkg
