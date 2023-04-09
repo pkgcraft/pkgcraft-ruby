@@ -82,6 +82,7 @@ module Pkgcraft
     # pkg support
     attach_function :pkgcraft_pkg_format, [:pointer], :int
     attach_function :pkgcraft_pkg_free, [:pointer], :void
+    attach_function :pkgcraft_pkg_cpv, [:pointer], :pointer
     attach_function :pkgcraft_pkg_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_pkg_hash, [:pointer], :uint64
     attach_function :pkgcraft_pkg_str, [:pointer], :strptr

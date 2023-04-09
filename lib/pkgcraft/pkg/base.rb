@@ -24,8 +24,14 @@ module Pkgcraft
 
     # Generic package.
     class Pkg
+      include Dep
       include Comparable
       attr_reader :ptr
+
+      def cpv
+        @_cpv = Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
+        @_cpv
+      end
 
       def <=>(other)
         return C.pkgcraft_pkg_cmp(@ptr, other.ptr) if other.is_a? Pkg
