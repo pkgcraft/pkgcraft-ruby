@@ -85,11 +85,13 @@ module Pkgcraft
       end
 
       # Create a Dep from a pointer.
-      def self._from_ptr(ptr)
+      def self.from_ptr(ptr)
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
       end
+
+      private_class_method :from_ptr
 
       def blocker
         val = C.pkgcraft_dep_blocker(@ptr)
@@ -109,7 +111,7 @@ module Pkgcraft
       end
 
       def version
-        @_version = Version._from_ptr(C.pkgcraft_dep_version(@ptr)) if @_version.nil?
+        @_version = Version.send(:from_ptr, C.pkgcraft_dep_version(@ptr)) if @_version.nil?
         @_version
       end
 

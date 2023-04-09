@@ -11,7 +11,7 @@ module Pkgcraft
     ].freeze
 
     # Convert an array of repo pointers to a mapping.
-    def self._repos_to_dict(repos_ptr, length, ref)
+    def self.repos_to_dict(repos_ptr, length, ref)
       c_repos = repos_ptr.read_array_of_type(:pointer, :read_pointer, length)
       repos = {}
       (0...length).each do |i|
@@ -21,6 +21,8 @@ module Pkgcraft
       end
       repos
     end
+
+    private_class_method :repos_to_dict
 
     # Config for the system.
     class Config
@@ -51,7 +53,7 @@ module Pkgcraft
         # force repos attr refresh
         @_repos = nil
 
-        repos = Pkgcraft::Config._repos_to_dict(c_repos, length[:value], false)
+        repos = Pkgcraft::Config.send(:repos_to_dict, c_repos, length[:value], false)
         C.pkgcraft_repos_free(c_repos, length[:value])
         repos
       end
@@ -63,7 +65,7 @@ module Pkgcraft
       def self._from_config(ptr)
         length = C::LenPtr.new
         c_repos = C.pkgcraft_config_repos(ptr, length)
-        repos = Pkgcraft::Config._repos_to_dict(c_repos, length[:value], true)
+        repos = Pkgcraft::Config.send(:repos_to_dict, c_repos, length[:value], true)
         C.pkgcraft_repos_free(c_repos, length[:value])
 
         obj = allocate
@@ -75,7 +77,7 @@ module Pkgcraft
       def all
         if @_all.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
-          @_all = Repo::RepoSet._from_ptr(ptr)
+          @_all = Repo::RepoSet.send(:from_ptr, ptr)
         end
         @_all
       end
@@ -83,7 +85,7 @@ module Pkgcraft
       def ebuild
         if @_ebuild.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
-          @_ebuild = Repo::RepoSet._from_ptr(ptr)
+          @_ebuild = Repo::RepoSet.send(:from_ptr, ptr)
         end
         @_ebuild
       end

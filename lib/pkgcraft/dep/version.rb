@@ -54,13 +54,15 @@ module Pkgcraft
       end
 
       # Create a Version from a pointer.
-      def self._from_ptr(ptr)
+      def self.from_ptr(ptr)
         return if ptr.null?
 
         obj = allocate
         obj.send(:ptr=, ptr)
         obj
       end
+
+      private_class_method :from_ptr
 
       def op
         op = C.pkgcraft_version_op(@ptr)
