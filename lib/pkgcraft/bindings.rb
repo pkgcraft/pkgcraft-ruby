@@ -72,6 +72,7 @@ module Pkgcraft
 
     # ebuild repo support
     attach_function :pkgcraft_repo_ebuild_eapi, [:pointer], :pointer
+    attach_function :pkgcraft_repo_ebuild_masters, [:pointer, LenPtr.by_ref], :pointer
 
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer
