@@ -41,7 +41,7 @@ module Pkgcraft
         length = C::LenPtr.new
         if @_repos.nil?
           c_repos = C.pkgcraft_repo_set_repos(@ptr, length)
-          repos = Pkgcraft::Config.send(:repos_to_dict, c_repos, length[:value], true)
+          repos = Config.send(:repos_to_dict, c_repos, length[:value], true)
           @_repos = Set.new(repos.values)
           C.pkgcraft_repos_free(c_repos, length[:value])
         end
