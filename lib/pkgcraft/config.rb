@@ -12,7 +12,7 @@ module Pkgcraft
 
     # Convert an array of repo pointers to a mapping.
     def self.repos_to_dict(repos_ptr, length, ref)
-      c_repos = repos_ptr.read_array_of_type(:pointer, :read_pointer, length)
+      c_repos = repos_ptr.get_array_of_pointer(0, length)
       repos = {}
       (0...length).each do |i|
         ptr = c_repos[i]

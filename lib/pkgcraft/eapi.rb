@@ -64,7 +64,7 @@ module Pkgcraft
       ptr = C.pkgcraft_eapis_range(str.to_s, length)
       raise Error::PkgcraftError if ptr.null?
 
-      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      c_eapis = ptr.get_array_of_pointer(0, length[:value])
       eapis = []
       c_eapis.each do |eapi_ptr|
         id, c_str = C.pkgcraft_eapi_as_str(eapi_ptr)
@@ -80,7 +80,7 @@ module Pkgcraft
     def self.eapis_official
       length = C::LenPtr.new
       ptr = C.pkgcraft_eapis_official(length)
-      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      c_eapis = ptr.get_array_of_pointer(0, length[:value])
       eapis = {}
       (0...length[:value]).each do |i|
         eapi = Eapi.new(c_eapis[i])
@@ -105,7 +105,7 @@ module Pkgcraft
     def self.eapis
       length = C::LenPtr.new
       ptr = C.pkgcraft_eapis(length)
-      c_eapis = ptr.read_array_of_type(:pointer, :read_pointer, length[:value])
+      c_eapis = ptr.get_array_of_pointer(0, length[:value])
       eapis = {}
       eapis.update(EAPIS_OFFICIAL)
       (eapis.length...length[:value]).each do |i|
