@@ -23,6 +23,11 @@ module Pkgcraft
         @_repos
       end
 
+      def hash
+        @_hash = C.pkgcraft_repo_set_hash(@ptr) if @_hash.nil?
+        @_hash
+      end
+
       def length
         repos.length
       end

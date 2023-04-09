@@ -66,6 +66,7 @@ module Pkgcraft
 
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_set_hash, [:pointer], :uint64
     attach_function :pkgcraft_repo_set_free, [:pointer], :void
 
     # eapi support
