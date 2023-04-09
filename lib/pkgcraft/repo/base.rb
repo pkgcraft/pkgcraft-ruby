@@ -72,6 +72,10 @@ module Pkgcraft
         categories.freeze
       end
 
+      def length
+        C.pkgcraft_repo_len(@ptr)
+      end
+
       def <=>(other)
         return C.pkgcraft_repo_cmp(@ptr, other.ptr) if other.is_a? Repo
 

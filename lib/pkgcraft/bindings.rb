@@ -66,6 +66,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_id, [:pointer], :strptr
     attach_function :pkgcraft_repo_path, [:pointer], :strptr
     attach_function :pkgcraft_repo_categories, [:pointer, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_len, [:pointer], :uint64
     attach_function :pkgcraft_repo_iter, [:pointer], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], :pointer
