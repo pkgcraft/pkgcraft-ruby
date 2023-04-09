@@ -52,6 +52,17 @@ module Pkgcraft
     attach_function :pkgcraft_error_last, [], Error.by_ref
     attach_function :pkgcraft_error_free, [Error.by_ref], :void
 
+    # config support
+    attach_function :pkgcraft_config_new, [], :pointer
+    attach_function :pkgcraft_config_free, [:pointer], :void
+    attach_function :pkgcraft_config_load_repos_conf, [:pointer, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos, [:pointer, LenPtr.by_ref], :pointer
+
+    # repo support
+    attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
+    attach_function :pkgcraft_repo_id, [:pointer], :strptr
+    attach_function :pkgcraft_repo_free, [:pointer], :void
+
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:pointer], :strptr
     attach_function :pkgcraft_eapi_cmp, [:pointer, :pointer], :int
