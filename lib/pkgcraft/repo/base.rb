@@ -4,7 +4,9 @@ module Pkgcraft
   module Repo
     # Package repo.
     class Base
+      include Comparable
       attr_reader :id
+      attr_reader :ptr
 
       # Create a Repo from a pointer.
       def self._from_ptr(ptr, ref)
@@ -24,6 +26,12 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
         obj.instance_variable_set(:@id, id)
         obj
+      end
+
+      def <=>(other)
+        return C.pkgcraft_repo_cmp(@ptr, other.ptr) if other.is_a? Repo
+
+        raise TypeError.new("invalid type: #{other.class}")
       end
 
       def to_s

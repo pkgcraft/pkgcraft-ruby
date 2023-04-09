@@ -61,6 +61,7 @@ module Pkgcraft
 
     # repo support
     attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
+    attach_function :pkgcraft_repo_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_repo_id, [:pointer], :strptr
     attach_function :pkgcraft_repo_format, [:pointer], :int
     attach_function :pkgcraft_repo_free, [:pointer], :void
