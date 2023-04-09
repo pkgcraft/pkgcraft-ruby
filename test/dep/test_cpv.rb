@@ -50,6 +50,12 @@ class TestCpv < Minitest::Test
       cpv2 = Cpv.new("cat/pkg-#{s2}")
       assert(cpv1.public_send(op, cpv2))
     end
+
+    # invalid type
+    cpv = Cpv.new("cat/pkg-1")
+    assert_raises TypeError do
+      assert(cpv < "cat/pkg-1")
+    end
   end
 
   def test_intersects

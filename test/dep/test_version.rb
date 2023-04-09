@@ -63,6 +63,12 @@ class TestVersion < Minitest::Test
       v2 = Version.new(s2)
       assert(v1.public_send(op, v2))
     end
+
+    # invalid type
+    ver = Version.new("1")
+    assert_raises TypeError do
+      assert(ver < "1")
+    end
   end
 
   def test_sort

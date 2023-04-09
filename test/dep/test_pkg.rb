@@ -151,6 +151,12 @@ class TestDep < Minitest::Test
       assert(d1.public_send(op, d2))
     end
 
+    # invalid type
+    dep = Dep.new("=cat/pkg-1")
+    assert_raises TypeError do
+      assert(dep < "=cat/pkg-1")
+    end
+
     TOML["version"]["compares"].each do |s|
       s1, op, s2 = s.split
       d1 = Dep.new("=cat/pkg-#{s1}")

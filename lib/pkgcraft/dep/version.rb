@@ -90,7 +90,9 @@ module Pkgcraft
       end
 
       def <=>(other)
-        C.pkgcraft_version_cmp(@ptr, other.ptr)
+        return C.pkgcraft_version_cmp(@ptr, other.ptr) if other.is_a? Version
+
+        raise TypeError.new("invalid type: #{other.class}")
       end
 
       alias eql? ==

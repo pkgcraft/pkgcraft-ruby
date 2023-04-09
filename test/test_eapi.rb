@@ -64,6 +64,11 @@ class TestEapi < Minitest::Test
     assert(EAPI0 < EAPI1)
     assert(latest_official > EAPI1)
     assert(latest >= latest_official)
+
+    # invalid type
+    assert_raises TypeError do
+      assert(EAPI0 < "0")
+    end
   end
 
   def test_hash
