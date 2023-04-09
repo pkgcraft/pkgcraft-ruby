@@ -74,6 +74,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_set_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_repo_set_hash, [:pointer], :uint64
+    attach_function :pkgcraft_repo_set_iter, [:pointer, :pointer], :pointer
+    attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
+    attach_function :pkgcraft_repo_set_iter_next, [:pointer], :pointer
     attach_function :pkgcraft_repo_set_free, [:pointer], :void
 
     # pkg support

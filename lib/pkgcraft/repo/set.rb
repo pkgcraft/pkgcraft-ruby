@@ -5,7 +5,27 @@ module Pkgcraft
     # Ordered repository set.
     class RepoSet
       include Comparable
+      include Enumerable
       attr_reader :ptr
+
+      # Iterator over a RepoSet.
+      class Iter
+        def initialize(repo_set)
+          ptr = C.pkgcraft_repo_set_iter(repo_set.ptr, nil)
+          @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_iter_free))
+        end
+
+        def each
+          loop do
+            ptr = C.pkgcraft_repo_set_iter_next(@ptr)
+            break if ptr.null?
+
+            yield Pkg.send(:from_ptr, ptr)
+          end
+        end
+      end
+
+      private_constant :Iter
 
       # Create a RepoSet from a pointer.
       def self.from_ptr(ptr)
@@ -26,6 +46,10 @@ module Pkgcraft
           C.pkgcraft_repos_free(c_repos, length[:value])
         end
         @_repos
+      end
+
+      def each(&block)
+        Iter.new(self).each(&block)
       end
 
       def <=>(other)
