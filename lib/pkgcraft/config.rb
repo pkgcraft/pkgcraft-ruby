@@ -72,6 +72,22 @@ module Pkgcraft
         obj
       end
 
+      def all
+        if @_all.nil?
+          ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
+          @_all = Repo::RepoSet._from_ptr(ptr)
+        end
+        @_all
+      end
+
+      def ebuild
+        if @_ebuild.nil?
+          ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
+          @_ebuild = Repo::RepoSet._from_ptr(ptr)
+        end
+        @_ebuild
+      end
+
       def length
         @repos.length
       end
