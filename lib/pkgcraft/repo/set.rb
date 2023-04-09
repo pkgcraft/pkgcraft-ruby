@@ -4,6 +4,9 @@ module Pkgcraft
   module Repo
     # Ordered repository set.
     class RepoSet
+      include Comparable
+      attr_reader :ptr
+
       # Create a RepoSet from a pointer.
       def self._from_ptr(ptr)
         ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_free))
@@ -21,6 +24,12 @@ module Pkgcraft
           C.pkgcraft_repos_free(c_repos, length[:value])
         end
         @_repos
+      end
+
+      def <=>(other)
+        return C.pkgcraft_repo_set_cmp(@ptr, other.ptr) if other.is_a? RepoSet
+
+        raise TypeError.new("invalid type: #{other.class}")
       end
 
       def hash
