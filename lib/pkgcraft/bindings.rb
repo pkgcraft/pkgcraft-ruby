@@ -60,7 +60,7 @@ module Pkgcraft
     attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_free, [:buffer_in, :size_t], :void
+    attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
 
     # cpv support
     attach_function :pkgcraft_cpv_free, [:pointer], :void
