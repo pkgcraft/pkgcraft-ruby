@@ -41,6 +41,16 @@ module Pkgcraft
         @_eapi
       end
 
+      def repo
+        @_repo = Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @_repo.nil?
+        @_repo
+      end
+
+      def version
+        @_version = Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @_version.nil?
+        @_version
+      end
+
       def <=>(other)
         return C.pkgcraft_pkg_cmp(@ptr, other.ptr) if other.is_a? Pkg
 
