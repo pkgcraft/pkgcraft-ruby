@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/pkgcraft/_version"
+require_relative "lib/pkgcraft/version"
 
 Gem::Specification.new do |spec|
   spec.name = "pkgcraft"
