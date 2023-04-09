@@ -70,6 +70,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_format, [:pointer], :int
     attach_function :pkgcraft_repo_free, [:pointer], :void
 
+    # ebuild repo support
+    attach_function :pkgcraft_repo_ebuild_eapi, [:pointer], :pointer
+
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_set_cmp, [:pointer, :pointer], :int
