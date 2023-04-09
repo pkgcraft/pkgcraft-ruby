@@ -61,6 +61,8 @@ module Pkgcraft
 
     # System repositories.
     class Repos
+      include Enumerable
+
       # Create a Repos object from a Config pointer.
       def self._from_config(ptr)
         length = C::LenPtr.new
@@ -88,6 +90,10 @@ module Pkgcraft
           @_ebuild = Repo::RepoSet.send(:from_ptr, ptr)
         end
         @_ebuild
+      end
+
+      def each(&block)
+        @repos.values.each(&block)
       end
 
       def length
