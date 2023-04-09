@@ -24,13 +24,21 @@ module Pkgcraft
 
     # Generic package.
     class Pkg
-      include Dep
       include Comparable
+
+      include Dep
+      include Eapis
+
       attr_reader :ptr
 
       def cpv
         @_cpv = Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
         @_cpv
+      end
+
+      def eapi
+        @_eapi = Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @_eapi.nil?
+        @_eapi
       end
 
       def <=>(other)

@@ -17,6 +17,15 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
       end
 
+      # Create an Eapi from a pointer.
+      def self.from_ptr(ptr)
+        id, c_str = C.pkgcraft_eapi_as_str(ptr)
+        C.pkgcraft_str_free(c_str)
+        EAPIS[id]
+      end
+
+      private_class_method :from_ptr
+
       # Try to convert an object to an Eapi object.
       def self.from_obj(obj)
         return obj if obj.is_a? Eapi
