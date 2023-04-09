@@ -64,6 +64,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_repo_hash, [:pointer], :uint64
     attach_function :pkgcraft_repo_id, [:pointer], :strptr
+    attach_function :pkgcraft_repo_iter, [:pointer], :pointer
+    attach_function :pkgcraft_repo_iter_free, [:pointer], :void
+    attach_function :pkgcraft_repo_iter_next, [:pointer], :pointer
     attach_function :pkgcraft_repo_format, [:pointer], :int
     attach_function :pkgcraft_repo_free, [:pointer], :void
 
@@ -72,6 +75,13 @@ module Pkgcraft
     attach_function :pkgcraft_repo_set_cmp, [:pointer, :pointer], :int
     attach_function :pkgcraft_repo_set_hash, [:pointer], :uint64
     attach_function :pkgcraft_repo_set_free, [:pointer], :void
+
+    # pkg support
+    attach_function :pkgcraft_pkg_format, [:pointer], :int
+    attach_function :pkgcraft_pkg_free, [:pointer], :void
+    attach_function :pkgcraft_pkg_cmp, [:pointer, :pointer], :int
+    attach_function :pkgcraft_pkg_hash, [:pointer], :uint64
+    attach_function :pkgcraft_pkg_str, [:pointer], :strptr
 
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:pointer], :strptr
