@@ -52,6 +52,17 @@ module Pkgcraft
     attach_function :pkgcraft_error_last, [], Error.by_ref
     attach_function :pkgcraft_error_free, [Error.by_ref], :void
 
+    # logging support
+    class PkgcraftLog < FFI::Struct
+      layout :message, :string,
+             :level, :int
+    end
+
+    callback :log_callback, [PkgcraftLog.by_ref], :void
+    attach_function :pkgcraft_logging_enable, [:log_callback], :void
+    attach_function :pkgcraft_log_free, [PkgcraftLog.by_ref], :void
+    attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
+
     # config support
     attach_function :pkgcraft_config_new, [], :pointer
     attach_function :pkgcraft_config_free, [:pointer], :void
