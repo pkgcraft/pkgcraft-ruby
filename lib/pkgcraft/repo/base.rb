@@ -34,6 +34,11 @@ module Pkgcraft
         raise TypeError.new("invalid type: #{other.class}")
       end
 
+      def hash
+        @_hash = C.pkgcraft_repo_hash(@ptr) if @_hash.nil?
+        @_hash
+      end
+
       def to_s
         @id
       end
