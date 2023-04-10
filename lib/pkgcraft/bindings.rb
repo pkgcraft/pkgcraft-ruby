@@ -85,10 +85,16 @@ module Pkgcraft
     attach_function :pkgcraft_repo_iter_next, [:pointer], :pointer
     attach_function :pkgcraft_repo_format, [:pointer], :int
     attach_function :pkgcraft_repo_free, [:pointer], :void
+    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :pointer
 
     # ebuild repo support
     attach_function :pkgcraft_repo_ebuild_eapi, [:pointer], :pointer
     attach_function :pkgcraft_repo_ebuild_masters, [:pointer, LenPtr.by_ref], :pointer
+
+    # temp ebuild repo
+    attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
+    attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
+    attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
 
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer

@@ -3,34 +3,44 @@
 module Pkgcraft
   # Repo support
   module Repo
-    # Create a Repo from a pointer.
-    def self.from_ptr(ptr, ref)
-      format = C.pkgcraft_repo_format(ptr)
-      case format
-      when 0
-        obj = Ebuild.allocate
-      when 1
-        obj = Fake.allocate
-      else
-        "unsupported repo format: #{format}"
-      end
-
-      ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_free)) unless ref
-      obj.instance_variable_set(:@ptr, ptr)
-      id, c_str = C.pkgcraft_repo_id(ptr)
-      C.pkgcraft_str_free(c_str)
-      obj.instance_variable_set(:@id, id)
-      obj
-    end
-
-    private_class_method :from_ptr
-
     # Package repo.
     class Repo
       include Comparable
       include Enumerable
       attr_reader :id
       attr_reader :ptr
+
+      def initialize(path, id = nil, priority = 0)
+        id = path if id.nil?
+        ptr = C.pkgcraft_repo_from_path(id, priority, path, true)
+        raise Error::InvalidRepo if ptr.null?
+
+        Repo.send(:from_ptr, ptr, false, self)
+      end
+
+      # Create a Repo from a pointer.
+      def self.from_ptr(ptr, ref, obj = nil)
+        if obj.nil?
+          format = C.pkgcraft_repo_format(ptr)
+          case format
+          when 0
+            obj = Ebuild.allocate
+          when 1
+            obj = Fake.allocate
+          else
+            "unsupported repo format: #{format}"
+          end
+        end
+
+        ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_free)) unless ref
+        obj.instance_variable_set(:@ptr, ptr)
+        id, c_str = C.pkgcraft_repo_id(ptr)
+        C.pkgcraft_str_free(c_str)
+        obj.instance_variable_set(:@id, id)
+        obj
+      end
+
+      private_class_method :from_ptr
 
       # Iterator over a repo.
       class Iter

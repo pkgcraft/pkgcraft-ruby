@@ -16,7 +16,7 @@ module Pkgcraft
       repos = {}
       (0...length).each do |i|
         ptr = c_repos[i]
-        repo = Repo.send(:from_ptr, ptr, ref)
+        repo = Repo::Repo.send(:from_ptr, ptr, ref)
         repos[repo.id] = repo
       end
       repos
