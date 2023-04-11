@@ -106,6 +106,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
     attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
     attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
+    attach_function :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], :strptr
 
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:repo_set, LenPtr.by_ref], :pointer

@@ -38,3 +38,5 @@ Style/WordArray:
 
 Layout/LineLength:
   Max: 100
+  Exclude:
+    - "lib/pkgcraft/bindings.rb"
