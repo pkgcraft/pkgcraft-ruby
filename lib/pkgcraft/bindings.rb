@@ -58,38 +58,49 @@ module Pkgcraft
              :level, :int
     end
 
+    # type aliases
+    typedef :pointer, :config
+    typedef :pointer, :repo
+    typedef :pointer, :repo_set
+    typedef :pointer, :pkg
+    typedef :pointer, :eapi
+    typedef :pointer, :cpv
+    typedef :pointer, :dep
+    typedef :pointer, :version
+    typedef :pointer, :restrict
+
     callback :log_callback, [PkgcraftLog.by_ref], :void
     attach_function :pkgcraft_logging_enable, [:log_callback], :void
     attach_function :pkgcraft_log_free, [PkgcraftLog.by_ref], :void
     attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
 
     # config support
-    attach_function :pkgcraft_config_new, [], :pointer
-    attach_function :pkgcraft_config_free, [:pointer], :void
-    attach_function :pkgcraft_config_load_repos_conf, [:pointer, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos, [:pointer, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos_set, [:pointer, :int], :pointer
+    attach_function :pkgcraft_config_new, [], :config
+    attach_function :pkgcraft_config_free, [:config], :void
+    attach_function :pkgcraft_config_load_repos_conf, [:config, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos, [:config, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos_set, [:config, :int], :pointer
 
     # repo support
     attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
-    attach_function :pkgcraft_repo_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_repo_hash, [:pointer], :uint64
-    attach_function :pkgcraft_repo_id, [:pointer], :strptr
-    attach_function :pkgcraft_repo_path, [:pointer], :strptr
-    attach_function :pkgcraft_repo_categories, [:pointer, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_packages, [:pointer, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_versions, [:pointer, :string, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_len, [:pointer], :uint64
-    attach_function :pkgcraft_repo_iter, [:pointer], :pointer
+    attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
+    attach_function :pkgcraft_repo_hash, [:repo], :uint64
+    attach_function :pkgcraft_repo_id, [:repo], :strptr
+    attach_function :pkgcraft_repo_path, [:repo], :strptr
+    attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_len, [:repo], :uint64
+    attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
-    attach_function :pkgcraft_repo_iter_next, [:pointer], :pointer
-    attach_function :pkgcraft_repo_format, [:pointer], :int
-    attach_function :pkgcraft_repo_free, [:pointer], :void
-    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :pointer
+    attach_function :pkgcraft_repo_iter_next, [:pointer], :pkg
+    attach_function :pkgcraft_repo_format, [:repo], :int
+    attach_function :pkgcraft_repo_free, [:repo], :void
+    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
 
     # ebuild repo support
-    attach_function :pkgcraft_repo_ebuild_eapi, [:pointer], :pointer
-    attach_function :pkgcraft_repo_ebuild_masters, [:pointer, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :pointer
+    attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
 
     # temp ebuild repo
     attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
@@ -97,91 +108,91 @@ module Pkgcraft
     attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
 
     # repo set support
-    attach_function :pkgcraft_repo_set_repos, [:pointer, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_set_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_repo_set_hash, [:pointer], :uint64
-    attach_function :pkgcraft_repo_set_iter, [:pointer, :pointer], :pointer
+    attach_function :pkgcraft_repo_set_repos, [:repo_set, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_set_cmp, [:repo_set, :repo_set], :int
+    attach_function :pkgcraft_repo_set_hash, [:repo_set], :uint64
+    attach_function :pkgcraft_repo_set_iter, [:repo_set, :restrict], :pointer
     attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
-    attach_function :pkgcraft_repo_set_iter_next, [:pointer], :pointer
-    attach_function :pkgcraft_repo_set_free, [:pointer], :void
+    attach_function :pkgcraft_repo_set_iter_next, [:pointer], :pkg
+    attach_function :pkgcraft_repo_set_free, [:repo_set], :void
 
     # pkg support
-    attach_function :pkgcraft_pkg_format, [:pointer], :int
-    attach_function :pkgcraft_pkg_free, [:pointer], :void
-    attach_function :pkgcraft_pkg_cpv, [:pointer], :pointer
-    attach_function :pkgcraft_pkg_eapi, [:pointer], :pointer
-    attach_function :pkgcraft_pkg_repo, [:pointer], :pointer
-    attach_function :pkgcraft_pkg_version, [:pointer], :pointer
-    attach_function :pkgcraft_pkg_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_pkg_hash, [:pointer], :uint64
-    attach_function :pkgcraft_pkg_str, [:pointer], :strptr
+    attach_function :pkgcraft_pkg_format, [:pkg], :int
+    attach_function :pkgcraft_pkg_free, [:pkg], :void
+    attach_function :pkgcraft_pkg_cpv, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_eapi, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_repo, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_version, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_cmp, [:pkg, :pkg], :int
+    attach_function :pkgcraft_pkg_hash, [:pkg], :uint64
+    attach_function :pkgcraft_pkg_str, [:pkg], :strptr
 
     # eapi support
-    attach_function :pkgcraft_eapi_as_str, [:pointer], :strptr
-    attach_function :pkgcraft_eapi_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_eapi_has, [:pointer, :string], :bool
-    attach_function :pkgcraft_eapi_hash, [:pointer], :uint64
+    attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr
+    attach_function :pkgcraft_eapi_cmp, [:eapi, :eapi], :int
+    attach_function :pkgcraft_eapi_has, [:eapi, :string], :bool
+    attach_function :pkgcraft_eapi_hash, [:eapi], :uint64
     attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
 
     # cpv support
-    attach_function :pkgcraft_cpv_free, [:pointer], :void
-    attach_function :pkgcraft_cpv_new, [:string], :pointer
-    attach_function :pkgcraft_cpv_category, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_package, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_version, [:pointer], :pointer
-    attach_function :pkgcraft_cpv_p, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_pf, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_pr, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_pv, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_pvr, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_cpn, [:pointer], :strptr
-    attach_function :pkgcraft_cpv_intersects, [:pointer, :pointer], :bool
-    attach_function :pkgcraft_cpv_intersects_dep, [:pointer, :pointer], :bool
-    attach_function :pkgcraft_cpv_hash, [:pointer], :uint64
-    attach_function :pkgcraft_cpv_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_cpv_str, [:pointer], :strptr
+    attach_function :pkgcraft_cpv_free, [:cpv], :void
+    attach_function :pkgcraft_cpv_new, [:string], :cpv
+    attach_function :pkgcraft_cpv_category, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_package, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_version, [:cpv], :version
+    attach_function :pkgcraft_cpv_p, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_pf, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_pr, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_pv, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_pvr, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_cpn, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_intersects, [:cpv, :cpv], :bool
+    attach_function :pkgcraft_cpv_intersects_dep, [:cpv, :dep], :bool
+    attach_function :pkgcraft_cpv_hash, [:cpv], :uint64
+    attach_function :pkgcraft_cpv_cmp, [:cpv, :cpv], :int
+    attach_function :pkgcraft_cpv_str, [:cpv], :strptr
 
     # dep support
-    attach_function :pkgcraft_dep_free, [:pointer], :void
-    attach_function :pkgcraft_dep_new, [:string, :pointer], :pointer
-    attach_function :pkgcraft_dep_blocker, [:pointer], :int
+    attach_function :pkgcraft_dep_free, [:dep], :void
+    attach_function :pkgcraft_dep_new, [:string, :eapi], :dep
+    attach_function :pkgcraft_dep_blocker, [:dep], :int
     attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
-    attach_function :pkgcraft_dep_category, [:pointer], :strptr
-    attach_function :pkgcraft_dep_package, [:pointer], :strptr
-    attach_function :pkgcraft_dep_version, [:pointer], :pointer
-    attach_function :pkgcraft_dep_slot, [:pointer], :strptr
-    attach_function :pkgcraft_dep_subslot, [:pointer], :strptr
-    attach_function :pkgcraft_dep_slot_op, [:pointer], :int
+    attach_function :pkgcraft_dep_category, [:dep], :strptr
+    attach_function :pkgcraft_dep_package, [:dep], :strptr
+    attach_function :pkgcraft_dep_version, [:dep], :version
+    attach_function :pkgcraft_dep_slot, [:dep], :strptr
+    attach_function :pkgcraft_dep_subslot, [:dep], :strptr
+    attach_function :pkgcraft_dep_slot_op, [:dep], :int
     attach_function :pkgcraft_dep_slot_op_from_str, [:string], :int
-    attach_function :pkgcraft_dep_use_deps, [:pointer, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_dep_repo, [:pointer], :strptr
-    attach_function :pkgcraft_dep_p, [:pointer], :strptr
-    attach_function :pkgcraft_dep_pf, [:pointer], :strptr
-    attach_function :pkgcraft_dep_pr, [:pointer], :strptr
-    attach_function :pkgcraft_dep_pv, [:pointer], :strptr
-    attach_function :pkgcraft_dep_pvr, [:pointer], :strptr
-    attach_function :pkgcraft_dep_cpn, [:pointer], :strptr
-    attach_function :pkgcraft_dep_cpv, [:pointer], :strptr
-    attach_function :pkgcraft_dep_intersects, [:pointer, :pointer], :bool
-    attach_function :pkgcraft_dep_intersects_cpv, [:pointer, :pointer], :bool
-    attach_function :pkgcraft_dep_hash, [:pointer], :uint64
-    attach_function :pkgcraft_dep_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_dep_str, [:pointer], :strptr
+    attach_function :pkgcraft_dep_use_deps, [:dep, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_dep_repo, [:dep], :strptr
+    attach_function :pkgcraft_dep_p, [:dep], :strptr
+    attach_function :pkgcraft_dep_pf, [:dep], :strptr
+    attach_function :pkgcraft_dep_pr, [:dep], :strptr
+    attach_function :pkgcraft_dep_pv, [:dep], :strptr
+    attach_function :pkgcraft_dep_pvr, [:dep], :strptr
+    attach_function :pkgcraft_dep_cpn, [:dep], :strptr
+    attach_function :pkgcraft_dep_cpv, [:dep], :strptr
+    attach_function :pkgcraft_dep_intersects, [:dep, :dep], :bool
+    attach_function :pkgcraft_dep_intersects_cpv, [:dep, :cpv], :bool
+    attach_function :pkgcraft_dep_hash, [:dep], :uint64
+    attach_function :pkgcraft_dep_cmp, [:dep, :dep], :int
+    attach_function :pkgcraft_dep_str, [:dep], :strptr
 
     # version support
-    attach_function :pkgcraft_version_free, [:pointer], :void
-    attach_function :pkgcraft_version_new, [:string], :pointer
-    attach_function :pkgcraft_version_cmp, [:pointer, :pointer], :int
-    attach_function :pkgcraft_version_hash, [:pointer], :uint64
-    attach_function :pkgcraft_version_intersects, [:pointer, :pointer], :bool
-    attach_function :pkgcraft_version_revision, [:pointer], :strptr
-    attach_function :pkgcraft_version_op, [:pointer], :int
+    attach_function :pkgcraft_version_free, [:version], :void
+    attach_function :pkgcraft_version_new, [:string], :version
+    attach_function :pkgcraft_version_cmp, [:version, :version], :int
+    attach_function :pkgcraft_version_hash, [:version], :uint64
+    attach_function :pkgcraft_version_intersects, [:version, :version], :bool
+    attach_function :pkgcraft_version_revision, [:version], :strptr
+    attach_function :pkgcraft_version_op, [:version], :int
     attach_function :pkgcraft_version_op_from_str, [:string], :int
-    attach_function :pkgcraft_version_str, [:pointer], :strptr
-    attach_function :pkgcraft_version_str_with_op, [:pointer], :strptr
-    attach_function :pkgcraft_version_with_op, [:string], :pointer
+    attach_function :pkgcraft_version_str, [:version], :strptr
+    attach_function :pkgcraft_version_str_with_op, [:version], :strptr
+    attach_function :pkgcraft_version_with_op, [:string], :version
   end
 end
