@@ -3,7 +3,7 @@
 require "test_helper"
 
 class TestRepoBase < Minitest::Test
-  include Pkgcraft
+  include Pkgcraft::Dep
   include Pkgcraft::Repos
   include Pkgcraft::Error
 
@@ -65,5 +65,24 @@ class TestRepoBase < Minitest::Test
   def test_iter
     repo = EbuildTemp.new
     assert_empty(repo)
+
+    # single
+    pkg1 = repo.create_pkg("cat/pkg-1")
+    assert_equal([pkg1], repo.entries)
+
+    # multiple
+    pkg2 = repo.create_pkg("a/b-1")
+    assert_equal([pkg2, pkg1], repo.entries)
+  end
+
+  def test_iter_restrict
+    repo = EbuildTemp.new
+    pkg1 = repo.create_pkg("cat/pkg-1")
+    pkg2 = repo.create_pkg("cat/pkg-2")
+    assert_equal([pkg1], repo.iter("cat/pkg-1").entries)
+    assert_equal([pkg1], repo.iter(Cpv.new("cat/pkg-1")).entries)
+    assert_equal([pkg1, pkg2], repo.iter(Dep.new(">=cat/pkg-1")).entries)
+    assert_equal([pkg1], repo.iter(pkg1).entries)
+    assert_equal([pkg1, pkg2], repo.iter("cat/*").entries)
   end
 end
