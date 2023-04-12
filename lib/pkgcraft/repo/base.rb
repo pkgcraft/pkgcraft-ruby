@@ -65,6 +65,38 @@ module Pkgcraft
         Iter.new(self).each(&block)
       end
 
+      # Iterator that applies a restriction over a repo iterator.
+      class IterRestrict
+        def initialize(repo, obj)
+          restrict =
+            if obj.is_a? Pkgcraft::Restrict::Restrict
+              obj
+            else
+              Pkgcraft::Restrict::Restrict.new(obj)
+            end
+          ptr = C.pkgcraft_repo_iter_restrict(repo.ptr, restrict.ptr)
+          @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_restrict_free))
+        end
+
+        def each
+          loop do
+            ptr = C.pkgcraft_repo_iter_restrict_next(@ptr)
+            break if ptr.null?
+
+            pkg = Pkg.send(:from_ptr, ptr)
+            return pkg unless block_given?
+
+            yield pkg
+          end
+        end
+      end
+
+      private_constant :IterRestrict
+
+      def each_restrict(restrict, &block)
+        IterRestrict.new(self, restrict).each(&block)
+      end
+
       def path
         if @_path.nil?
           path, c_str = C.pkgcraft_repo_path(@ptr)

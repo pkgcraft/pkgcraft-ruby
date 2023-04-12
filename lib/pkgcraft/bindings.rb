@@ -94,6 +94,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], :pkg
+    attach_function :pkgcraft_repo_iter_restrict, [:repo, :restrict], :pointer
+    attach_function :pkgcraft_repo_iter_restrict_free, [:repo], :void
+    attach_function :pkgcraft_repo_iter_restrict_next, [:pointer], :pkg
     attach_function :pkgcraft_repo_format, [:repo], :int
     attach_function :pkgcraft_repo_free, [:repo], :void
     attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
