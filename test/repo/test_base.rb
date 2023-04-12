@@ -7,6 +7,12 @@ class TestRepoBase < Minitest::Test
   include Pkgcraft::Repos
   include Pkgcraft::Error
 
+  def test_path
+    repo = EbuildTemp.new
+    path = repo.create_ebuild("cat/pkg-1")
+    assert(path.to_s.start_with?(repo.path.to_s))
+  end
+
   def test_categories
     # empty
     repo = EbuildTemp.new
@@ -60,6 +66,39 @@ class TestRepoBase < Minitest::Test
     # multiple
     repo.create_ebuild("cat/pkg-2")
     assert_equal(2, repo.length)
+  end
+
+  def test_empty
+    repo = EbuildTemp.new
+    assert_empty(repo)
+    repo.create_ebuild("cat/pkg-1")
+    refute_empty(repo)
+  end
+
+  def test_cmp
+    r1 = EbuildTemp.new("1")
+    r2 = EbuildTemp.new("2")
+    r3 = EbuildTemp.new("2", priority: 1)
+    assert(r1 < r2)
+    assert(r3 < r1)
+
+    # invalid type
+    assert_raises TypeError do
+      assert(r1 < "repo")
+    end
+  end
+
+  def test_hash
+    r1 = EbuildTemp.new("1")
+    r2 = EbuildTemp.new("2")
+
+    # equal
+    repos = Set.new([r1, r1])
+    assert_equal(1, repos.length)
+
+    # unequal
+    repos = Set.new([r1, r2])
+    assert_equal(2, repos.length)
   end
 
   def test_iter
