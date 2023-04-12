@@ -5,6 +5,7 @@ require "test_helper"
 class TestRepoBase < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Repos
+  include Pkgcraft::Restrict
   include Pkgcraft::Error
 
   def test_path
@@ -123,5 +124,6 @@ class TestRepoBase < Minitest::Test
     assert_equal([pkg1, pkg2], repo.iter(Dep.new(">=cat/pkg-1")).entries)
     assert_equal([pkg1], repo.iter(pkg1).entries)
     assert_equal([pkg1, pkg2], repo.iter("cat/*").entries)
+    assert_equal([pkg1], repo.iter(Restrict.new("cat/pkg-1")).entries)
   end
 end
