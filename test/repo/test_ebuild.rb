@@ -13,7 +13,7 @@ class TestRepoEbuild < Minitest::Test
     assert_equal(EAPI_LATEST_OFFICIAL, repo.eapi)
 
     # explicit
-    repo = EbuildTemp.new("test", EAPI5)
+    repo = EbuildTemp.new(eapi: EAPI5)
     assert_equal(EAPI5, repo.eapi)
   end
 

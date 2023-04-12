@@ -4,14 +4,14 @@ module Pkgcraft
   module Repos
     # Temporary ebuild package repo.
     class EbuildTemp < Ebuild
-      def initialize(id = "test", eapi = EAPI_LATEST_OFFICIAL)
+      def initialize(id = "test", eapi: EAPI_LATEST_OFFICIAL, priority: 0)
         eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_repo_ebuild_temp_new(id, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?
 
         @ptr_temp = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_ebuild_temp_free))
         path = C.pkgcraft_repo_ebuild_temp_path(@ptr_temp)
-        super(path, id)
+        super(path, id, priority)
       end
 
       def create_ebuild(cpv, *keys)
