@@ -91,6 +91,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_len, [:repo], :uint64
+    attach_function :pkgcraft_repo_is_empty, [:repo], :bool
     attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], :pkg

@@ -61,4 +61,9 @@ class TestRepoBase < Minitest::Test
     repo.create_ebuild("cat/pkg-2")
     assert_equal(2, repo.length)
   end
+
+  def test_iter
+    repo = EbuildTemp.new
+    assert_empty(repo)
+  end
 end
