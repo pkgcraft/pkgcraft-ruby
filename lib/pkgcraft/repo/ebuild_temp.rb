@@ -4,6 +4,8 @@ module Pkgcraft
   module Repos
     # Temporary ebuild package repo.
     class EbuildTemp < Ebuild
+      include Pkgcraft::Error
+
       def initialize(id = "test", eapi = EAPI_LATEST_OFFICIAL)
         eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_repo_ebuild_temp_new(id, eapi.ptr)
@@ -16,6 +18,8 @@ module Pkgcraft
         ptr = FFI::MemoryPointer.new(:pointer, keys.length)
         ptr.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
         path, c_str = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, ptr, keys.length)
+        raise PkgcraftError if c_str.null?
+
         C.pkgcraft_str_free(c_str)
         path
       end
