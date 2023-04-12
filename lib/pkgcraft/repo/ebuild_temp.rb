@@ -19,6 +19,11 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
         path
       end
+
+      def create_pkg(cpv, *keys)
+        create_ebuild(cpv, *keys)
+        each_restrict(cpv)
+      end
     end
   end
 end
