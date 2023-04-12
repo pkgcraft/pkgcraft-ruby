@@ -48,5 +48,10 @@ class TestPkgEbuild < Minitest::Test
     refute_equal(pkg1, pkg2)
     assert(pkg2 >= pkg1)
     assert(pkg2 > pkg1)
+
+    # invalid type
+    assert_raises TypeError do
+      assert(pkg1 < "cat/pkg-1")
+    end
   end
 end
