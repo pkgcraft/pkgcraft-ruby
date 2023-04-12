@@ -10,7 +10,18 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(obj)
-        self.ptr = Restrict.send(:from_obj, obj)
+        case obj
+        when Cpv
+          self.ptr = C.pkgcraft_cpv_restrict(obj.ptr)
+        when Dep
+          self.ptr = C.pkgcraft_dep_restrict(obj.ptr)
+        when Pkg
+          self.ptr = C.pkgcraft_pkg_restrict(obj.ptr)
+        when String
+          self.ptr = Restrict.send(:from_str, obj)
+        else
+          raise TypeError.new("unsupported restrict type: #{obj.class}")
+        end
       end
 
       # Create a Restrict from a pointer.
@@ -21,24 +32,6 @@ module Pkgcraft
       end
 
       private_class_method :from_ptr
-
-      # Try to convert an object to a Restrict pointer.
-      def self.from_obj(obj)
-        case obj
-        when Cpv
-          C.pkgcraft_cpv_restrict(obj.ptr)
-        when Dep
-          C.pkgcraft_dep_restrict(obj.ptr)
-        when Pkg
-          C.pkgcraft_pkg_restrict(obj.ptr)
-        when String
-          Restrict.send(:from_str, obj)
-        else
-          raise TypeError.new("unsupported restrict type: #{obj.class}")
-        end
-      end
-
-      private_class_method :from_obj
 
       # Try to convert a string to a Restrict pointer.
       def self.from_str(str)
