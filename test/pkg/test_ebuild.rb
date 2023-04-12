@@ -9,14 +9,14 @@ class TestPkgEbuild < Minitest::Test
   include Pkgcraft::Repos
 
   def test_cpv
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
     assert_equal(Cpv.new("cat/pkg-1"), pkg.cpv)
   end
 
   def test_eapi
     # default
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
     assert_equal(EAPI_LATEST_OFFICIAL, pkg.eapi)
 
@@ -26,19 +26,19 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_repo
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
     assert_equal(repo, pkg.repo)
   end
 
   def test_version
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
     assert_equal(Version.new("1"), pkg.version)
   end
 
   def test_cmp
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
     pkg2 = repo.create_pkg("cat/pkg-2")
     pkg3 = repo.create_pkg("cat/pkg-1-r0")

@@ -9,7 +9,7 @@ class TestRepoEbuild < Minitest::Test
 
   def test_eapi
     # default
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_equal(EAPI_LATEST_OFFICIAL, repo.eapi)
 
     # explicit
@@ -18,7 +18,7 @@ class TestRepoEbuild < Minitest::Test
   end
 
   def test_masters
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_empty(repo.masters)
   end
 end

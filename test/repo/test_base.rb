@@ -9,7 +9,7 @@ class TestRepoBase < Minitest::Test
 
   def test_categories
     # empty
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_empty(repo.categories)
 
     # single
@@ -23,7 +23,7 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_packages
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_empty(repo.packages("cat"))
 
     # single
@@ -37,7 +37,7 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_versions
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_empty(repo.versions("cat", "pkg"))
 
     # single
@@ -50,7 +50,7 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_length
-    repo = EbuildTemp.new("test")
+    repo = EbuildTemp.new
     assert_equal(0, repo.length)
 
     # single
