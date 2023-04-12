@@ -61,10 +61,6 @@ module Pkgcraft
 
       private_constant :Iter
 
-      def each(&block)
-        Iter.new(self).each(&block)
-      end
-
       # Iterator that applies a restriction over a repo iterator.
       class IterRestrict
         def initialize(repo, obj)
@@ -93,7 +89,9 @@ module Pkgcraft
 
       private_constant :IterRestrict
 
-      def each_restrict(restrict, &block)
+      def each(restrict = nil, &block)
+        return Iter.new(self).each(&block) if restrict.nil?
+
         IterRestrict.new(self, restrict).each(&block)
       end
 
