@@ -22,7 +22,7 @@ module Pkgcraft
 
       def create_pkg(cpv, *keys)
         create_ebuild(cpv, *keys)
-        each(cpv)
+        iter(cpv).first
       end
     end
   end

@@ -44,6 +44,8 @@ module Pkgcraft
 
       # Iterator over a repo.
       class Iter
+        include Enumerable
+
         def initialize(repo)
           ptr = C.pkgcraft_repo_iter(repo.ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_free))
@@ -63,6 +65,8 @@ module Pkgcraft
 
       # Iterator that applies a restriction over a repo iterator.
       class IterRestrict
+        include Enumerable
+
         def initialize(repo, obj)
           restrict =
             if obj.is_a? Pkgcraft::Restrict::Restrict
@@ -79,20 +83,21 @@ module Pkgcraft
             ptr = C.pkgcraft_repo_iter_restrict_next(@ptr)
             break if ptr.null?
 
-            pkg = Pkg.send(:from_ptr, ptr)
-            return pkg unless block_given?
-
-            yield pkg
+            yield Pkg.send(:from_ptr, ptr)
           end
         end
       end
 
       private_constant :IterRestrict
 
-      def each(restrict = nil, &block)
-        return Iter.new(self).each(&block) if restrict.nil?
+      def iter(restrict = nil)
+        return Iter.new(self) if restrict.nil?
 
-        IterRestrict.new(self, restrict).each(&block)
+        IterRestrict.new(self, restrict)
+      end
+
+      def each(restrict = nil, &block)
+        iter(restrict).each(&block)
       end
 
       def path
