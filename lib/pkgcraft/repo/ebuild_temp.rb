@@ -21,7 +21,7 @@ module Pkgcraft
         raise Error::PkgcraftError if c_str.null?
 
         C.pkgcraft_str_free(c_str)
-        path
+        Pathname.new(path)
       end
 
       def create_pkg(cpv, *keys)
