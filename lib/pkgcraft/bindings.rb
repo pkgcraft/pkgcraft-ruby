@@ -127,6 +127,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_cmp, [:pkg, :pkg], :int
     attach_function :pkgcraft_pkg_hash, [:pkg], :uint64
     attach_function :pkgcraft_pkg_str, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_restrict, [:pkg], :restrict
 
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr
@@ -155,6 +156,7 @@ module Pkgcraft
     attach_function :pkgcraft_cpv_hash, [:cpv], :uint64
     attach_function :pkgcraft_cpv_cmp, [:cpv, :cpv], :int
     attach_function :pkgcraft_cpv_str, [:cpv], :strptr
+    attach_function :pkgcraft_cpv_restrict, [:cpv], :restrict
 
     # dep support
     attach_function :pkgcraft_dep_free, [:dep], :void
@@ -182,6 +184,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_hash, [:dep], :uint64
     attach_function :pkgcraft_dep_cmp, [:dep, :dep], :int
     attach_function :pkgcraft_dep_str, [:dep], :strptr
+    attach_function :pkgcraft_dep_restrict, [:dep], :restrict
 
     # version support
     attach_function :pkgcraft_version_free, [:version], :void
@@ -195,5 +198,10 @@ module Pkgcraft
     attach_function :pkgcraft_version_str, [:version], :strptr
     attach_function :pkgcraft_version_str_with_op, [:version], :strptr
     attach_function :pkgcraft_version_with_op, [:string], :version
+
+    # restriction support
+    attach_function :pkgcraft_restrict_free, [:restrict], :void
+    attach_function :pkgcraft_restrict_parse_dep, [:string], :restrict
+    attach_function :pkgcraft_restrict_parse_pkg, [:string], :restrict
   end
 end

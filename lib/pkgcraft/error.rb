@@ -21,6 +21,7 @@ module Pkgcraft
     class InvalidCpv < PkgcraftError; end
     class InvalidDep < PkgcraftError; end
     class InvalidRepo < PkgcraftError; end
+    class InvalidRestrict < PkgcraftError; end
     class InvalidVersion < PkgcraftError; end
   end
 end
