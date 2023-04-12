@@ -9,6 +9,8 @@ module Pkgcraft
       def initialize(id = "test", eapi = EAPI_LATEST_OFFICIAL)
         eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_repo_ebuild_temp_new(id, eapi.ptr)
+        raise PkgcraftError if ptr.null?
+
         @ptr_temp = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_ebuild_temp_free))
         path = C.pkgcraft_repo_ebuild_temp_path(@ptr_temp)
         super(path, id)
