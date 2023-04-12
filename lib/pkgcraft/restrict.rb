@@ -5,17 +5,16 @@ module Pkgcraft
   module Restrict
     # Generic restriction.
     class Restrict
-      include Dep
       include Error
       attr_reader :ptr
 
       def initialize(obj)
         case obj
-        when Cpv
+        when Dep::Cpv
           self.ptr = C.pkgcraft_cpv_restrict(obj.ptr)
-        when Dep
+        when Dep::Dep
           self.ptr = C.pkgcraft_dep_restrict(obj.ptr)
-        when Pkg
+        when Pkg::Pkg
           self.ptr = C.pkgcraft_pkg_restrict(obj.ptr)
         when String
           self.ptr = Restrict.send(:from_str, obj)
@@ -36,12 +35,12 @@ module Pkgcraft
       # Try to convert a string to a Restrict pointer.
       def self.from_str(str)
         begin
-          return C.pkgcraft_cpv_restrict(Cpv.new(str).ptr)
+          return C.pkgcraft_cpv_restrict(Dep::Cpv.new(str).ptr)
         rescue InvalidCpv # rubocop:disable Lint/SuppressedException
         end
 
         begin
-          return C.pkgcraft_dep_restrict(Dep.new(str).ptr)
+          return C.pkgcraft_dep_restrict(Dep::Dep.new(str).ptr)
         rescue InvalidDep # rubocop:disable Lint/SuppressedException
         end
 
