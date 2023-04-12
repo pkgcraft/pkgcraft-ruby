@@ -4,7 +4,7 @@ require "test_helper"
 
 class TestRepoBase < Minitest::Test
   include Pkgcraft
-  include Pkgcraft::Repo
+  include Pkgcraft::Repos
   include Pkgcraft::Error
 
   def test_categories

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  module Repo
+  module Repos
     # Temporary ebuild package repo.
     class EbuildTemp < Ebuild
       def initialize(id, eapi = EAPI_LATEST_OFFICIAL)

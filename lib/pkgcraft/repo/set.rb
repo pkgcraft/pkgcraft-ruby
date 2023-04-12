@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  module Repo
+  module Repos
     # Ordered repository set.
     class RepoSet
       include Comparable

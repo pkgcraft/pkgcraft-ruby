@@ -2,7 +2,7 @@
 
 module Pkgcraft
   # Repo support
-  module Repo
+  module Repos
     # Package repo.
     class Repo
       include Comparable

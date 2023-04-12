@@ -5,7 +5,7 @@ require "test_helper"
 class TestRepoEbuild < Minitest::Test
   include Pkgcraft
   include Pkgcraft::Eapis
-  include Pkgcraft::Repo
+  include Pkgcraft::Repos
 
   def test_eapi
     # default

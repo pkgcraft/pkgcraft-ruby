@@ -26,28 +26,25 @@ module Pkgcraft
     class Pkg
       include Comparable
 
-      include Dep
-      include Eapis
-
       attr_reader :ptr
 
       def cpv
-        @_cpv = Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
+        @_cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
         @_cpv
       end
 
       def eapi
-        @_eapi = Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @_eapi.nil?
+        @_eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @_eapi.nil?
         @_eapi
       end
 
       def repo
-        @_repo = Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @_repo.nil?
+        @_repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @_repo.nil?
         @_repo
       end
 
       def version
-        @_version = Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @_version.nil?
+        @_version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @_version.nil?
         @_version
       end
 

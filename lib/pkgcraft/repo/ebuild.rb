@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  module Repo
+  module Repos
     # Ebuild package repo.
     class Ebuild < Repo
       include Eapis
