@@ -108,7 +108,7 @@ module Pkgcraft
       def all
         if @_all.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
-          @_all = Repo::RepoSet.send(:from_ptr, ptr)
+          @_all = Pkgcraft::Repos::RepoSet.send(:from_ptr, ptr)
         end
         @_all
       end
@@ -116,7 +116,7 @@ module Pkgcraft
       def ebuild
         if @_ebuild.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
-          @_ebuild = Repo::RepoSet.send(:from_ptr, ptr)
+          @_ebuild = Pkgcraft::Repos::RepoSet.send(:from_ptr, ptr)
         end
         @_ebuild
       end

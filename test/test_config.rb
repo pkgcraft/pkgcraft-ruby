@@ -142,4 +142,19 @@ class TestRepos < Minitest::Test
     assert_equal([repo], config.repos.entries)
     assert(config.repos.to_s)
   end
+
+  def test_repo_sets
+    # empty
+    config = Config.new
+    assert_equal(RepoSet.new, config.repos.all)
+    assert_equal(RepoSet.new, config.repos.ebuild)
+
+    # multiple
+    r1 = EbuildTemp.new(id: "r1")
+    r2 = Fake.new(id: "r2")
+    config.add_repo(r1)
+    config.add_repo(r2)
+    assert_equal(RepoSet.new(r1, r2), config.repos.all)
+    assert_equal(RepoSet.new(r1), config.repos.ebuild)
+  end
 end
