@@ -16,10 +16,29 @@ module Pkgcraft
         self.ptr = C.pkgcraft_repo_set_new(ptr, repos.length)
       end
 
+      # Create a RepoSet from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.send(:ptr=, ptr)
+        obj
+      end
+
+      private_class_method :from_ptr
+
       # Iterator over a RepoSet.
       class Iter
-        def initialize(repo_set)
-          ptr = C.pkgcraft_repo_set_iter(repo_set.ptr, nil)
+        include Enumerable
+
+        def initialize(repo, restrict = nil)
+          restrict_ptr =
+            if restrict.nil?
+              nil
+            elsif restrict.is_a? Pkgcraft::Restrict::Restrict
+              restrict.ptr
+            else
+              Pkgcraft::Restrict::Restrict.new(restrict).ptr
+            end
+          ptr = C.pkgcraft_repo_set_iter(repo.ptr, restrict_ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_iter_free))
         end
 
@@ -35,14 +54,13 @@ module Pkgcraft
 
       private_constant :Iter
 
-      # Create a RepoSet from a pointer.
-      def self.from_ptr(ptr)
-        obj = allocate
-        obj.send(:ptr=, ptr)
-        obj
+      def iter(restrict = nil)
+        Iter.new(self, restrict)
       end
 
-      private_class_method :from_ptr
+      def each(restrict = nil, &block)
+        iter(restrict).each(&block)
+      end
 
       def repos
         length = C::LenPtr.new
@@ -53,10 +71,6 @@ module Pkgcraft
           C.pkgcraft_repos_free(c_repos, length[:value])
         end
         @_repos
-      end
-
-      def each(&block)
-        Iter.new(self).each(&block)
       end
 
       def <=>(other)

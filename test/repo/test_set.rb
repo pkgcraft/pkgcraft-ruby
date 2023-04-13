@@ -52,4 +52,23 @@ class TestRepoSet < Minitest::Test
       assert(s1 < r1)
     end
   end
+
+  def test_iter
+    set = RepoSet.new
+    assert_empty(set.entries)
+
+    r1 = Fake.new(["cat/pkg-1"], id: "r1")
+    r2 = EbuildTemp.new(id: "r2")
+    r2.create_ebuild("cat/pkg-1")
+
+    # single
+    set = RepoSet.new(r1)
+    assert_equal(["cat/pkg-1::r1"], set.entries.map(&:to_s))
+    assert_empty(set.iter("*::r2").entries.map(&:to_s))
+
+    # multiple
+    set = RepoSet.new(r2, r1)
+    assert_equal(["cat/pkg-1::r1", "cat/pkg-1::r2"], set.entries.map(&:to_s))
+    assert_equal(["cat/pkg-1::r2"], set.iter("*::r2").entries.map(&:to_s))
+  end
 end
