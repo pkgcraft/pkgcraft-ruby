@@ -80,6 +80,8 @@ module Pkgcraft
     attach_function :pkgcraft_config_load_repos_conf, [:config, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos, [:config, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos_set, [:config, :int], :pointer
+    attach_function :pkgcraft_config_add_repo, [:config, :repo], :repo
+    attach_function :pkgcraft_config_add_repo_path, [:config, :string, :int, :string], :repo
 
     # repo support
     attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void

@@ -57,6 +57,35 @@ module Pkgcraft
         C.pkgcraft_repos_free(c_repos, length[:value])
         repos
       end
+
+      def add_repo(repo, id: nil, priority: 0)
+        if [String, Pathname].any? { |c| repo.is_a? c }
+          path = repo.to_s
+          add_repo_path(path, id, priority)
+        elsif repo.is_a? Pkgcraft::Repos::Repo
+          ptr = C.pkgcraft_config_add_repo(@ptr, repo.ptr)
+          raise Error::ConfigError if ptr.null?
+
+          @_repos = nil
+          repo
+        else
+          raise TypeError.new("unsupported repo type: #{repo.class}")
+        end
+      end
+
+      private
+
+      def add_repo_path(path, id, priority)
+        path = path.to_s
+        id = id.nil? ? path : id.to_s
+        ptr = C.pkgcraft_config_add_repo_path(@ptr, id, priority, path)
+        raise Error::PkgcraftError if ptr.null?
+
+        # force repos attr refresh
+        @_repos = nil
+
+        Pkgcraft::Repos::Repo.send(:from_ptr, ptr, false)
+      end
     end
 
     # System repositories.
@@ -94,6 +123,14 @@ module Pkgcraft
 
       def each(&block)
         @repos.values.each(&block)
+      end
+
+      def key?(key)
+        @repos.key?(key)
+      end
+
+      def empty?
+        @repos.empty?
       end
 
       def length
