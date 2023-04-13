@@ -4,7 +4,9 @@ require "pathname"
 
 module Pkgcraft
   # Config support
-  module Config
+  module Configs
+    include Pkgcraft::Repos
+
     PORTAGE_REPOS_CONF_DEFAULTS = [
       "/etc/portage/repos.conf",
       "/usr/share/portage/config.repos.conf"
@@ -16,7 +18,7 @@ module Pkgcraft
       repos = {}
       (0...length).each do |i|
         ptr = c_repos[i]
-        repo = Pkgcraft::Repos::Repo.send(:from_ptr, ptr, ref)
+        repo = Repo.send(:from_ptr, ptr, ref)
         repos[repo.id] = repo
       end
       repos
@@ -26,13 +28,15 @@ module Pkgcraft
 
     # Config for the system.
     class Config
+      include Pkgcraft::Repos
+
       def initialize
         ptr = C.pkgcraft_config_new
         @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_config_free))
       end
 
       def repos
-        @_repos = Repos._from_config(@ptr) if @_repos.nil?
+        @_repos = Repos.send(:from_ptr, @ptr) if @_repos.nil?
         @_repos
       end
 
@@ -53,7 +57,7 @@ module Pkgcraft
         # force repos attr refresh
         @_repos = nil
 
-        repos = Pkgcraft::Config.send(:repos_to_dict, c_repos, length[:value], false)
+        repos = Configs.send(:repos_to_dict, c_repos, length[:value], false)
         C.pkgcraft_repos_free(c_repos, length[:value])
         repos
       end
@@ -62,7 +66,7 @@ module Pkgcraft
         if [String, Pathname].any? { |c| repo.is_a? c }
           path = repo.to_s
           add_repo_path(path, id, priority)
-        elsif repo.is_a? Pkgcraft::Repos::Repo
+        elsif repo.is_a? Repo
           ptr = C.pkgcraft_config_add_repo(@ptr, repo.ptr)
           raise Error::ConfigError if ptr.null?
 
@@ -84,19 +88,20 @@ module Pkgcraft
         # force repos attr refresh
         @_repos = nil
 
-        Pkgcraft::Repos::Repo.send(:from_ptr, ptr, false)
+        Repo.send(:from_ptr, ptr, false)
       end
     end
 
     # System repositories.
     class Repos
       include Enumerable
+      include Pkgcraft::Repos
 
       # Create a Repos object from a Config pointer.
-      def self._from_config(ptr)
+      def self.from_ptr(ptr)
         length = C::LenPtr.new
         c_repos = C.pkgcraft_config_repos(ptr, length)
-        repos = Pkgcraft::Config.send(:repos_to_dict, c_repos, length[:value], true)
+        repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
         C.pkgcraft_repos_free(c_repos, length[:value])
 
         obj = allocate
@@ -105,10 +110,12 @@ module Pkgcraft
         obj
       end
 
+      private_class_method :from_ptr
+
       def all
         if @_all.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
-          @_all = Pkgcraft::Repos::RepoSet.send(:from_ptr, ptr)
+          @_all = RepoSet.send(:from_ptr, ptr)
         end
         @_all
       end
@@ -116,7 +123,7 @@ module Pkgcraft
       def ebuild
         if @_ebuild.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
-          @_ebuild = Pkgcraft::Repos::RepoSet.send(:from_ptr, ptr)
+          @_ebuild = RepoSet.send(:from_ptr, ptr)
         end
         @_ebuild
       end

@@ -4,7 +4,7 @@ require "test_helper"
 
 class TestRepoFake < Minitest::Test
   include Pkgcraft
-  include Pkgcraft::Config
+  include Pkgcraft::Configs
   include Pkgcraft::Error
   include Pkgcraft::Repos
 

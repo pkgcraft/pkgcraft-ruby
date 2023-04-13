@@ -28,15 +28,16 @@ module Pkgcraft
       # Iterator over a RepoSet.
       class Iter
         include Enumerable
+        include Pkgcraft::Restricts
 
         def initialize(repo, restrict = nil)
           restrict_ptr =
             if restrict.nil?
               nil
-            elsif restrict.is_a? Pkgcraft::Restrict::Restrict
+            elsif restrict.is_a? Restrict
               restrict.ptr
             else
-              Pkgcraft::Restrict::Restrict.new(restrict).ptr
+              Restrict.new(restrict).ptr
             end
           ptr = C.pkgcraft_repo_set_iter(repo.ptr, restrict_ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_iter_free))
@@ -66,7 +67,7 @@ module Pkgcraft
         length = C::LenPtr.new
         if @_repos.nil?
           c_repos = C.pkgcraft_repo_set_repos(@ptr, length)
-          repos = Config.send(:repos_to_dict, c_repos, length[:value], true)
+          repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
           @_repos = Set.new(repos.values)
           C.pkgcraft_repos_free(c_repos, length[:value])
         end

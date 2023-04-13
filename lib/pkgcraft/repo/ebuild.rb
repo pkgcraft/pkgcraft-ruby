@@ -15,7 +15,7 @@ module Pkgcraft
         if @_masters.nil?
           length = C::LenPtr.new
           c_repos = C.pkgcraft_repo_ebuild_masters(@ptr, length)
-          repos = Config.send(:repos_to_dict, c_repos, length[:value], false)
+          repos = Configs.send(:repos_to_dict, c_repos, length[:value], false)
           @_masters = repos.values
         end
         @_masters

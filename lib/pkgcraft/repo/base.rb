@@ -66,13 +66,14 @@ module Pkgcraft
       # Iterator that applies a restriction over a repo iterator.
       class IterRestrict
         include Enumerable
+        include Pkgcraft::Restricts
 
         def initialize(repo, obj)
           restrict =
-            if obj.is_a? Pkgcraft::Restrict::Restrict
+            if obj.is_a? Restrict
               obj
             else
-              Pkgcraft::Restrict::Restrict.new(obj)
+              Restrict.new(obj)
             end
           ptr = C.pkgcraft_repo_iter_restrict(repo.ptr, restrict.ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_restrict_free))

@@ -4,7 +4,7 @@ require "test_helper"
 
 class TestConfig < Minitest::Test
   include Pkgcraft
-  include Pkgcraft::Config
+  include Pkgcraft::Configs
   include Pkgcraft::Error
   include Pkgcraft::Repos
 
@@ -128,7 +128,7 @@ end
 
 class TestRepos < Minitest::Test
   include Pkgcraft
-  include Pkgcraft::Config
+  include Pkgcraft::Configs
   include Pkgcraft::Repos
 
   def test_methods

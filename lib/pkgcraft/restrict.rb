@@ -2,7 +2,7 @@
 
 module Pkgcraft
   # Error support
-  module Restrict
+  module Restricts
     # Generic restriction.
     class Restrict
       include Error

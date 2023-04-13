@@ -5,7 +5,7 @@ require "test_helper"
 class TestRepoBase < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Repos
-  include Pkgcraft::Restrict
+  include Pkgcraft::Restricts
   include Pkgcraft::Error
 
   def test_path
