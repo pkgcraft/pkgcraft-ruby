@@ -16,6 +16,13 @@ class TestRepoFake < Minitest::Test
     # single
     repo = Fake.new(["cat/pkg-1"])
     refute_empty(repo)
+
+    # file path
+    f = Tempfile.new("cpvs")
+    f.write("cat/pkg-1")
+    f.rewind
+    repo = Fake.new(f.path)
+    refute_empty(repo)
   end
 
   def test_extend
