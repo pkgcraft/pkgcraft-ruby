@@ -102,6 +102,11 @@ class TestRepoBase < Minitest::Test
     assert_equal(2, repos.length)
   end
 
+  def test_string
+    repo = EbuildTemp.new(id: "repo")
+    assert_equal("repo", repo.to_s)
+  end
+
   def test_iter
     repo = EbuildTemp.new
     assert_empty(repo)
