@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 module Pkgcraft
   module Repos
     # Ordered repository set.
@@ -7,6 +9,12 @@ module Pkgcraft
       include Comparable
       include Enumerable
       attr_reader :ptr
+
+      def initialize(*repos)
+        ptr = FFI::MemoryPointer.new(:pointer, repos.length)
+        ptr.write_array_of_pointer(repos.map(&:ptr))
+        self.ptr = C.pkgcraft_repo_set_new(ptr, repos.length)
+      end
 
       # Iterator over a RepoSet.
       class Iter
@@ -29,9 +37,8 @@ module Pkgcraft
 
       # Create a RepoSet from a pointer.
       def self.from_ptr(ptr)
-        ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_free))
         obj = allocate
-        obj.instance_variable_set(:@ptr, ptr)
+        obj.send(:ptr=, ptr)
         obj
       end
 
@@ -64,7 +71,15 @@ module Pkgcraft
       end
 
       def length
-        repos.length
+        C.pkgcraft_repo_set_len(@ptr)
+      end
+
+      def empty?
+        C.pkgcraft_repo_set_is_empty(@ptr)
+      end
+
+      def ptr=(ptr)
+        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_free))
       end
     end
   end

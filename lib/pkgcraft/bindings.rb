@@ -121,6 +121,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_set_iter, [:repo_set, :restrict], :pointer
     attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_set_iter_next, [:pointer], :pkg
+    attach_function :pkgcraft_repo_set_len, [:repo_set], :uint64
+    attach_function :pkgcraft_repo_set_is_empty, [:repo_set], :bool
+    attach_function :pkgcraft_repo_set_new, [:pointer, :uint64], :repo_set
     attach_function :pkgcraft_repo_set_free, [:repo_set], :void
 
     # pkg support
