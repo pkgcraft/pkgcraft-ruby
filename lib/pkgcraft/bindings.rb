@@ -116,6 +116,7 @@ module Pkgcraft
 
     # fake repo support
     attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
+    attach_function :pkgcraft_repo_fake_extend, [:repo, :pointer, :size_t], :repo
 
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:repo_set, LenPtr.by_ref], :pointer

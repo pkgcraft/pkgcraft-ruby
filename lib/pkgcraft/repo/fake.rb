@@ -22,6 +22,13 @@ module Pkgcraft
           Repo.send(:from_ptr, ptr, false, self)
         end
       end
+
+      def extend(cpvs)
+        c_cpvs = FFI::MemoryPointer.new(:pointer, cpvs.length)
+        c_cpvs.write_array_of_pointer(cpvs.map { |s| FFI::MemoryPointer.from_string(s) })
+        ptr = C.pkgcraft_repo_fake_extend(@ptr, c_cpvs, cpvs.length)
+        raise Error::PkgcraftError if ptr.null?
+      end
     end
   end
 end
