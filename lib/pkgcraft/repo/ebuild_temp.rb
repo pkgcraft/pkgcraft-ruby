@@ -4,7 +4,7 @@ module Pkgcraft
   module Repos
     # Temporary ebuild package repo.
     class EbuildTemp < Ebuild
-      def initialize(id = "test", eapi: EAPI_LATEST_OFFICIAL, priority: 0)
+      def initialize(id: "test", eapi: EAPI_LATEST_OFFICIAL, priority: 0)
         eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_repo_ebuild_temp_new(id, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?

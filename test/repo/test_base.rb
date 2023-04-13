@@ -77,9 +77,9 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_cmp
-    r1 = EbuildTemp.new("1")
-    r2 = EbuildTemp.new("2")
-    r3 = EbuildTemp.new("2", priority: 1)
+    r1 = EbuildTemp.new(id: "1")
+    r2 = EbuildTemp.new(id: "2")
+    r3 = EbuildTemp.new(id: "3", priority: 1)
     assert(r1 < r2)
     assert(r3 < r1)
 
@@ -90,8 +90,8 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_hash
-    r1 = EbuildTemp.new("1")
-    r2 = EbuildTemp.new("2")
+    r1 = EbuildTemp.new(id: "1")
+    r2 = EbuildTemp.new(id: "2")
 
     # equal
     repos = Set.new([r1, r1])

@@ -13,7 +13,7 @@ class TestRepoSet < Minitest::Test
     assert_empty(set.repos)
 
     # single
-    r1 = EbuildTemp.new("r1")
+    r1 = EbuildTemp.new(id: "r1")
     set = RepoSet.new(r1)
     assert_equal(Set[r1], set.repos)
 
