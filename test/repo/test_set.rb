@@ -37,4 +37,19 @@ class TestRepoSet < Minitest::Test
     assert_equal(1, Set[s1, s1].length)
     assert_equal(2, Set[s1, s2].length)
   end
+
+  def test_cmp
+    r1 = Fake.new(id: "r1")
+    r2 = Fake.new(id: "r2")
+    s0 = RepoSet.new
+    s1 = RepoSet.new(r1)
+    s2 = RepoSet.new(r2)
+    assert(s1 < s2)
+    assert(s1 > s0)
+
+    # invalid type
+    assert_raises TypeError do
+      assert(s1 < r1)
+    end
+  end
 end
