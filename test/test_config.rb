@@ -15,6 +15,78 @@ class TestConfig < Minitest::Test
     refute_empty(config.repos)
   end
 
+  def test_load_repos_conf
+    config = Config.new
+
+    # no defaults exist
+    assert_raises RuntimeError do
+      config.load_repos_conf(defaults: ["path/to/nonexistent/file"])
+    end
+
+    # nonexistent
+    assert_raises PkgcraftError do
+      config.load_repos_conf("path/to/nonexistent/file")
+    end
+
+    # empty
+    f = Tempfile.new("repos.conf")
+    config.load_repos_conf(f.path)
+    assert_empty(config.repos)
+
+    r1 = EbuildTemp.new("r1")
+
+    # bad ini format
+    data = <<~CONFIG
+      [test
+      location = #{r1.path}
+    CONFIG
+    f.write(data)
+    f.rewind
+    assert_raises PkgcraftError do
+      config.load_repos_conf(f.path)
+    end
+
+    # system defaults
+    data = <<~CONFIG
+      [test]
+      location = #{r1.path}
+    CONFIG
+    f.write(data)
+    f.rewind
+    config.load_repos_conf(defaults: [f.path])
+    assert(config.repos.key?("test"))
+
+    # file path
+    config = Config.new
+    config.load_repos_conf(f.path)
+    assert(config.repos.key?("test"))
+
+    # reloading causes error
+    assert_raises PkgcraftError do
+      config.load_repos_conf(f.path)
+    end
+
+    # dir path
+    Dir.mktmpdir do |d|
+      d1 = <<~CONFIG
+        [r1]
+        location = #{r1.path}
+      CONFIG
+      File.write("#{d}/1.conf", d1)
+
+      r2 = EbuildTemp.new("r2")
+      d2 = <<~CONFIG
+        [r2]
+        location = #{r2.path}
+      CONFIG
+      File.write("#{d}/2.conf", d2)
+
+      config = Config.new
+      config.load_repos_conf(d)
+      assert_equal([r1, r2], config.repos.entries)
+    end
+  end
+
   def test_add_repo
     r1 = EbuildTemp.new("r1")
     r2 = EbuildTemp.new("r2")

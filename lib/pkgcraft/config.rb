@@ -36,10 +36,10 @@ module Pkgcraft
         @_repos
       end
 
-      def load_repos_conf(path = nil)
+      def load_repos_conf(path = nil, defaults: PORTAGE_REPOS_CONF_DEFAULTS)
         length = C::LenPtr.new
         if path.nil?
-          PORTAGE_REPOS_CONF_DEFAULTS.each do |p|
+          defaults.each do |p|
             if Pathname.new(p).exist?
               path = p
               break
