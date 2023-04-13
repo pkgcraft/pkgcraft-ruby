@@ -16,5 +16,10 @@ class TestRepoSet < Minitest::Test
     r1 = EbuildTemp.new("r1")
     set = RepoSet.new(r1)
     assert_equal(Set[r1], set.repos)
+
+    # multiple
+    r2 = Fake.new(id: "r2")
+    set = RepoSet.new(r1, r2)
+    assert_equal(Set[r1, r2], set.repos)
   end
 end
