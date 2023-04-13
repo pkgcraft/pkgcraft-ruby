@@ -114,6 +114,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
     attach_function :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], :strptr
 
+    # fake repo support
+    attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
+
     # repo set support
     attach_function :pkgcraft_repo_set_repos, [:repo_set, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_set_cmp, [:repo_set, :repo_set], :int
