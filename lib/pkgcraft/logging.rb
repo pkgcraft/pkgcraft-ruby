@@ -27,6 +27,9 @@ module Pkgcraft
 
     private_constant :LogCallback
 
-    C.pkgcraft_logging_enable(LogCallback)
+    # Enable forwarding pkgcraft logs into ruby's log system.
+    def self.enable
+      C.pkgcraft_logging_enable(LogCallback)
+    end
   end
 end
