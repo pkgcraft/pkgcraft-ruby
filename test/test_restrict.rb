@@ -8,6 +8,12 @@ class TestRestrict < Minitest::Test
   include Pkgcraft::Repos
   include Pkgcraft::Restricts
 
+  def test_invalid
+    assert_raises TypeError do
+      Restrict.new([])
+    end
+  end
+
   def test_eq_and_hash
     r1 = Restrict.new("cat/pkg-1")
     r2 = Restrict.new(Cpv.new("cat/pkg-1"))
