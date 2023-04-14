@@ -54,6 +54,8 @@ module Pkgcraft
         raise TypeError.new("invalid type: #{other.class}")
       end
 
+      alias eql? ==
+
       def hash
         @_hash = C.pkgcraft_pkg_hash(@ptr) if @_hash.nil?
         @_hash

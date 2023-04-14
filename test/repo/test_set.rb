@@ -34,8 +34,10 @@ class TestRepoSet < Minitest::Test
   def test_hash
     s1 = RepoSet.new
     s2 = RepoSet.new
+    s3 = RepoSet.new(Fake.new)
     assert_equal(1, Set[s1, s1].length)
-    assert_equal(2, Set[s1, s2].length)
+    assert_equal(1, Set[s1, s2].length)
+    assert_equal(2, Set[s1, s3].length)
   end
 
   def test_cmp
