@@ -213,6 +213,11 @@ module Pkgcraft
     attach_function :pkgcraft_version_with_op, [:string], :version
 
     # restriction support
+    attach_function :pkgcraft_restrict_and, [:restrict, :restrict], :restrict
+    attach_function :pkgcraft_restrict_or, [:restrict, :restrict], :restrict
+    attach_function :pkgcraft_restrict_xor, [:restrict, :restrict], :restrict
+    attach_function :pkgcraft_restrict_not, [:restrict], :restrict
+    attach_function :pkgcraft_restrict_hash, [:restrict], :uint64
     attach_function :pkgcraft_restrict_free, [:restrict], :void
     attach_function :pkgcraft_restrict_parse_dep, [:string], :restrict
     attach_function :pkgcraft_restrict_parse_pkg, [:string], :restrict

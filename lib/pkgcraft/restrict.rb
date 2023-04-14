@@ -53,6 +53,32 @@ module Pkgcraft
 
       private_class_method :from_str
 
+      def hash
+        C.pkgcraft_restrict_hash(@ptr)
+      end
+
+      def &(other)
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Restrict
+
+        Restrict.send(:from_ptr, C.pkgcraft_restrict_and(@ptr, other.ptr))
+      end
+
+      def |(other)
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Restrict
+
+        Restrict.send(:from_ptr, C.pkgcraft_restrict_or(@ptr, other.ptr))
+      end
+
+      def ^(other)
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Restrict
+
+        Restrict.send(:from_ptr, C.pkgcraft_restrict_xor(@ptr, other.ptr))
+      end
+
+      def ~
+        Restrict.send(:from_ptr, C.pkgcraft_restrict_not(@ptr))
+      end
+
       def ptr=(ptr)
         @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_restrict_free))
       end
