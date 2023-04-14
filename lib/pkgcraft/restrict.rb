@@ -53,6 +53,14 @@ module Pkgcraft
 
       private_class_method :from_str
 
+      def ==(other)
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Restrict
+
+        C.pkgcraft_restrict_eq(@ptr, other.ptr)
+      end
+
+      alias eql? ==
+
       def hash
         C.pkgcraft_restrict_hash(@ptr)
       end
