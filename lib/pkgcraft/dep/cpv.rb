@@ -95,9 +95,9 @@ module Pkgcraft
       end
 
       def <=>(other)
-        return C.pkgcraft_cpv_cmp(@ptr, other.ptr) if other.is_a? Cpv
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Cpv
 
-        raise TypeError.new("invalid type: #{other.class}")
+        C.pkgcraft_cpv_cmp(@ptr, other.ptr)
       end
 
       alias eql? ==

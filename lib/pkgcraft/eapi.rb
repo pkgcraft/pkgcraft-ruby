@@ -50,9 +50,9 @@ module Pkgcraft
       end
 
       def <=>(other)
-        return C.pkgcraft_eapi_cmp(@ptr, other.ptr) if other.is_a? Eapi
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Eapi
 
-        raise TypeError.new("invalid type: #{other.class}")
+        C.pkgcraft_eapi_cmp(@ptr, other.ptr)
       end
 
       alias eql? ==
