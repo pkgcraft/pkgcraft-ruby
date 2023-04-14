@@ -76,6 +76,23 @@ class TestRepoBase < Minitest::Test
     refute_empty(repo)
   end
 
+  def test_contains
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1")
+
+    # path
+    assert(repo.contains?("cat/pkg"))
+
+    # nonexistent path
+    refute(repo.contains?("nonexistent/path"))
+
+    # Cpv
+    assert(repo.contains?(Cpv.new("cat/pkg-1")))
+
+    # Pkg
+    assert(repo.contains?(pkg))
+  end
+
   def test_cmp
     r1 = EbuildTemp.new(id: "1")
     r2 = EbuildTemp.new(id: "2")

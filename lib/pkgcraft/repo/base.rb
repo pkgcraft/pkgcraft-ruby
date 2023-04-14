@@ -142,6 +142,14 @@ module Pkgcraft
         C.pkgcraft_repo_is_empty(@ptr)
       end
 
+      def contains?(obj)
+        if [String, Pathname].any? { |c| obj.is_a? c }
+          C.pkgcraft_repo_contains_path(@ptr, obj.to_s)
+        else
+          !iter(obj).first.nil?
+        end
+      end
+
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Repo
 

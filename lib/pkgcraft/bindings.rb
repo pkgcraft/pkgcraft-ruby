@@ -89,6 +89,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_hash, [:repo], :uint64
     attach_function :pkgcraft_repo_id, [:repo], :strptr
     attach_function :pkgcraft_repo_path, [:repo], :strptr
+    attach_function :pkgcraft_repo_contains_path, [:repo, :string], :bool
     attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
