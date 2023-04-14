@@ -5,6 +5,7 @@ require "test_helper"
 class TestRepoSet < Minitest::Test
   include Pkgcraft
   include Pkgcraft::Repos
+  include Pkgcraft::Restricts
 
   def test_new
     # empty
@@ -72,5 +73,6 @@ class TestRepoSet < Minitest::Test
     set = RepoSet.new(r2, r1)
     assert_equal(["cat/pkg-1::r1", "cat/pkg-1::r2"], set.entries.map(&:to_s))
     assert_equal(["cat/pkg-1::r2"], set.iter("*::r2").entries.map(&:to_s))
+    assert_equal(["cat/pkg-1::r2"], set.iter(Restrict.new("*::r2")).entries.map(&:to_s))
   end
 end
