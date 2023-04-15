@@ -175,6 +175,7 @@ module Pkgcraft
     # depset support
     attach_function :pkgcraft_dep_set_eq, [:dep_set], :bool
     attach_function :pkgcraft_dep_set_hash, [:dep_set], :uint64
+    attach_function :pkgcraft_dep_set_str, [:dep_set], :strptr
     attach_function :pkgcraft_dep_set_free, [:dep_set], :void
 
     # eapi support

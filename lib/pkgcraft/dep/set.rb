@@ -37,6 +37,12 @@ module Pkgcraft
         @_hash = C.pkgcraft_dep_set_hash(@ptr) if @_hash.nil?
         @_hash
       end
+
+      def to_s
+        s, c_str = C.pkgcraft_dep_set_str(@ptr)
+        C.pkgcraft_str_free(c_str)
+        s
+      end
     end
 
     class Dependencies < DepSet
