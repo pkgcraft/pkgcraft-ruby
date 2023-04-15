@@ -11,9 +11,9 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(*repos)
-        ptr = FFI::MemoryPointer.new(:pointer, repos.length)
-        ptr.write_array_of_pointer(repos.map(&:ptr))
-        self.ptr = C.pkgcraft_repo_set_new(ptr, repos.length)
+        c_repos = FFI::MemoryPointer.new(:pointer, repos.length)
+        c_repos.write_array_of_pointer(repos.map(&:ptr))
+        self.ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
       end
 
       # Create a RepoSet from a pointer.
