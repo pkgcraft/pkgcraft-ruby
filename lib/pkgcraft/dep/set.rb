@@ -45,7 +45,17 @@ module Pkgcraft
       end
     end
 
+    # Set of package dependencies.
     class Dependencies < DepSet
+      include Pkgcraft::Eapis
+
+      def initialize(str, eapi = EAPI_LATEST)
+        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi.ptr)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
     end
   end
 end
