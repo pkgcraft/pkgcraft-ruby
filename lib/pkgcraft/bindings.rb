@@ -43,6 +43,17 @@ module Pkgcraft
       layout :value, :size_t
     end
 
+    # DepSet wrapper
+    class DepSet < FFI::Struct
+      layout :unit, :int,
+             :kind, :int,
+             :dep,  :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_dep_set_free(ptr)
+      end
+    end
+
     # error support
     class Error < FFI::Struct
       layout :message, :string,
@@ -66,6 +77,7 @@ module Pkgcraft
     typedef :pointer, :eapi
     typedef :pointer, :cpv
     typedef :pointer, :dep
+    typedef :pointer, :dep_set
     typedef :pointer, :version
     typedef :pointer, :restrict
 
@@ -150,6 +162,14 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_slot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_subslot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_long_description, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_depend, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_bdepend, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_idepend, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_pdepend, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_rdepend, [:pkg], DepSet.auto_ptr
+
+    # depset support
+    attach_function :pkgcraft_dep_set_free, [:dep_set], :void
 
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr

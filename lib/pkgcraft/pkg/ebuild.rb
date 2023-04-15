@@ -4,6 +4,16 @@ module Pkgcraft
   module Pkg
     # Ebuild package.
     class Ebuild < Pkg
+      include Pkgcraft::Dep
+
+      def initialize
+        @_depend = SENTINEL
+        @_bdepend = SENTINEL
+        @_idepend = SENTINEL
+        @_pdepend = SENTINEL
+        @_rdepend = SENTINEL
+      end
+
       def path
         s, c_str = C.pkgcraft_pkg_ebuild_path(@ptr)
         C.pkgcraft_str_free(c_str)
@@ -34,6 +44,46 @@ module Pkgcraft
         s, c_str = C.pkgcraft_pkg_ebuild_subslot(@ptr)
         C.pkgcraft_str_free(c_str)
         s
+      end
+
+      def depend
+        if @_depend.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_depend(@ptr)
+          @_depend = Dependencies.send(:from_ptr, ptr)
+        end
+        @_depend
+      end
+
+      def bdepend
+        if @_bdepend.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_bdepend(@ptr)
+          @_bdepend = Dependencies.send(:from_ptr, ptr)
+        end
+        @_bdepend
+      end
+
+      def idepend
+        if @_idepend.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_idepend(@ptr)
+          @_idepend = Dependencies.send(:from_ptr, ptr)
+        end
+        @_idepend
+      end
+
+      def pdepend
+        if @_pdepend.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_pdepend(@ptr)
+          @_pdepend = Dependencies.send(:from_ptr, ptr)
+        end
+        @_pdepend
+      end
+
+      def rdepend
+        if @_rdepend.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_rdepend(@ptr)
+          @_rdepend = Dependencies.send(:from_ptr, ptr)
+        end
+        @_rdepend
       end
 
       def long_description
