@@ -4,6 +4,7 @@ require "test_helper"
 
 class TestRepoSet < Minitest::Test
   include Pkgcraft
+  include Pkgcraft::Dep
   include Pkgcraft::Repos
   include Pkgcraft::Restricts
 
@@ -30,6 +31,25 @@ class TestRepoSet < Minitest::Test
     set = RepoSet.new(Fake.new(["cat/pkg-1"]))
     refute_empty(set)
     assert_equal(1, set.length)
+  end
+
+  def test_contains
+    # empty
+    set = RepoSet.new
+    refute(set.contains?("cat/pkg-1"))
+
+    r1 = EbuildTemp.new(id: "r1")
+    r1.create_ebuild("cat/pkg-1")
+    r2 = Fake.new(["cat/pkg-2"], id: "r2")
+    set = RepoSet.new(r1, r2)
+    assert(set.contains?(r1))
+    assert(set.contains?(r2))
+    assert(set.contains?(Cpv.new("cat/pkg-1")))
+    assert(set.contains?(Dep.new(">=cat/pkg-2")))
+    refute(set.contains?(Dep.new("=cat/pkg-3")))
+    assert(set.contains?(Restrict.new("*/pkg")))
+    refute(set.contains?(Restrict.new("*::r3")))
+    assert(set.contains?("cat/pkg"))
   end
 
   def test_hash

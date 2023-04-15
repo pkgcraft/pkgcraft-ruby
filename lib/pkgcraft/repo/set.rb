@@ -74,6 +74,12 @@ module Pkgcraft
         @_repos
       end
 
+      def contains?(obj)
+        return repos.include?(obj) if obj.is_a? Repo
+
+        repos.any? { |r| r.contains?(obj) }
+      end
+
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? RepoSet
 
