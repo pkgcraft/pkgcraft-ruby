@@ -24,6 +24,14 @@ module Pkgcraft
         Pathname.new(path)
       end
 
+      def create_ebuild_raw(cpv, data)
+        path, c_str = C.pkgcraft_repo_ebuild_temp_create_ebuild_raw(@ptr_temp, cpv, data)
+        raise Error::PkgcraftError if c_str.null?
+
+        C.pkgcraft_str_free(c_str)
+        Pathname.new(path)
+      end
+
       def create_pkg(cpv, *keys)
         create_ebuild(cpv, *keys)
         iter(cpv).first
