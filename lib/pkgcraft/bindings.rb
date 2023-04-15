@@ -143,6 +143,14 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_str, [:pkg], :strptr
     attach_function :pkgcraft_pkg_restrict, [:pkg], :restrict
 
+    # ebuild pkg support
+    attach_function :pkgcraft_pkg_ebuild_path, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_ebuild, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_description, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_slot, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_subslot, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_long_description, [:pkg], :strptr
+
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr
     attach_function :pkgcraft_eapi_cmp, [:eapi, :eapi], :int
