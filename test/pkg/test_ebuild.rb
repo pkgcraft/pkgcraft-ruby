@@ -43,6 +43,20 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Version.new("1"), pkg.version)
   end
 
+  def test_path
+    repo = EbuildTemp.new
+    path = repo.create_ebuild("cat/pkg-1")
+    pkg = repo.iter("cat/pkg-1").first
+    assert_equal(path, pkg.path)
+  end
+
+  def test_ebuild
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1")
+    data = File.read(pkg.path)
+    assert_equal(data, pkg.ebuild)
+  end
+
   def test_description
     repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1", "DESCRIPTION=description")
