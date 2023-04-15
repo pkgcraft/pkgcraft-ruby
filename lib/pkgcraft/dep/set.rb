@@ -4,6 +4,8 @@ module Pkgcraft
   module Dep
     # Set of dependency objects.
     class DepSet
+      attr_reader :ptr
+
       # Create a DepSet from a pointer.
       def self.from_ptr(ptr, obj = nil)
         unless ptr.null?
@@ -22,6 +24,19 @@ module Pkgcraft
       end
 
       private_class_method :from_ptr
+
+      def ==(other)
+        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSet
+
+        C.pkgcraft_dep_set_eq(@ptr, other.ptr)
+      end
+
+      alias eql? ==
+
+      def hash
+        @_hash = C.pkgcraft_dep_set_hash(@ptr) if @_hash.nil?
+        @_hash
+      end
     end
 
     class Dependencies < DepSet
