@@ -7,10 +7,10 @@ class TestRepoSet < Minitest::Test
   include Pkgcraft::Repos
   include Pkgcraft::Restricts
 
-  def test_new
+  def test_repos
     # empty
     set = RepoSet.new
-    assert_empty(set)
+    assert_empty(set.repos)
 
     # single
     r1 = EbuildTemp.new(id: "r1")
