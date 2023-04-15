@@ -6,6 +6,7 @@ class TestPkgEbuild < Minitest::Test
   include Pkgcraft
   include Pkgcraft::Dep
   include Pkgcraft::Eapis
+  include Pkgcraft::Error
   include Pkgcraft::Repos
 
   def test_cpv
@@ -55,6 +56,12 @@ class TestPkgEbuild < Minitest::Test
     pkg = repo.create_pkg("cat/pkg-1")
     data = File.read(pkg.path)
     assert_equal(data, pkg.ebuild)
+
+    # missing file causes error
+    pkg.path.delete
+    assert_raises PkgcraftError do
+      pkg.ebuild
+    end
   end
 
   def test_description
