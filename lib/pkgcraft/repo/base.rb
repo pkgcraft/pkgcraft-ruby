@@ -46,8 +46,8 @@ module Pkgcraft
       class Iter
         include Enumerable
 
-        def initialize(repo)
-          ptr = C.pkgcraft_repo_iter(repo.ptr)
+        def initialize(repo_ptr)
+          ptr = C.pkgcraft_repo_iter(repo_ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_free))
         end
 
@@ -68,14 +68,14 @@ module Pkgcraft
         include Enumerable
         include Pkgcraft::Restricts
 
-        def initialize(repo, obj)
+        def initialize(repo_ptr, obj)
           restrict =
             if obj.is_a? Restrict
               obj
             else
               Restrict.new(obj)
             end
-          ptr = C.pkgcraft_repo_iter_restrict(repo.ptr, restrict.ptr)
+          ptr = C.pkgcraft_repo_iter_restrict(repo_ptr, restrict.ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_restrict_free))
         end
 
@@ -92,9 +92,9 @@ module Pkgcraft
       private_constant :IterRestrict
 
       def iter(restrict = nil)
-        return Iter.new(self) if restrict.nil?
+        return Iter.new(@ptr) if restrict.nil?
 
-        IterRestrict.new(self, restrict)
+        IterRestrict.new(@ptr, restrict)
       end
 
       def each(restrict = nil, &block)
