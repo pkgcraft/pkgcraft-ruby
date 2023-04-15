@@ -11,7 +11,6 @@ module Pkgcraft
           raise "no pkgcraft error occurred" if err.null?
 
           msg = err[:message]
-          C.pkgcraft_error_free(err)
         end
 
         super(msg)

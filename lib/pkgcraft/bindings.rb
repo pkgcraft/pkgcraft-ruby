@@ -58,10 +58,14 @@ module Pkgcraft
     class Error < FFI::Struct
       layout :message, :string,
              :kind, :int
+
+      def self.release(ptr)
+        C.pkgcraft_error_free(ptr)
+      end
     end
 
-    attach_function :pkgcraft_error_last, [], Error.by_ref
-    attach_function :pkgcraft_error_free, [Error.by_ref], :void
+    attach_function :pkgcraft_error_last, [], Error.auto_ptr
+    attach_function :pkgcraft_error_free, [:pointer], :void
 
     # logging support
     class PkgcraftLog < FFI::Struct
