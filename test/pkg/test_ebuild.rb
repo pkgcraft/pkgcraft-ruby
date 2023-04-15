@@ -43,6 +43,43 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Version.new("1"), pkg.version)
   end
 
+  def test_description
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1", "DESCRIPTION=description")
+    assert_equal("description", pkg.description)
+  end
+
+  def test_slot_and_subslot
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1", "SLOT=1")
+    assert_equal("1", pkg.slot)
+    assert_equal("1", pkg.subslot)
+    pkg = repo.create_pkg("cat/pkg-1", "SLOT=1/2")
+    assert_equal("1", pkg.slot)
+    assert_equal("2", pkg.subslot)
+    pkg = repo.create_pkg("cat/pkg-1", "SLOT=slot")
+    assert_equal("slot", pkg.slot)
+    assert_equal("slot", pkg.subslot)
+  end
+
+  def test_dep_attrs
+    repo = EbuildTemp.new
+    ["depend", "bdepend", "idepend", "pdepend", "rdepend"].each do |attr|
+      # undefined
+      pkg = repo.create_pkg("cat/pkg-1")
+      assert_nil(pkg.send(attr))
+
+      # explicitly defined empty
+      pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=")
+      assert_nil(pkg.send(attr))
+
+      # explicitly defined empty
+      pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
+      val = pkg.send(attr)
+      assert_equal("cat/pkg", val.to_s)
+    end
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
