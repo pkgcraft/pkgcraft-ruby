@@ -10,8 +10,14 @@ class TestPkgEbuild < Minitest::Test
 
   def test_cpv
     repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
-    assert_equal(Cpv.new("cat/pkg-1"), pkg.cpv)
+    pkg = repo.create_pkg("cat/pkg-1-r2")
+    assert_equal(Cpv.new("cat/pkg-1-r2"), pkg.cpv)
+    assert_equal("pkg-1", pkg.p)
+    assert_equal("pkg-1-r2", pkg.pf)
+    assert_equal("r2", pkg.pr)
+    assert_equal("1", pkg.pv)
+    assert_equal("1-r2", pkg.pvr)
+    assert_equal("cat/pkg", pkg.cpn)
   end
 
   def test_eapi

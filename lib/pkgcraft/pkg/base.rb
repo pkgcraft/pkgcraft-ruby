@@ -28,6 +28,30 @@ module Pkgcraft
 
       attr_reader :ptr
 
+      def p
+        cpv.p
+      end
+
+      def pf
+        cpv.pf
+      end
+
+      def pr
+        cpv.pr
+      end
+
+      def pv
+        cpv.pv
+      end
+
+      def pvr
+        cpv.pvr
+      end
+
+      def cpn
+        cpv.cpn
+      end
+
       def cpv
         @_cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
         @_cpv
