@@ -95,6 +95,8 @@ module Pkgcraft
         C.pkgcraft_repo_set_is_empty(@ptr)
       end
 
+      private
+
       def ptr=(ptr)
         @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_free))
       end
