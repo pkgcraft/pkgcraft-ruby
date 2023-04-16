@@ -7,6 +7,10 @@ class TestDependencies < Minitest::Test
   include Pkgcraft::Error
 
   def test_string
+    # no args
+    dep = Dependencies.new
+    assert_equal("", dep.to_s)
+
     ["", "a/b"].each do |s|
       dep = Dependencies.new(s)
       assert_equal(s, dep.to_s)

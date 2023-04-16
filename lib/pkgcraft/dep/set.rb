@@ -49,7 +49,7 @@ module Pkgcraft
     class Dependencies < DepSet
       include Pkgcraft::Eapis
 
-      def initialize(str, eapi = EAPI_LATEST)
+      def initialize(str = nil, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
         ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?
