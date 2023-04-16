@@ -191,6 +191,11 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_hash, [:dep_set], :uint64
     attach_function :pkgcraft_dep_set_str, [:dep_set], :strptr
     attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], DepSet.auto_ptr
+    attach_function :pkgcraft_dep_set_license, [:string], DepSet.auto_ptr
+    attach_function :pkgcraft_dep_set_properties, [:string], DepSet.auto_ptr
+    attach_function :pkgcraft_dep_set_required_use, [:string, :eapi], DepSet.auto_ptr
+    attach_function :pkgcraft_dep_set_restrict, [:string], DepSet.auto_ptr
+    attach_function :pkgcraft_dep_set_src_uri, [:string, :eapi], DepSet.auto_ptr
     attach_function :pkgcraft_dep_set_free, [:dep_set], :void
     attach_function :pkgcraft_dep_set_into_iter, [:dep_set], :pointer
     attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], DepSpec.auto_ptr

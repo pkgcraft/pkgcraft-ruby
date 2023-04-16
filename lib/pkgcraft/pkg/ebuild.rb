@@ -7,11 +7,16 @@ module Pkgcraft
       include Pkgcraft::Dep
 
       def initialize
-        @_depend = SENTINEL
-        @_bdepend = SENTINEL
-        @_idepend = SENTINEL
-        @_pdepend = SENTINEL
-        @_rdepend = SENTINEL
+        @depend = SENTINEL
+        @bdepend = SENTINEL
+        @idepend = SENTINEL
+        @pdepend = SENTINEL
+        @rdepend = SENTINEL
+        @license = SENTINEL
+        @properties = SENTINEL
+        @required_use = SENTINEL
+        @restrict = SENTINEL
+        @src_uri = SENTINEL
       end
 
       def path
@@ -56,43 +61,83 @@ module Pkgcraft
       end
 
       def depend
-        if @_depend.equal?(SENTINEL)
+        if @depend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_depend(@ptr)
-          @_depend = Dependencies.send(:from_ptr, ptr)
+          @depend = Dependencies.send(:from_ptr, ptr)
         end
-        @_depend
+        @depend
       end
 
       def bdepend
-        if @_bdepend.equal?(SENTINEL)
+        if @bdepend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_bdepend(@ptr)
-          @_bdepend = Dependencies.send(:from_ptr, ptr)
+          @bdepend = Dependencies.send(:from_ptr, ptr)
         end
-        @_bdepend
+        @bdepend
       end
 
       def idepend
-        if @_idepend.equal?(SENTINEL)
+        if @idepend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_idepend(@ptr)
-          @_idepend = Dependencies.send(:from_ptr, ptr)
+          @idepend = Dependencies.send(:from_ptr, ptr)
         end
-        @_idepend
+        @idepend
       end
 
       def pdepend
-        if @_pdepend.equal?(SENTINEL)
+        if @pdepend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_pdepend(@ptr)
-          @_pdepend = Dependencies.send(:from_ptr, ptr)
+          @pdepend = Dependencies.send(:from_ptr, ptr)
         end
-        @_pdepend
+        @pdepend
       end
 
       def rdepend
-        if @_rdepend.equal?(SENTINEL)
+        if @rdepend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_rdepend(@ptr)
-          @_rdepend = Dependencies.send(:from_ptr, ptr)
+          @rdepend = Dependencies.send(:from_ptr, ptr)
         end
-        @_rdepend
+        @rdepend
+      end
+
+      def license
+        if @license.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_license(@ptr)
+          @license = License.send(:from_ptr, ptr)
+        end
+        @license
+      end
+
+      def properties
+        if @properties.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_properties(@ptr)
+          @properties = Properties.send(:from_ptr, ptr)
+        end
+        @properties
+      end
+
+      def required_use
+        if @required_use.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_required_use(@ptr)
+          @required_use = RequiredUse.send(:from_ptr, ptr)
+        end
+        @required_use
+      end
+
+      def restrict
+        if @restrict.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_restrict(@ptr)
+          @restrict = Restrict.send(:from_ptr, ptr)
+        end
+        @restrict
+      end
+
+      def src_uri
+        if @src_uri.equal?(SENTINEL)
+          ptr = C.pkgcraft_pkg_ebuild_src_uri(@ptr)
+          @src_uri = SrcUri.send(:from_ptr, ptr)
+        end
+        @src_uri
       end
 
       def long_description

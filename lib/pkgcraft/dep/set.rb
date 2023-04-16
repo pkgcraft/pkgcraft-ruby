@@ -167,6 +167,62 @@ module Pkgcraft
       end
     end
 
+    # Set of LICENSE dependencies.
+    class License < DepSet
+      def initialize(str = nil)
+        ptr = C.pkgcraft_dep_set_license(str.to_s)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
+    # Set of PROPERTIES dependencies.
+    class Properties < DepSet
+      def initialize(str = nil)
+        ptr = C.pkgcraft_dep_set_properties(str.to_s)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
+    # Set of REQUIRED_USE dependencies.
+    class RequiredUse < DepSet
+      include Pkgcraft::Eapis
+
+      def initialize(str = nil, eapi = EAPI_LATEST)
+        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        ptr = C.pkgcraft_dep_set_required_use(str.to_s, eapi.ptr)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
+    # Set of RESTRICT dependencies.
+    class Restrict < DepSet
+      def initialize(str = nil)
+        ptr = C.pkgcraft_dep_set_restrict(str.to_s)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
+    # Set of SRC_URI dependencies.
+    class SrcUri < DepSet
+      include Pkgcraft::Eapis
+
+      def initialize(str = nil, eapi = EAPI_LATEST)
+        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        ptr = C.pkgcraft_dep_set_src_uri(str.to_s, eapi.ptr)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
     # URI objects for the SRC_URI DepSet.
     class Uri
       attr_reader :ptr
