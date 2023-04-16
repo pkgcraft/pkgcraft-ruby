@@ -6,8 +6,7 @@ module Pkgcraft
     # EAPI object
     class Eapi
       include Comparable
-      attr_reader :ptr
-      attr_reader :hash
+      attr_reader :ptr, :hash, :dep_keys
 
       # Create a new Eapi object from a given pointer.
       def initialize(ptr)
@@ -15,6 +14,12 @@ module Pkgcraft
         @hash = C.pkgcraft_eapi_hash(ptr)
         @id, c_str = C.pkgcraft_eapi_as_str(ptr)
         C.pkgcraft_str_free(c_str)
+
+        # set dep keys
+        length = C::LenPtr.new
+        ptr = C.pkgcraft_eapi_dep_keys(@ptr, length)
+        @dep_keys = ptr.get_array_of_string(0, length[:value]).freeze
+        C.pkgcraft_str_array_free(ptr, length[:value])
       end
 
       # Create an Eapi from a pointer.
