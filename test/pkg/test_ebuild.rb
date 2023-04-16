@@ -113,7 +113,7 @@ class TestPkgEbuild < Minitest::Test
 
   def test_dep_attrs
     repo = EbuildTemp.new
-    ["depend", "bdepend", "idepend", "pdepend", "rdepend"].each do |attr|
+    EAPI_LATEST.dep_keys.map(&:downcase).each do |attr|
       # undefined
       pkg = repo.create_pkg("cat/pkg-1")
       assert_nil(pkg.send(attr))
