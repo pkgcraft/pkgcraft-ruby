@@ -6,6 +6,7 @@ begin
   # ignore test files
   SimpleCov.start do
     add_filter "/test/"
+    enable_coverage :branch
   end
 
   # optionally enable codecov support
