@@ -198,6 +198,9 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_into_iter_flatten, [:dep_set], :pointer
     attach_function :pkgcraft_dep_set_into_iter_flatten_next, [:pointer], :pointer
     attach_function :pkgcraft_dep_set_into_iter_flatten_free, [:pointer], :void
+    attach_function :pkgcraft_dep_set_into_iter_recursive, [:dep_set], :pointer
+    attach_function :pkgcraft_dep_set_into_iter_recursive_next, [:pointer], DepSpec.auto_ptr
+    attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
 
     # dep_spec support
     attach_function :pkgcraft_dep_spec_cmp, [:dep_spec, :dep_spec], :int
@@ -205,6 +208,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_spec_str, [:dep_spec], :strptr
     attach_function :pkgcraft_dep_spec_free, [:dep_spec], :void
     attach_function :pkgcraft_dep_spec_into_iter_flatten, [:dep_spec], :pointer
+    attach_function :pkgcraft_dep_spec_into_iter_recursive, [:dep_spec], :pointer
 
     # URI dep_spec support
     attach_function :pkgcraft_uri_str, [:pointer], :strptr

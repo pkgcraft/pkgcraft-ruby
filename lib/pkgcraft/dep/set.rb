@@ -59,6 +59,10 @@ module Pkgcraft
         IterFlatten.new(self)
       end
 
+      def iter_recursive
+        IterRecursive.new(self)
+      end
+
       def ==(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSet
 
@@ -79,7 +83,7 @@ module Pkgcraft
       end
     end
 
-    # Flattened Iterator over a DepSet or DepSpec.
+    # Flattened iterator over a DepSet or DepSpec.
     class IterFlatten
       include Enumerable
 
@@ -119,6 +123,36 @@ module Pkgcraft
     end
 
     private_constant :IterFlatten
+
+    # Recursive iterator over a DepSet or DepSpec.
+    class IterRecursive
+      include Enumerable
+
+      def initialize(obj)
+        case obj
+        when DepSet
+          iter_p = C.pkgcraft_dep_set_into_iter_recursive(obj.ptr)
+        when DepSpec
+          iter_p = C.pkgcraft_dep_spec_into_iter_recursive(obj.ptr)
+        else
+          raise TypeError.new("unsupported dep type: #{obj.class}")
+        end
+
+        @ptr = FFI::AutoPointer.new(iter_p, C.method(:pkgcraft_dep_set_into_iter_recursive_free))
+        @unit = obj.ptr[:unit]
+      end
+
+      def each
+        loop do
+          ptr = C.pkgcraft_dep_set_into_iter_recursive_next(@ptr)
+          break if ptr.null?
+
+          yield DepSpec.send(:from_ptr, ptr)
+        end
+      end
+    end
+
+    private_constant :IterRecursive
 
     # Set of package dependencies.
     class Dependencies < DepSet

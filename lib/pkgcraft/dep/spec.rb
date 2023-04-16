@@ -39,6 +39,10 @@ module Pkgcraft
         IterFlatten.new(self)
       end
 
+      def iter_recursive
+        IterRecursive.new(self)
+      end
+
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSpec
 
