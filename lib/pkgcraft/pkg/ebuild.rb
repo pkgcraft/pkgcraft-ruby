@@ -46,6 +46,15 @@ module Pkgcraft
         s
       end
 
+      def dependencies(*keys)
+        c_keys = FFI::MemoryPointer.new(:pointer, keys.length)
+        c_keys.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
+        ptr = C.pkgcraft_pkg_ebuild_dependencies(@ptr, c_keys, keys.length)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr)
+      end
+
       def depend
         if @_depend.equal?(SENTINEL)
           ptr = C.pkgcraft_pkg_ebuild_depend(@ptr)

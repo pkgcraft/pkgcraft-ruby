@@ -83,6 +83,34 @@ class TestPkgEbuild < Minitest::Test
     assert_equal("slot", pkg.subslot)
   end
 
+  def test_dependencies
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1")
+
+    # invalid keys
+    assert_raises PkgcraftError do
+      pkg.dependencies("invalid")
+    end
+
+    # empty
+    deps = pkg.dependencies
+    assert_empty(deps.to_s)
+
+    # single
+    pkg = repo.create_pkg("cat/pkg-1", "DEPEND=cat/pkg")
+    deps = pkg.dependencies
+    assert_equal("cat/pkg", deps.to_s)
+
+    # multiple
+    pkg = repo.create_pkg("cat/pkg-1", "DEPEND=u? ( cat/pkg )", "BDEPEND=a/b")
+    deps = pkg.dependencies
+    assert_equal("a/b u? ( cat/pkg )", deps.to_s)
+
+    # filter by type
+    deps = pkg.dependencies("bdepend")
+    assert_equal("a/b", deps.to_s)
+  end
+
   def test_dep_attrs
     repo = EbuildTemp.new
     ["depend", "bdepend", "idepend", "pdepend", "rdepend"].each do |attr|

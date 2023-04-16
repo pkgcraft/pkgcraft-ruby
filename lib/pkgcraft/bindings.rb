@@ -167,6 +167,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_slot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_subslot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_long_description, [:pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_dependencies, [:pkg, :pointer, :size_t], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_depend, [:pkg], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_bdepend, [:pkg], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_idepend, [:pkg], DepSet.auto_ptr
