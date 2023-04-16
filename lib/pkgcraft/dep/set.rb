@@ -55,6 +55,10 @@ module Pkgcraft
         iter.each(&block)
       end
 
+      def iter_flatten
+        IterFlatten.new(self)
+      end
+
       def ==(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSet
 
@@ -75,6 +79,47 @@ module Pkgcraft
       end
     end
 
+    # Flattened Iterator over a DepSet or DepSpec.
+    class IterFlatten
+      include Enumerable
+
+      def initialize(obj)
+        case obj
+        when DepSet
+          iter_p = C.pkgcraft_dep_set_into_iter_flatten(obj.ptr)
+        when DepSpec
+          iter_p = C.pkgcraft_dep_spec_into_iter_flatten(obj.ptr)
+        else
+          raise TypeError.new("unsupported dep type: #{obj.class}")
+        end
+
+        @ptr = FFI::AutoPointer.new(iter_p, C.method(:pkgcraft_dep_set_into_iter_flatten_free))
+        @unit = obj.ptr[:unit]
+      end
+
+      def each
+        loop do
+          ptr = C.pkgcraft_dep_set_into_iter_flatten_next(@ptr)
+          break if ptr.null?
+
+          case @unit
+          when 0
+            yield Dep.send(:from_ptr, ptr)
+          when 1
+            s = FFI::Pointer.read_string(ptr)
+            C.pkgcraft_str_free(ptr)
+            yield s
+          when 2
+            yield Uri.send(:from_ptr, ptr)
+          else
+            raise TypeError.new("unknown DepSet type: #{@unit}")
+          end
+        end
+      end
+    end
+
+    private_constant :IterFlatten
+
     # Set of package dependencies.
     class Dependencies < DepSet
       include Pkgcraft::Eapis
@@ -85,6 +130,27 @@ module Pkgcraft
         raise Error::PkgcraftError if ptr.null?
 
         DepSet.send(:from_ptr, ptr, self)
+      end
+    end
+
+    # URI objects for the SRC_URI DepSet.
+    class Uri
+      attr_reader :ptr
+
+      # Create a Uri from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_uri_free))
+        obj.instance_variable_set(:@ptr, ptr)
+        obj
+      end
+
+      private_class_method :from_ptr
+
+      def to_s
+        s, c_str = C.pkgcraft_uri_str(@ptr)
+        C.pkgcraft_str_free(c_str)
+        s
       end
     end
   end

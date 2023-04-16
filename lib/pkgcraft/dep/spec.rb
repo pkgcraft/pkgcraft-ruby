@@ -35,6 +35,10 @@ module Pkgcraft
 
       private_class_method :from_ptr
 
+      def iter_flatten
+        IterFlatten.new(self)
+      end
+
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSpec
 
