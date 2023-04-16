@@ -28,4 +28,18 @@ class TestDependencies < Minitest::Test
       assert_equal(1, Set[dep1, dep2].length)
     end
   end
+
+  def test_iter
+    # empty
+    dep = Dependencies.new
+    assert_empty(dep.entries)
+
+    # single
+    dep = Dependencies.new("cat/pkg")
+    assert_equal(["cat/pkg"], dep.map(&:to_s))
+
+    # multiple
+    dep = Dependencies.new("a/b u? ( c/d )")
+    assert_equal(["a/b", "u? ( c/d )"], dep.map(&:to_s))
+  end
 end

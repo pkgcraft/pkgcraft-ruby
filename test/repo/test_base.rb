@@ -125,6 +125,7 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_iter
+    # empty
     repo = EbuildTemp.new
     assert_empty(repo)
 

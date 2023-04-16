@@ -54,6 +54,17 @@ module Pkgcraft
       end
     end
 
+    # DepSpec wrapper
+    class DepSpec < FFI::Struct
+      layout :unit, :int,
+             :kind, :int,
+             :dep,  :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_dep_spec_free(ptr)
+      end
+    end
+
     # error support
     class Error < FFI::Struct
       layout :message, :string,
@@ -82,6 +93,7 @@ module Pkgcraft
     typedef :pointer, :cpv
     typedef :pointer, :dep
     typedef :pointer, :dep_set
+    typedef :pointer, :dep_spec
     typedef :pointer, :version
     typedef :pointer, :restrict
 
@@ -174,12 +186,21 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_pdepend, [:pkg], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_rdepend, [:pkg], DepSet.auto_ptr
 
-    # depset support
+    # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:dep_set, :dep_set], :bool
     attach_function :pkgcraft_dep_set_hash, [:dep_set], :uint64
     attach_function :pkgcraft_dep_set_str, [:dep_set], :strptr
     attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], DepSet.auto_ptr
     attach_function :pkgcraft_dep_set_free, [:dep_set], :void
+    attach_function :pkgcraft_dep_set_into_iter, [:dep_set], :pointer
+    attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], DepSpec.auto_ptr
+    attach_function :pkgcraft_dep_set_into_iter_free, [:dep_set], :void
+
+    # dep_spec support
+    attach_function :pkgcraft_dep_spec_cmp, [:dep_spec, :dep_spec], :int
+    attach_function :pkgcraft_dep_spec_hash, [:dep_spec], :uint64
+    attach_function :pkgcraft_dep_spec_str, [:dep_spec], :strptr
+    attach_function :pkgcraft_dep_spec_free, [:dep_spec], :void
 
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr

@@ -4,6 +4,7 @@ module Pkgcraft
   module Dep
     # Set of dependency objects.
     class DepSet
+      include Enumerable
       attr_reader :ptr
 
       # Create a DepSet from a pointer.
@@ -24,6 +25,35 @@ module Pkgcraft
       end
 
       private_class_method :from_ptr
+
+      # Iterator over a DepSet.
+      class Iter
+        include Enumerable
+
+        def initialize(ptr)
+          iter_p = C.pkgcraft_dep_set_into_iter(ptr)
+          @ptr = FFI::AutoPointer.new(iter_p, C.method(:pkgcraft_dep_set_into_iter_free))
+        end
+
+        def each
+          loop do
+            ptr = C.pkgcraft_dep_set_into_iter_next(@ptr)
+            break if ptr.null?
+
+            yield DepSpec.send(:from_ptr, ptr)
+          end
+        end
+      end
+
+      private_constant :Iter
+
+      def iter
+        Iter.new(@ptr)
+      end
+
+      def each(&block)
+        iter.each(&block)
+      end
 
       def ==(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? DepSet
