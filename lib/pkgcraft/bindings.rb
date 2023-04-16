@@ -185,6 +185,11 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_idepend, [:pkg], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_pdepend, [:pkg], DepSet.auto_ptr
     attach_function :pkgcraft_pkg_ebuild_rdepend, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_license, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_properties, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_required_use, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_restrict, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_src_uri, [:pkg], DepSet.auto_ptr
 
     # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:dep_set, :dep_set], :bool

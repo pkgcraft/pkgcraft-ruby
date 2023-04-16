@@ -14,6 +14,16 @@ module Pkgcraft
             case ptr[:kind]
             when 0
               obj = Dependencies.allocate
+            when 1
+              obj = License.allocate
+            when 2
+              obj = Properties.allocate
+            when 3
+              obj = RequiredUse.allocate
+            when 4
+              obj = Restrict.allocate
+            when 5
+              obj = SrcUri.allocate
             else
               "unsupported DepSet kind: #{ptr[:kind]}"
             end

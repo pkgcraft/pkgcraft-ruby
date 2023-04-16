@@ -118,15 +118,90 @@ class TestPkgEbuild < Minitest::Test
       pkg = repo.create_pkg("cat/pkg-1")
       assert_nil(pkg.send(attr))
 
-      # explicitly defined empty
+      # empty
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=")
       assert_nil(pkg.send(attr))
 
-      # explicitly defined empty
+      # defined
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
       val = pkg.send(attr)
       assert_equal("cat/pkg", val.to_s)
     end
+  end
+
+  def test_license
+    repo = EbuildTemp.new
+    # undefined
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.license)
+
+    # empty
+    pkg = repo.create_pkg("cat/pkg-1", "LICENSE=")
+    assert_nil(pkg.license)
+
+    # defined
+    pkg = repo.create_pkg("cat/pkg-1", "LICENSE=BSD")
+    assert_equal("BSD", pkg.license.to_s)
+  end
+
+  def test_properties
+    repo = EbuildTemp.new
+    # undefined
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.properties)
+
+    # empty
+    pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=")
+    assert_nil(pkg.properties)
+
+    # defined
+    pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=live")
+    assert_equal("live", pkg.properties.to_s)
+  end
+
+  def test_required_use
+    repo = EbuildTemp.new
+    # undefined
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.required_use)
+
+    # empty
+    pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=")
+    assert_nil(pkg.required_use)
+
+    # defined
+    pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
+    assert_equal("u1? ( u2 )", pkg.required_use.to_s)
+  end
+
+  def test_restrict
+    repo = EbuildTemp.new
+    # undefined
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.restrict)
+
+    # empty
+    pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=")
+    assert_nil(pkg.restrict)
+
+    # defined
+    pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=test")
+    assert_equal("test", pkg.restrict.to_s)
+  end
+
+  def test_src_uri
+    repo = EbuildTemp.new
+    # undefined
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.src_uri)
+
+    # empty
+    pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=")
+    assert_nil(pkg.src_uri)
+
+    # defined
+    pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
+    assert_equal("https://a.com/file.tar.gz", pkg.src_uri.to_s)
   end
 
   def test_cmp
