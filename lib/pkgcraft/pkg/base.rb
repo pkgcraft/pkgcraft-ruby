@@ -92,7 +92,7 @@ module Pkgcraft
       end
 
       def inspect
-        "#<#{self.class} '#{self}'>"
+        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
     end
   end

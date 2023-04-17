@@ -43,11 +43,18 @@ module Pkgcraft
       layout :value, :size_t
     end
 
+    # Wrapper for pointers
+    class Pointer < FFI::Struct
+      def address
+        "0x#{self[:ptr].address.to_s(16)}"
+      end
+    end
+
     # DepSet wrapper
-    class DepSet < FFI::Struct
+    class DepSet < Pointer
       layout :unit, :int,
              :kind, :int,
-             :dep,  :pointer
+             :ptr,  :pointer
 
       def self.release(ptr)
         C.pkgcraft_dep_set_free(ptr)
@@ -55,10 +62,10 @@ module Pkgcraft
     end
 
     # DepSpec wrapper
-    class DepSpec < FFI::Struct
+    class DepSpec < Pointer
       layout :unit, :int,
              :kind, :int,
-             :dep,  :pointer
+             :ptr,  :pointer
 
       def self.release(ptr)
         C.pkgcraft_dep_spec_free(ptr)
@@ -98,7 +105,7 @@ module Pkgcraft
     end
 
     # Wrapper for Cpv objects
-    class Cpv < FFI::Struct
+    class Cpv < Pointer
       layout :ptr, :pointer
 
       def self.release(ptr)
@@ -107,7 +114,7 @@ module Pkgcraft
     end
 
     # Wrapper for version objects
-    class Version < FFI::Struct
+    class Version < Pointer
       layout :ptr, :pointer
 
       def self.release(ptr)
@@ -134,7 +141,7 @@ module Pkgcraft
     end
 
     # Wrapper for Pkg objects
-    class Pkg < FFI::Struct
+    class Pkg < Pointer
       layout :ptr, :pointer
 
       def self.release(ptr)
