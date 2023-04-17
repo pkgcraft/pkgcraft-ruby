@@ -231,6 +231,22 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Set["prepare", "configure", "compile"], pkg.defined_phases)
   end
 
+  def test_homepage
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_empty(pkg.homepage)
+
+    # single
+    pkg = repo.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com")
+    assert_equal(Set["https://a.com"], pkg.homepage)
+
+    # multiple
+    pkg = repo.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com https://b.com")
+    refute_empty(pkg.homepage)
+    assert_equal(Set["https://a.com", "https://b.com"], pkg.homepage)
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
