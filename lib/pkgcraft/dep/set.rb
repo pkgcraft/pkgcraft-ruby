@@ -169,7 +169,7 @@ module Pkgcraft
       include Pkgcraft::Eapis
 
       def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?
 
@@ -202,7 +202,7 @@ module Pkgcraft
       include Pkgcraft::Eapis
 
       def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_dep_set_required_use(str.to_s, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?
 
@@ -225,7 +225,7 @@ module Pkgcraft
       include Pkgcraft::Eapis
 
       def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        eapi = Eapi.from_obj(eapi)
         ptr = C.pkgcraft_dep_set_src_uri(str.to_s, eapi.ptr)
         raise Error::PkgcraftError if ptr.null?
 

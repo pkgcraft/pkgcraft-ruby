@@ -77,7 +77,7 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(str, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi) unless eapi.nil?
+        eapi = Eapi.from_obj(eapi)
         @ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
         raise Error::InvalidDep if @ptr.null?
       end
