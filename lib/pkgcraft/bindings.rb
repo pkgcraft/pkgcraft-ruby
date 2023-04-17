@@ -208,7 +208,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
 
     # ebuild repo support
-    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :pointer
+    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :eapi
     attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
 
     # temp ebuild repo
@@ -238,7 +238,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_format, [:pkg], :int
     attach_function :pkgcraft_pkg_free, [:pointer], :void
     attach_function :pkgcraft_pkg_cpv, [:pkg], :cpv
-    attach_function :pkgcraft_pkg_eapi, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_eapi, [:pkg], :eapi
     attach_function :pkgcraft_pkg_repo, [:pkg], :pointer
     attach_function :pkgcraft_pkg_version, [:pkg], :version
     attach_function :pkgcraft_pkg_cmp, [:pkg, :pkg], :int

@@ -166,6 +166,10 @@ module Pkgcraft
       def to_s
         @id
       end
+
+      def inspect
+        "#<#{self.class} '#{self}' at #{@ptr.address}>"
+      end
     end
   end
 end
