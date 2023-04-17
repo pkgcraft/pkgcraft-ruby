@@ -263,6 +263,22 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Set["amd64", "~arm64"], pkg.keywords)
   end
 
+  def test_iuse
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_empty(pkg.iuse)
+
+    # single
+    pkg = repo.create_pkg("cat/pkg-1", "IUSE=a")
+    assert_equal(Set["a"], pkg.iuse)
+
+    # multiple
+    pkg = repo.create_pkg("cat/pkg-1", "IUSE=a b c")
+    refute_empty(pkg.iuse)
+    assert_equal(Set["a", "b", "c"], pkg.iuse)
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
