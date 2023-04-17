@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "pkgcraft/misc"
+module Pkgcraft
+  SENTINEL = Object.new.freeze
+  private_constant :SENTINEL
+end
+
 require_relative "pkgcraft/bindings"
 require_relative "pkgcraft/eapi"
 require_relative "pkgcraft/error"
