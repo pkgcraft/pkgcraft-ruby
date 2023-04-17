@@ -247,6 +247,22 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Set["https://a.com", "https://b.com"], pkg.homepage)
   end
 
+  def test_keywords
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_empty(pkg.keywords)
+
+    # single
+    pkg = repo.create_pkg("cat/pkg-1", "KEYWORDS=amd64")
+    assert_equal(Set["amd64"], pkg.keywords)
+
+    # multiple
+    pkg = repo.create_pkg("cat/pkg-1", "KEYWORDS=amd64 ~arm64")
+    refute_empty(pkg.keywords)
+    assert_equal(Set["amd64", "~arm64"], pkg.keywords)
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
