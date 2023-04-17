@@ -36,7 +36,7 @@ module Pkgcraft
     private_class_method :version
 
     # Version of the pkgcraft-c library.
-    VERSION = version
+    VERSION = version.freeze
 
     # array length pointer for working with array return values
     class LenPtr < FFI::Struct
