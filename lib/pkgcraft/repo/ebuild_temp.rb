@@ -14,11 +14,17 @@ module Pkgcraft
         super(path, id, priority)
       end
 
-      def create_ebuild(cpv, *keys)
+      def create_ebuild(cpv, *keys, data: nil)
         ptr = FFI::MemoryPointer.new(:pointer, keys.length)
         ptr.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
         path, c_str = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, ptr, keys.length)
         raise Error::PkgcraftError if c_str.null?
+
+        unless data.nil?
+          File.open(path, "a") do |f|
+            f.write(data)
+          end
+        end
 
         C.pkgcraft_str_free(c_str)
         Pathname.new(path)
@@ -32,8 +38,8 @@ module Pkgcraft
         Pathname.new(path)
       end
 
-      def create_pkg(cpv, *keys)
-        create_ebuild(cpv, *keys)
+      def create_pkg(cpv, *keys, data: nil)
+        create_ebuild(cpv, *keys, data: data)
         iter(cpv).first
       end
     end
