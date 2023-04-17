@@ -21,8 +21,6 @@ module Pkgcraft
       else
         LOG.error(msg)
       end
-
-      C.pkgcraft_log_free(log)
     end
 
     private_constant :LogCallback

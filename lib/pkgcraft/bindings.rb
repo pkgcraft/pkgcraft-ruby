@@ -82,6 +82,10 @@ module Pkgcraft
     class PkgcraftLog < FFI::Struct
       layout :message, :string,
              :level, :int
+
+      def self.release(ptr)
+        C.pkgcraft_log_free(ptr)
+      end
     end
 
     # Wrapper for config objects
@@ -160,9 +164,9 @@ module Pkgcraft
     typedef Version.auto_ptr, :version
     typedef Restrict.auto_ptr, :restrict
 
-    callback :log_callback, [PkgcraftLog.by_ref], :void
+    callback :log_callback, [PkgcraftLog.auto_ptr], :void
     attach_function :pkgcraft_logging_enable, [:log_callback], :void
-    attach_function :pkgcraft_log_free, [PkgcraftLog.by_ref], :void
+    attach_function :pkgcraft_log_free, [:pointer], :void
     attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
 
     # config support
