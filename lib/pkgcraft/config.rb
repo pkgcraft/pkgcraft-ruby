@@ -31,8 +31,7 @@ module Pkgcraft
       include Pkgcraft::Repos
 
       def initialize
-        ptr = C.pkgcraft_config_new
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_config_free))
+        @ptr = C.pkgcraft_config_new
       end
 
       def repos

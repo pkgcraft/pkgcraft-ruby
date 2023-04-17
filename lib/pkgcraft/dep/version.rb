@@ -47,10 +47,8 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(str)
-        ptr = C.pkgcraft_version_new(str.to_s)
-        raise Error::InvalidVersion if ptr.null?
-
-        self.ptr = ptr
+        @ptr = C.pkgcraft_version_new(str.to_s)
+        raise Error::InvalidVersion if @ptr.null?
       end
 
       # Create a Version from a pointer.
@@ -58,7 +56,7 @@ module Pkgcraft
         return if ptr.null?
 
         obj = allocate
-        obj.send(:ptr=, ptr)
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
@@ -103,21 +101,13 @@ module Pkgcraft
         @_hash = C.pkgcraft_version_hash(@ptr) if @_hash.nil?
         @_hash
       end
-
-      private
-
-      def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_version_free))
-      end
     end
 
     # Package version with an operator
     class VersionWithOp < Version
       def initialize(str)
-        ptr = C.pkgcraft_version_with_op(str.to_s)
-        raise Error::InvalidVersion if ptr.null?
-
-        self.ptr = ptr
+        @ptr = C.pkgcraft_version_with_op(str.to_s)
+        raise Error::InvalidVersion if @ptr.null?
       end
 
       def to_s

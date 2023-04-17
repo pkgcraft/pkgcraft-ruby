@@ -13,13 +13,13 @@ module Pkgcraft
       def initialize(*repos)
         c_repos = FFI::MemoryPointer.new(:pointer, repos.length)
         c_repos.write_array_of_pointer(repos.map(&:ptr))
-        self.ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
+        @ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
       end
 
       # Create a RepoSet from a pointer.
       def self.from_ptr(ptr)
         obj = allocate
-        obj.send(:ptr=, ptr)
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
@@ -99,12 +99,6 @@ module Pkgcraft
 
       def empty?
         C.pkgcraft_repo_set_is_empty(@ptr)
-      end
-
-      private
-
-      def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_free))
       end
     end
   end

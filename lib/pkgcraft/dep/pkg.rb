@@ -78,16 +78,14 @@ module Pkgcraft
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi) unless eapi.nil?
-        ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
-        raise Error::InvalidDep if ptr.null?
-
-        self.ptr = ptr
+        @ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
+        raise Error::InvalidDep if @ptr.null?
       end
 
       # Create a Dep from a pointer.
       def self.from_ptr(ptr)
         obj = allocate
-        obj.send(:ptr=, ptr)
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
@@ -229,12 +227,6 @@ module Pkgcraft
       def hash
         @_hash = C.pkgcraft_dep_hash(@ptr) if @_hash.nil?
         @_hash
-      end
-
-      private
-
-      def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_dep_free))
       end
     end
   end

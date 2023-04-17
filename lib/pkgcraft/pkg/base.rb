@@ -15,7 +15,6 @@ module Pkgcraft
         "unsupported pkg format: #{format}"
       end
 
-      ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_pkg_free))
       obj.instance_variable_set(:@ptr, ptr)
       obj.send(:initialize)
       obj

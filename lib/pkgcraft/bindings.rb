@@ -84,18 +84,81 @@ module Pkgcraft
              :level, :int
     end
 
+    # Wrapper for config objects
+    class Config < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_config_free(ptr)
+      end
+    end
+
+    # Wrapper for Cpv objects
+    class Cpv < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_cpv_free(ptr)
+      end
+    end
+
+    # Wrapper for version objects
+    class Version < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_version_free(ptr)
+      end
+    end
+
+    # Wrapper for Dep objects
+    class Dep < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_dep_free(ptr)
+      end
+    end
+
+    # Wrapper for Restrict objects
+    class Restrict < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_restrict_free(ptr)
+      end
+    end
+
+    # Wrapper for Pkg objects
+    class Pkg < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_pkg_free(ptr)
+      end
+    end
+
+    # Wrapper for RepoSet objects
+    class RepoSet < FFI::Struct
+      layout :ptr, :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_repo_set_free(ptr)
+      end
+    end
+
     # type aliases
-    typedef :pointer, :config
+    typedef Config.auto_ptr, :config
     typedef :pointer, :repo
-    typedef :pointer, :repo_set
-    typedef :pointer, :pkg
+    typedef RepoSet.auto_ptr, :repo_set
+    typedef Pkg.auto_ptr, :pkg
     typedef :pointer, :eapi
-    typedef :pointer, :cpv
-    typedef :pointer, :dep
-    typedef :pointer, :dep_set
-    typedef :pointer, :dep_spec
-    typedef :pointer, :version
-    typedef :pointer, :restrict
+    typedef Cpv.auto_ptr, :cpv
+    typedef Dep.auto_ptr, :dep
+    typedef DepSet.auto_ptr, :dep_set
+    typedef DepSpec.auto_ptr, :dep_spec
+    typedef Version.auto_ptr, :version
+    typedef Restrict.auto_ptr, :restrict
 
     callback :log_callback, [PkgcraftLog.by_ref], :void
     attach_function :pkgcraft_logging_enable, [:log_callback], :void
@@ -104,10 +167,10 @@ module Pkgcraft
 
     # config support
     attach_function :pkgcraft_config_new, [], :config
-    attach_function :pkgcraft_config_free, [:config], :void
+    attach_function :pkgcraft_config_free, [:pointer], :void
     attach_function :pkgcraft_config_load_repos_conf, [:config, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos, [:config, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos_set, [:config, :int], :pointer
+    attach_function :pkgcraft_config_repos_set, [:config, :int], :repo_set
     attach_function :pkgcraft_config_add_repo, [:config, :repo], :repo
     attach_function :pkgcraft_config_add_repo_path, [:config, :string, :int, :string], :repo
 
@@ -158,15 +221,15 @@ module Pkgcraft
     attach_function :pkgcraft_repo_set_len, [:repo_set], :uint64
     attach_function :pkgcraft_repo_set_is_empty, [:repo_set], :bool
     attach_function :pkgcraft_repo_set_new, [:pointer, :uint64], :repo_set
-    attach_function :pkgcraft_repo_set_free, [:repo_set], :void
+    attach_function :pkgcraft_repo_set_free, [:pointer], :void
 
     # pkg support
     attach_function :pkgcraft_pkg_format, [:pkg], :int
-    attach_function :pkgcraft_pkg_free, [:pkg], :void
-    attach_function :pkgcraft_pkg_cpv, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_free, [:pointer], :void
+    attach_function :pkgcraft_pkg_cpv, [:pkg], :cpv
     attach_function :pkgcraft_pkg_eapi, [:pkg], :pointer
     attach_function :pkgcraft_pkg_repo, [:pkg], :pointer
-    attach_function :pkgcraft_pkg_version, [:pkg], :pointer
+    attach_function :pkgcraft_pkg_version, [:pkg], :version
     attach_function :pkgcraft_pkg_cmp, [:pkg, :pkg], :int
     attach_function :pkgcraft_pkg_hash, [:pkg], :uint64
     attach_function :pkgcraft_pkg_str, [:pkg], :strptr
@@ -179,44 +242,44 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_slot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_subslot, [:pkg], :strptr
     attach_function :pkgcraft_pkg_ebuild_long_description, [:pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_dependencies, [:pkg, :pointer, :size_t], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_depend, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_bdepend, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_idepend, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_pdepend, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_rdepend, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_license, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_properties, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_required_use, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_restrict, [:pkg], DepSet.auto_ptr
-    attach_function :pkgcraft_pkg_ebuild_src_uri, [:pkg], DepSet.auto_ptr
+    attach_function :pkgcraft_pkg_ebuild_dependencies, [:pkg, :pointer, :size_t], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_depend, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_bdepend, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_idepend, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_pdepend, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_rdepend, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_license, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_properties, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_required_use, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_restrict, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_src_uri, [:pkg], :dep_set
 
     # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:dep_set, :dep_set], :bool
     attach_function :pkgcraft_dep_set_hash, [:dep_set], :uint64
     attach_function :pkgcraft_dep_set_str, [:dep_set], :strptr
-    attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_license, [:string], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_properties, [:string], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_required_use, [:string, :eapi], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_restrict, [:string], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_src_uri, [:string, :eapi], DepSet.auto_ptr
-    attach_function :pkgcraft_dep_set_free, [:dep_set], :void
+    attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], :dep_set
+    attach_function :pkgcraft_dep_set_license, [:string], :dep_set
+    attach_function :pkgcraft_dep_set_properties, [:string], :dep_set
+    attach_function :pkgcraft_dep_set_required_use, [:string, :eapi], :dep_set
+    attach_function :pkgcraft_dep_set_restrict, [:string], :dep_set
+    attach_function :pkgcraft_dep_set_src_uri, [:string, :eapi], :dep_set
+    attach_function :pkgcraft_dep_set_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter, [:dep_set], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], DepSpec.auto_ptr
+    attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], :dep_spec
     attach_function :pkgcraft_dep_set_into_iter_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter_flatten, [:dep_set], :pointer
     attach_function :pkgcraft_dep_set_into_iter_flatten_next, [:pointer], :pointer
     attach_function :pkgcraft_dep_set_into_iter_flatten_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter_recursive, [:dep_set], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_recursive_next, [:pointer], DepSpec.auto_ptr
+    attach_function :pkgcraft_dep_set_into_iter_recursive_next, [:pointer], :dep_spec
     attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
 
     # dep_spec support
     attach_function :pkgcraft_dep_spec_cmp, [:dep_spec, :dep_spec], :int
     attach_function :pkgcraft_dep_spec_hash, [:dep_spec], :uint64
     attach_function :pkgcraft_dep_spec_str, [:dep_spec], :strptr
-    attach_function :pkgcraft_dep_spec_free, [:dep_spec], :void
+    attach_function :pkgcraft_dep_spec_free, [:pointer], :void
     attach_function :pkgcraft_dep_spec_into_iter_flatten, [:dep_spec], :pointer
     attach_function :pkgcraft_dep_spec_into_iter_recursive, [:dep_spec], :pointer
 
@@ -236,7 +299,7 @@ module Pkgcraft
     attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
 
     # cpv support
-    attach_function :pkgcraft_cpv_free, [:cpv], :void
+    attach_function :pkgcraft_cpv_free, [:pointer], :void
     attach_function :pkgcraft_cpv_new, [:string], :cpv
     attach_function :pkgcraft_cpv_category, [:cpv], :strptr
     attach_function :pkgcraft_cpv_package, [:cpv], :strptr
@@ -255,7 +318,7 @@ module Pkgcraft
     attach_function :pkgcraft_cpv_restrict, [:cpv], :restrict
 
     # dep support
-    attach_function :pkgcraft_dep_free, [:dep], :void
+    attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_new, [:string, :eapi], :dep
     attach_function :pkgcraft_dep_blocker, [:dep], :int
     attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
@@ -283,7 +346,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_restrict, [:dep], :restrict
 
     # version support
-    attach_function :pkgcraft_version_free, [:version], :void
+    attach_function :pkgcraft_version_free, [:pointer], :void
     attach_function :pkgcraft_version_new, [:string], :version
     attach_function :pkgcraft_version_cmp, [:version, :version], :int
     attach_function :pkgcraft_version_hash, [:version], :uint64
@@ -302,7 +365,7 @@ module Pkgcraft
     attach_function :pkgcraft_restrict_not, [:restrict], :restrict
     attach_function :pkgcraft_restrict_eq, [:restrict, :restrict], :bool
     attach_function :pkgcraft_restrict_hash, [:restrict], :uint64
-    attach_function :pkgcraft_restrict_free, [:restrict], :void
+    attach_function :pkgcraft_restrict_free, [:pointer], :void
     attach_function :pkgcraft_restrict_parse_dep, [:string], :restrict
     attach_function :pkgcraft_restrict_parse_pkg, [:string], :restrict
   end

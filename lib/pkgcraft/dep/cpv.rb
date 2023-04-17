@@ -8,16 +8,14 @@ module Pkgcraft
       attr_reader :ptr
 
       def initialize(str)
-        ptr = C.pkgcraft_cpv_new(str.to_s)
+        @ptr = C.pkgcraft_cpv_new(str.to_s)
         raise Error::InvalidCpv if ptr.null?
-
-        self.ptr = ptr
       end
 
       # Create a Cpv from a pointer.
       def self.from_ptr(ptr)
         obj = allocate
-        obj.send(:ptr=, ptr)
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
@@ -105,12 +103,6 @@ module Pkgcraft
       def hash
         @_hash = C.pkgcraft_cpv_hash(@ptr) if @_hash.nil?
         @_hash
-      end
-
-      private
-
-      def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_cpv_free))
       end
     end
   end

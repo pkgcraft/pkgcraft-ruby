@@ -11,13 +11,13 @@ module Pkgcraft
       def initialize(obj)
         case obj
         when Dep::Cpv
-          self.ptr = C.pkgcraft_cpv_restrict(obj.ptr)
+          @ptr = C.pkgcraft_cpv_restrict(obj.ptr)
         when Dep::Dep
-          self.ptr = C.pkgcraft_dep_restrict(obj.ptr)
+          @ptr = C.pkgcraft_dep_restrict(obj.ptr)
         when Pkg::Pkg
-          self.ptr = C.pkgcraft_pkg_restrict(obj.ptr)
+          @ptr = C.pkgcraft_pkg_restrict(obj.ptr)
         when String
-          self.ptr = Restrict.send(:from_str, obj)
+          @ptr = Restrict.send(:from_str, obj)
         else
           raise TypeError.new("unsupported restrict type: #{obj.class}")
         end
@@ -26,7 +26,7 @@ module Pkgcraft
       # Create a Restrict from a pointer.
       def self.from_ptr(ptr)
         obj = allocate
-        obj.send(:ptr=, ptr)
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
@@ -44,11 +44,11 @@ module Pkgcraft
         rescue InvalidDep # rubocop:disable Lint/SuppressedException
         end
 
-        r = C.pkgcraft_restrict_parse_dep(str)
-        r = C.pkgcraft_restrict_parse_pkg(str) if r.nil?
-        raise InvalidRestrict.new("invalid restriction string: #{str}") if r.nil?
+        ptr = C.pkgcraft_restrict_parse_dep(str)
+        ptr = C.pkgcraft_restrict_parse_pkg(str) if ptr.null?
+        raise InvalidRestrict.new("invalid restriction string: #{str}") if ptr.null?
 
-        r
+        ptr
       end
 
       private_class_method :from_str
@@ -85,10 +85,6 @@ module Pkgcraft
 
       def ~
         Restrict.send(:from_ptr, C.pkgcraft_restrict_not(@ptr))
-      end
-
-      def ptr=(ptr)
-        @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_restrict_free))
       end
     end
   end

@@ -118,7 +118,7 @@ module Pkgcraft
 
           case @unit
           when 0
-            yield Dep.send(:from_ptr, ptr)
+            yield Dep.send(:from_ptr, C::Dep.new(ptr))
           when 1
             s = FFI::Pointer.read_string(ptr)
             C.pkgcraft_str_free(ptr)
