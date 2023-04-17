@@ -369,4 +369,6 @@ module Pkgcraft
     attach_function :pkgcraft_restrict_parse_dep, [:string], :restrict
     attach_function :pkgcraft_restrict_parse_pkg, [:string], :restrict
   end
+
+  private_constant :C
 end
