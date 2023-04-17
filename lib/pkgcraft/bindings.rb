@@ -257,6 +257,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_required_use, [:pkg], :dep_set
     attach_function :pkgcraft_pkg_ebuild_restrict, [:pkg], :dep_set
     attach_function :pkgcraft_pkg_ebuild_src_uri, [:pkg], :dep_set
+    attach_function :pkgcraft_pkg_ebuild_defined_phases, [:pkg, LenPtr.by_ref], :pointer
 
     # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:dep_set, :dep_set], :bool

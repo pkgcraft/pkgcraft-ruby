@@ -140,6 +140,16 @@ module Pkgcraft
         @src_uri
       end
 
+      def defined_phases
+        if @defined_phases.nil?
+          length = C::LenPtr.new
+          ptr = C.pkgcraft_pkg_ebuild_defined_phases(@ptr, length)
+          @defined_phases = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
+          C.pkgcraft_str_array_free(ptr, length[:value])
+        end
+        @defined_phases
+      end
+
       def long_description
         s, c_str = C.pkgcraft_pkg_ebuild_long_description(@ptr)
         return if c_str.null?

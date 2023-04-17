@@ -204,6 +204,27 @@ class TestPkgEbuild < Minitest::Test
     assert_equal("https://a.com/file.tar.gz", pkg.src_uri.to_s)
   end
 
+  def test_defined_phases
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_empty(pkg.defined_phases)
+
+    # single
+    data = "src_configure() { :; }"
+    pkg = repo.create_pkg("cat/pkg-1", data: data)
+    assert_equal(Set["configure"], pkg.defined_phases)
+
+    # multiple
+    data = <<~PHASES
+      src_prepare() { :; }
+      src_configure() { :; }
+      src_compile() { :; }
+    PHASES
+    pkg = repo.create_pkg("cat/pkg-1", data: data)
+    assert_equal(Set["prepare", "configure", "compile"], pkg.defined_phases)
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
