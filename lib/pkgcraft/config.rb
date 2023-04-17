@@ -12,6 +12,8 @@ module Pkgcraft
       "/usr/share/portage/config.repos.conf"
     ].freeze
 
+    private_constant :PORTAGE_REPOS_CONF_DEFAULTS
+
     # Convert an array of repo pointers to a mapping.
     def self.repos_to_dict(repos_ptr, length, ref)
       c_repos = repos_ptr.get_array_of_pointer(0, length)
