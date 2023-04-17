@@ -91,6 +91,10 @@ module Pkgcraft
         C.pkgcraft_str_free(c_str)
         s
       end
+
+      def inspect
+        "#<#{self.class} '#{self}'>"
+      end
     end
 
     # Flattened iterator over a DepSet or DepSpec.

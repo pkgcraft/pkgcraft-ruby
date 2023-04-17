@@ -89,6 +89,10 @@ module Pkgcraft
         s
       end
 
+      def inspect
+        "#<#{self.class} '#{self}'>"
+      end
+
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Version
 
