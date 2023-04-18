@@ -33,7 +33,7 @@ def parse_toml
   end
   data
 end
-TOML = parse_toml.freeze
+TESTDATA_TOML = parse_toml.freeze
 
 # load repos from shared test data
 def load_repos
@@ -43,6 +43,6 @@ def load_repos
   end
   config
 end
-CONFIG = load_repos
+TESTDATA_CONFIG = load_repos
 
 require "minitest/autorun"

@@ -101,7 +101,7 @@ class TestDep < Minitest::Test
   end
 
   def test_parse
-    TOML["dep"]["valid"].each do |d|
+    TESTDATA_TOML["dep"]["valid"].each do |d|
       s = d["dep"]
       passing_eapis = Set.new(Eapis.range(d["eapis"]))
       EAPIS.each_value do |eapi|
@@ -139,7 +139,7 @@ class TestDep < Minitest::Test
       end
     end
 
-    TOML["dep"]["invalid"].each do |s|
+    TESTDATA_TOML["dep"]["invalid"].each do |s|
       EAPIS.each_value do |eapi|
         assert_raises InvalidDep do
           Dep.new(s, eapi)
@@ -149,7 +149,7 @@ class TestDep < Minitest::Test
   end
 
   def test_cmp
-    TOML["dep"]["compares"].each do |s|
+    TESTDATA_TOML["dep"]["compares"].each do |s|
       s1, op, s2 = s.split
       d1 = Dep.new(s1)
       d2 = Dep.new(s2)
@@ -162,7 +162,7 @@ class TestDep < Minitest::Test
       assert(dep < "=cat/pkg-1")
     end
 
-    TOML["version"]["compares"].each do |s|
+    TESTDATA_TOML["version"]["compares"].each do |s|
       s1, op, s2 = s.split
       d1 = Dep.new("=cat/pkg-#{s1}")
       d2 = Dep.new("=cat/pkg-#{s2}")
@@ -178,7 +178,7 @@ class TestDep < Minitest::Test
   end
 
   def test_intersects
-    TOML["dep"]["intersects"].each do |d|
+    TESTDATA_TOML["dep"]["intersects"].each do |d|
       d["vals"].combination(2).each do |s1, s2|
         obj1 = parse(s1)
         obj2 = parse(s2)
@@ -204,7 +204,7 @@ class TestDep < Minitest::Test
   end
 
   def test_sort
-    TOML["dep"]["sorting"].each do |d|
+    TESTDATA_TOML["dep"]["sorting"].each do |d|
       expected = d["sorted"].map { |s| Dep.new(s) }.compact
       reversed = expected.reverse
       ordered = reversed.sort
@@ -215,7 +215,7 @@ class TestDep < Minitest::Test
   end
 
   def test_hash
-    TOML["version"]["hashing"].each do |d|
+    TESTDATA_TOML["version"]["hashing"].each do |d|
       deps = Set.new(d["versions"].map { |s| Dep.new("=cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(deps.length, length)

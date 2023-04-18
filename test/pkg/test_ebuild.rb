@@ -287,14 +287,14 @@ class TestPkgEbuild < Minitest::Test
     assert_empty(pkg.inherited)
 
     # nested inherits
-    pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-1"]
+    pkg = TESTDATA_CONFIG.repos["eclasses"]["pkg-tests/inherits-1"]
     refute_empty(pkg.inherit)
     assert_equal(Set["leaf"], pkg.inherit)
     refute_empty(pkg.inherited)
     assert_equal(Set["leaf", "base"], pkg.inherited)
 
     # non-nested inherits
-    pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-2"]
+    pkg = TESTDATA_CONFIG.repos["eclasses"]["pkg-tests/inherits-2"]
     refute_empty(pkg.inherit)
     assert_equal(Set["base"], pkg.inherit)
     refute_empty(pkg.inherited)
@@ -321,7 +321,7 @@ class TestPkgEbuild < Minitest::Test
 
   def test_hash
     repo = EbuildTemp.new
-    TOML["version"]["hashing"].each do |d|
+    TESTDATA_TOML["version"]["hashing"].each do |d|
       pkgs = Set.new(d["versions"].map { |s| repo.create_pkg("cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(pkgs.length, length)

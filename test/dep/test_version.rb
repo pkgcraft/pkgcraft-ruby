@@ -39,7 +39,7 @@ class TestVersion < Minitest::Test
   end
 
   def test_intersects
-    TOML["version"]["intersects"].each do |d|
+    TESTDATA_TOML["version"]["intersects"].each do |d|
       d["vals"].combination(2).each do |s1, s2|
         obj1 = parse(s1)
         obj2 = parse(s2)
@@ -59,7 +59,7 @@ class TestVersion < Minitest::Test
   end
 
   def test_cmp
-    TOML["version"]["compares"].each do |s|
+    TESTDATA_TOML["version"]["compares"].each do |s|
       s1, op, s2 = s.split
       v1 = Version.new(s1)
       v2 = Version.new(s2)
@@ -74,7 +74,7 @@ class TestVersion < Minitest::Test
   end
 
   def test_sort
-    TOML["version"]["sorting"].each do |d|
+    TESTDATA_TOML["version"]["sorting"].each do |d|
       expected = d["sorted"].map { |s| Version.new(s) }.compact
       reversed = expected.reverse
       ordered = reversed.sort
@@ -85,7 +85,7 @@ class TestVersion < Minitest::Test
   end
 
   def test_hash
-    TOML["version"]["hashing"].each do |d|
+    TESTDATA_TOML["version"]["hashing"].each do |d|
       versions = Set.new(d["versions"].map { |s| Version.new(s) }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(versions.length, length)

@@ -46,7 +46,7 @@ class TestCpv < Minitest::Test
   end
 
   def test_cmp
-    TOML["version"]["compares"].each do |s|
+    TESTDATA_TOML["version"]["compares"].each do |s|
       s1, op, s2 = s.split
       cpv1 = Cpv.new("cat/pkg-#{s1}")
       cpv2 = Cpv.new("cat/pkg-#{s2}")
@@ -61,7 +61,7 @@ class TestCpv < Minitest::Test
   end
 
   def test_intersects
-    TOML["version"]["compares"].each do |s|
+    TESTDATA_TOML["version"]["compares"].each do |s|
       s1, op, s2 = s.split
       cpv1 = Cpv.new("cat/pkg-#{s1}")
       cpv2 = Cpv.new("cat/pkg-#{s2}")
@@ -84,7 +84,7 @@ class TestCpv < Minitest::Test
   end
 
   def test_hash
-    TOML["version"]["hashing"].each do |d|
+    TESTDATA_TOML["version"]["hashing"].each do |d|
       cpvs = Set.new(d["versions"].map { |s| Cpv.new("cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(cpvs.length, length)
