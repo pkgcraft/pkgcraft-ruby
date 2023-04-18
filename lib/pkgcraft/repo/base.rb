@@ -101,6 +101,10 @@ module Pkgcraft
         iter(restrict).each(&block)
       end
 
+      def [](cpv)
+        iter(cpv).first
+      end
+
       def path
         if @_path.nil?
           path, c_str = C.pkgcraft_repo_path(@ptr)
