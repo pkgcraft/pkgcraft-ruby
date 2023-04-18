@@ -296,4 +296,20 @@ class TestPkgEbuild < Minitest::Test
       assert(pkg1 < "cat/pkg-1")
     end
   end
+
+  def test_hash
+    repo = EbuildTemp.new
+    TOML["version"]["hashing"].each do |d|
+      pkgs = Set.new(d["versions"].map { |s| repo.create_pkg("cat/pkg-#{s}") }.compact)
+      length = d["equal"] ? 1 : d["versions"].length
+      assert_equal(pkgs.length, length)
+    end
+  end
+
+  def test_string
+    repo = EbuildTemp.new(id: "repo")
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_equal("cat/pkg-1::repo", pkg.to_s)
+    assert_includes(pkg.inspect, "cat/pkg-1::repo")
+  end
 end
