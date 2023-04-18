@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "pkgcraft"
+
 # optionally enable coverage support
 begin
   require "simplecov"
@@ -32,7 +35,14 @@ def parse_toml
 end
 TOML = parse_toml.freeze
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "pkgcraft"
+# load repos from shared test data
+def load_repos
+  config = Pkgcraft::Configs::Config.new
+  Dir.glob("testdata/repos/*").each do |path|
+    config.add_repo(path, id: File.basename(path))
+  end
+  config
+end
+CONFIG = load_repos
 
 require "minitest/autorun"

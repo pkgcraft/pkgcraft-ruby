@@ -285,7 +285,16 @@ class TestPkgEbuild < Minitest::Test
     pkg = repo.create_pkg("cat/pkg-1")
     assert_empty(pkg.inherit)
     assert_empty(pkg.inherited)
-    # TODO: add eclass inherit tests
+
+    # nested inherits
+    pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-1"]
+    assert_equal(Set["leaf"], pkg.inherit)
+    assert_equal(Set["leaf", "base"], pkg.inherited)
+
+    # non-nested inherits
+    pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-2"]
+    assert_equal(Set["base"], pkg.inherit)
+    assert_equal(Set["base"], pkg.inherited)
   end
 
   def test_cmp
