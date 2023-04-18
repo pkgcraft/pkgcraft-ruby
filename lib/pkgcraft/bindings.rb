@@ -268,6 +268,8 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_homepage, [:pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_keywords, [:pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_iuse, [:pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_inherit, [:pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_inherited, [:pkg, LenPtr.by_ref], :pointer
 
     # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:dep_set, :dep_set], :bool

@@ -279,6 +279,15 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Set["a", "b", "c"], pkg.iuse)
   end
 
+  def test_inherits
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_empty(pkg.inherit)
+    assert_empty(pkg.inherited)
+    # TODO: add eclass inherit tests
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")
