@@ -15,7 +15,9 @@ class TestEapi < Minitest::Test
     end
 
     eapi_latest = EAPI_LATEST
+    assert_includes(eapi_latest.inspect, eapi_latest.to_s)
     eapi_latest_official = EAPI_LATEST_OFFICIAL
+    assert_includes(eapi_latest_official.inspect, eapi_latest_official.to_s)
     assert_same(EAPIS[eapi_latest_official.to_s], eapi_latest_official)
     assert_same(EAPIS[eapi_latest.to_s], eapi_latest)
     refute_same(eapi_latest_official, eapi_latest)

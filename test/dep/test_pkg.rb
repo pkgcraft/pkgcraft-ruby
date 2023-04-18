@@ -25,6 +25,7 @@ class TestDep < Minitest::Test
     assert_equal("cat/pkg", dep1.cpn)
     assert_equal("cat/pkg-1-r2", dep1.cpv)
     assert_equal("=cat/pkg-1-r2", dep1.to_s)
+    assert_includes(dep1.inspect, "=cat/pkg-1-r2")
 
     # no revision
     dep2 = Dep.new("=cat/pkg-2")
@@ -37,6 +38,7 @@ class TestDep < Minitest::Test
     assert_equal("cat/pkg", dep2.cpn)
     assert_equal("cat/pkg-2", dep2.cpv)
     assert_equal("=cat/pkg-2", dep2.to_s)
+    assert_includes(dep2.inspect, "=cat/pkg-2")
 
     # no version
     dep = Dep.new("cat/pkg")
@@ -50,6 +52,7 @@ class TestDep < Minitest::Test
     assert_equal("cat/pkg", dep.cpn)
     assert_equal("cat/pkg", dep.cpv)
     assert_equal("cat/pkg", dep.to_s)
+    assert_includes(dep.inspect, "cat/pkg")
 
     # all fields -- extended EAPI default allows repo deps
     dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
@@ -72,6 +75,7 @@ class TestDep < Minitest::Test
     assert_equal("cat/pkg", dep.cpn)
     assert_equal("cat/pkg-1-r2", dep.cpv)
     assert_equal("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo", dep.to_s)
+    assert_includes(dep.inspect, "!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
 
     # explicitly specifying an official EAPI fails
     ["8", EAPI8].each do |eapi|
@@ -126,6 +130,7 @@ class TestDep < Minitest::Test
           optional_value(d["use"], dep.use)
           optional_value(d["repo"], dep.repo)
           assert_equal(s, dep.to_s)
+          assert_includes(dep.inspect, s)
         else
           assert_raises InvalidDep do
             Dep.new(s, eapi)

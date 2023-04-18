@@ -13,10 +13,12 @@ class TestVersion < Minitest::Test
     v1 = Version.new("1")
     assert_nil(v1.revision)
     assert_equal("1", v1.to_s)
+    assert_includes(v1.inspect, "1")
     v1 = Version.new("1-r2")
     assert_nil(v1.op)
     assert_equal("2", v1.revision)
     assert_equal("1-r2", v1.to_s)
+    assert_includes(v1.inspect, "1-r2")
 
     v2 = Version.new("2")
     assert(v1 < v2)
@@ -101,6 +103,7 @@ class TestVersionWithOp < Minitest::Test
     assert_equal(:Greater, v1.op)
     assert_nil(v1.revision)
     assert_equal(">1", v1.to_s)
+    assert_includes(v1.inspect, ">1")
 
     v2 = VersionWithOp.new("=2")
     assert_equal(:Equal, v2.op)

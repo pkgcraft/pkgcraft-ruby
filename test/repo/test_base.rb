@@ -122,6 +122,7 @@ class TestRepoBase < Minitest::Test
   def test_string
     repo = EbuildTemp.new(id: "repo")
     assert_equal("repo", repo.to_s)
+    assert_includes(repo.inspect, "repo")
   end
 
   def test_iter
