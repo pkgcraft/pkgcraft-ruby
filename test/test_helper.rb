@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "pkgcraft"
-
 # optionally enable coverage support
 begin
   require "simplecov"
@@ -10,14 +7,14 @@ begin
   SimpleCov.start do
     add_filter "/test/"
     enable_coverage :branch
-  end
 
-  # optionally enable codecov support
-  begin
-    require "simplecov-cobertura"
-    SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
-  rescue LoadError
-    puts "codecov support disabled"
+    if ENV["CI"]
+      require "simplecov-cobertura"
+      formatter SimpleCov::Formatter::CoberturaFormatter
+    else
+      require "simplecov-html"
+      formatter SimpleCov::Formatter::HTMLFormatter
+    end
   end
 rescue LoadError
   puts "code coverage disabled"
@@ -34,6 +31,9 @@ def parse_toml
   data
 end
 TESTDATA_TOML = parse_toml.freeze
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "pkgcraft"
 
 # load repos from shared test data
 def load_repos

@@ -22,4 +22,5 @@ group :development do
   # coverage
   gem "simplecov", require: false
   gem "simplecov-cobertura", require: false
+  gem "simplecov-html", require: false
 end
