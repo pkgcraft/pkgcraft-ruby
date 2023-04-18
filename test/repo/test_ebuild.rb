@@ -19,7 +19,17 @@ class TestRepoEbuild < Minitest::Test
   end
 
   def test_masters
+    # primary repo
     repo = EbuildTemp.new
     assert_empty(repo.masters)
+
+    # primary repo
+    primary_repo = TESTDATA_CONFIG.repos["dependent-primary"]
+    assert_empty(primary_repo.masters)
+
+    # dependent repo
+    secondary_repo = TESTDATA_CONFIG.repos["dependent-secondary"]
+    refute_empty(secondary_repo.masters)
+    assert_equal([primary_repo], secondary_repo.masters)
   end
 end
