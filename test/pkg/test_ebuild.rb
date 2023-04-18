@@ -288,12 +288,16 @@ class TestPkgEbuild < Minitest::Test
 
     # nested inherits
     pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-1"]
+    refute_empty(pkg.inherit)
     assert_equal(Set["leaf"], pkg.inherit)
+    refute_empty(pkg.inherited)
     assert_equal(Set["leaf", "base"], pkg.inherited)
 
     # non-nested inherits
     pkg = CONFIG.repos["eclasses"]["pkg-tests/inherits-2"]
+    refute_empty(pkg.inherit)
     assert_equal(Set["base"], pkg.inherit)
+    refute_empty(pkg.inherited)
     assert_equal(Set["base"], pkg.inherited)
   end
 
