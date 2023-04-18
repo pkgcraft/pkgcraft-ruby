@@ -22,20 +22,20 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def category
-        @_category, ptr = C.pkgcraft_cpv_category(@ptr) if @_category.nil?
+        @category, ptr = C.pkgcraft_cpv_category(@ptr) if @category.nil?
         C.pkgcraft_str_free(ptr)
-        @_category
+        @category
       end
 
       def package
-        @_package, ptr = C.pkgcraft_cpv_package(@ptr) if @_package.nil?
+        @package, ptr = C.pkgcraft_cpv_package(@ptr) if @package.nil?
         C.pkgcraft_str_free(ptr)
-        @_package
+        @package
       end
 
       def version
-        @_version = Version.send(:from_ptr, C.pkgcraft_cpv_version(@ptr)) if @_version.nil?
-        @_version
+        @version = Version.send(:from_ptr, C.pkgcraft_cpv_version(@ptr)) if @version.nil?
+        @version
       end
 
       def revision
@@ -105,8 +105,8 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        @_hash = C.pkgcraft_cpv_hash(@ptr) if @_hash.nil?
-        @_hash
+        @hash = C.pkgcraft_cpv_hash(@ptr) if @hash.nil?
+        @hash
       end
     end
   end

@@ -65,13 +65,13 @@ module Pkgcraft
 
       def repos
         length = C::LenPtr.new
-        if @_repos.nil?
+        if @repos.nil?
           c_repos = C.pkgcraft_repo_set_repos(@ptr, length)
           repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
-          @_repos = Set.new(repos.values)
+          @repos = Set.new(repos.values)
           C.pkgcraft_repos_free(c_repos, length[:value])
         end
-        @_repos
+        @repos
       end
 
       def contains?(obj)
@@ -89,8 +89,8 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        @_hash = C.pkgcraft_repo_set_hash(@ptr) if @_hash.nil?
-        @_hash
+        @hash = C.pkgcraft_repo_set_hash(@ptr) if @hash.nil?
+        @hash
       end
 
       def length

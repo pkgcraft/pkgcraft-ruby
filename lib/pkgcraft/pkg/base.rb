@@ -53,23 +53,23 @@ module Pkgcraft
       end
 
       def cpv
-        @_cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @_cpv.nil?
-        @_cpv
+        @cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @cpv.nil?
+        @cpv
       end
 
       def eapi
-        @_eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @_eapi.nil?
-        @_eapi
+        @eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @eapi.nil?
+        @eapi
       end
 
       def repo
-        @_repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @_repo.nil?
-        @_repo
+        @repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @repo.nil?
+        @repo
       end
 
       def version
-        @_version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @_version.nil?
-        @_version
+        @version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @version.nil?
+        @version
       end
 
       def <=>(other)
@@ -81,8 +81,8 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        @_hash = C.pkgcraft_pkg_hash(@ptr) if @_hash.nil?
-        @_hash
+        @hash = C.pkgcraft_pkg_hash(@ptr) if @hash.nil?
+        @hash
       end
 
       def to_s

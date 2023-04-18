@@ -14,6 +14,7 @@ class TestRepoEbuild < Minitest::Test
 
     # explicit
     repo = EbuildTemp.new(eapi: EAPI5)
+    refute_nil(repo.eapi)
     assert_equal(EAPI5, repo.eapi)
   end
 

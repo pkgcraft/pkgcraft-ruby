@@ -37,8 +37,8 @@ module Pkgcraft
       end
 
       def repos
-        @_repos = Repos.send(:from_ptr, @ptr) if @_repos.nil?
-        @_repos
+        @repos = Repos.send(:from_ptr, @ptr) if @repos.nil?
+        @repos
       end
 
       def load_repos_conf(path = nil, defaults: PORTAGE_REPOS_CONF_DEFAULTS)
@@ -56,7 +56,7 @@ module Pkgcraft
         raise Error::PkgcraftError if c_repos.null?
 
         # force repos attr refresh
-        @_repos = nil
+        @repos = nil
 
         repos = Configs.send(:repos_to_dict, c_repos, length[:value], false)
         C.pkgcraft_repos_free(c_repos, length[:value])
@@ -71,7 +71,7 @@ module Pkgcraft
           ptr = C.pkgcraft_config_add_repo(@ptr, repo.ptr)
           raise Error::ConfigError if ptr.null?
 
-          @_repos = nil
+          @repos = nil
           repo
         else
           raise TypeError.new("unsupported repo type: #{repo.class}")
@@ -87,7 +87,7 @@ module Pkgcraft
         raise Error::PkgcraftError if ptr.null?
 
         # force repos attr refresh
-        @_repos = nil
+        @repos = nil
 
         Repo.send(:from_ptr, ptr, false)
       end
@@ -114,19 +114,19 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def all
-        if @_all.nil?
+        if @all.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
-          @_all = RepoSet.send(:from_ptr, ptr)
+          @all = RepoSet.send(:from_ptr, ptr)
         end
-        @_all
+        @all
       end
 
       def ebuild
-        if @_ebuild.nil?
+        if @ebuild.nil?
           ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
-          @_ebuild = RepoSet.send(:from_ptr, ptr)
+          @ebuild = RepoSet.send(:from_ptr, ptr)
         end
-        @_ebuild
+        @ebuild
       end
 
       def each(&block)

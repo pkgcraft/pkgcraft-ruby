@@ -106,12 +106,12 @@ module Pkgcraft
       end
 
       def path
-        if @_path.nil?
+        if @path.nil?
           path, c_str = C.pkgcraft_repo_path(@ptr)
-          @_path = Pathname.new(path)
+          @path = Pathname.new(path)
           C.pkgcraft_str_free(c_str)
         end
-        @_path
+        @path
       end
 
       def categories
@@ -163,8 +163,8 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        @_hash = C.pkgcraft_repo_hash(@ptr) if @_hash.nil?
-        @_hash
+        @hash = C.pkgcraft_repo_hash(@ptr) if @hash.nil?
+        @hash
       end
 
       def to_s

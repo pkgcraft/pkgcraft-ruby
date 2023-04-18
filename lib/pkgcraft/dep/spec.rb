@@ -52,8 +52,8 @@ module Pkgcraft
       alias eql? ==
 
       def hash
-        @_hash = C.pkgcraft_dep_spec_hash(@ptr) if @_hash.nil?
-        @_hash
+        @hash = C.pkgcraft_dep_spec_hash(@ptr) if @hash.nil?
+        @hash
       end
 
       def to_s
