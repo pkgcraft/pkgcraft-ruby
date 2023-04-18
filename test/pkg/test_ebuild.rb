@@ -125,7 +125,7 @@ class TestPkgEbuild < Minitest::Test
       # defined
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
       refute_nil(pkg.send(attr))
-      assert_equal("cat/pkg", pkg.send(attr).to_s)
+      assert_equal(Dependencies.new("cat/pkg"), pkg.send(attr))
     end
   end
 
@@ -142,7 +142,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "LICENSE=BSD")
     refute_nil(pkg.license)
-    assert_equal("BSD", pkg.license.to_s)
+    assert_equal(License.new("BSD"), pkg.license)
   end
 
   def test_properties
@@ -158,7 +158,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=live")
     refute_nil(pkg.properties)
-    assert_equal("live", pkg.properties.to_s)
+    assert_equal(Properties.new("live"), pkg.properties)
   end
 
   def test_required_use
@@ -174,7 +174,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
     refute_nil(pkg.required_use)
-    assert_equal("u1? ( u2 )", pkg.required_use.to_s)
+    assert_equal(RequiredUse.new("u1? ( u2 )"), pkg.required_use)
   end
 
   def test_restrict
@@ -190,7 +190,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=test")
     refute_nil(pkg.restrict)
-    assert_equal("test", pkg.restrict.to_s)
+    assert_equal(Restrict.new("test"), pkg.restrict)
   end
 
   def test_src_uri
@@ -206,7 +206,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
     refute_nil(pkg.src_uri)
-    assert_equal("https://a.com/file.tar.gz", pkg.src_uri.to_s)
+    assert_equal(SrcUri.new("https://a.com/file.tar.gz"), pkg.src_uri)
   end
 
   def test_defined_phases
