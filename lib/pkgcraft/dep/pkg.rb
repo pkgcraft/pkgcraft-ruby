@@ -82,15 +82,6 @@ module Pkgcraft
         raise Error::InvalidDep if @ptr.null?
       end
 
-      # Create a Dep from a pointer.
-      def self.from_ptr(ptr)
-        obj = allocate
-        obj.instance_variable_set(:@ptr, ptr)
-        obj
-      end
-
-      private_class_method :from_ptr
-
       def blocker
         val = C.pkgcraft_dep_blocker(self)
         return Blocker[val] unless val.zero?
