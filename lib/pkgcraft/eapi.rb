@@ -5,6 +5,7 @@ module Pkgcraft
   module Eapis
     # EAPI object
     class Eapi
+      include InspectPointer
       include Comparable
       attr_reader :ptr, :hash, :dep_keys
 
@@ -52,10 +53,6 @@ module Pkgcraft
 
       def to_s
         @id
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}'>"
       end
 
       def <=>(other)

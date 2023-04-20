@@ -43,6 +43,7 @@ module Pkgcraft
 
     # Package version
     class Version
+      include InspectPointer
       include Comparable
       attr_reader :ptr
 
@@ -87,10 +88,6 @@ module Pkgcraft
         s, ptr = C.pkgcraft_version_str(@ptr)
         C.pkgcraft_str_free(ptr)
         s
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
 
       def <=>(other)

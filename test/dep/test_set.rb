@@ -9,11 +9,18 @@ class TestDependencies < Minitest::Test
   def test_string
     # no args
     dep = Dependencies.new
-    assert_equal("", dep.to_s)
+    assert_empty(dep.to_s)
+    assert_includes(dep.inspect, dep.to_s)
 
     ["", "a/b"].each do |s|
       dep = Dependencies.new(s)
       assert_equal(s, dep.to_s)
+    end
+  end
+
+  def test_invalid
+    assert_raises PkgcraftError do
+      Dependencies.new("u? ( cat/pkg)")
     end
   end
 
@@ -25,7 +32,14 @@ class TestDependencies < Minitest::Test
       dep1 = Dependencies.new(s1)
       dep2 = Dependencies.new(s2)
       assert_equal(dep1, dep2)
-      assert_equal(1, Set[dep1, dep2].length)
+      set = Set[dep1, dep2]
+      assert_equal(1, set.length)
+      assert_includes(set, dep2)
+
+      # invalid type
+      assert_raises TypeError do
+        dep1 == ""
+      end
     end
   end
 

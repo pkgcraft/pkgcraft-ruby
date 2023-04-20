@@ -11,6 +11,7 @@ class TestDepSpec < Minitest::Test
     assert_equal(["cat/pkg"], dep_spec.iter_flatten.map(&:to_s))
     dep_spec = Dependencies.new("u? ( a/b )").entries.first
     assert_equal(["a/b"], dep_spec.iter_flatten.map(&:to_s))
+    assert_includes(dep_spec.inspect, dep_spec.to_s)
 
     # multiple nested
     dep_spec = Dependencies.new("u? ( || ( a/b c/d ) e/f )").entries.first

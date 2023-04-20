@@ -5,6 +5,7 @@ module Pkgcraft
   module Repos
     # Package repo.
     class Repo
+      include InspectPointer
       include Comparable
       include Enumerable
       attr_reader :id
@@ -169,10 +170,6 @@ module Pkgcraft
 
       def to_s
         @id
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
     end
   end

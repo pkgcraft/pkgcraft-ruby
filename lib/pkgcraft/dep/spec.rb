@@ -4,6 +4,7 @@ module Pkgcraft
   module Dep
     # Set of dependency objects.
     class DepSpec
+      include InspectStruct
       attr_reader :ptr
 
       # Create a DepSpec from a pointer.
@@ -60,10 +61,6 @@ module Pkgcraft
         s, c_str = C.pkgcraft_dep_spec_str(@ptr)
         C.pkgcraft_str_free(c_str)
         s
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
     end
 

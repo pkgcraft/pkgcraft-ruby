@@ -4,6 +4,7 @@ module Pkgcraft
   module Dep
     # CPV object support (category/package-version)
     class Cpv
+      include InspectPointer
       include Comparable
       attr_reader :ptr
 
@@ -90,10 +91,6 @@ module Pkgcraft
         s, ptr = C.pkgcraft_cpv_str(@ptr)
         C.pkgcraft_str_free(ptr)
         s
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
 
       def <=>(other)

@@ -72,8 +72,9 @@ module Pkgcraft
 
     # Package dependency
     class Dep
+      include InspectPointer
+      include Pkgcraft::Eapis
       include Comparable
-      include Eapis
       attr_reader :ptr
 
       def initialize(str, eapi = EAPI_LATEST)
@@ -214,10 +215,6 @@ module Pkgcraft
         s, ptr = C.pkgcraft_dep_str(@ptr)
         C.pkgcraft_str_free(ptr)
         s
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}'>"
       end
 
       def <=>(other)

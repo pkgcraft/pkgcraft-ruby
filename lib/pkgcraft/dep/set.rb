@@ -4,6 +4,7 @@ module Pkgcraft
   module Dep
     # Set of dependency objects.
     class DepSet
+      include InspectStruct
       include Enumerable
       attr_reader :ptr
 
@@ -90,10 +91,6 @@ module Pkgcraft
         s, c_str = C.pkgcraft_dep_set_str(@ptr)
         C.pkgcraft_str_free(c_str)
         s
-      end
-
-      def inspect
-        "#<#{self.class} '#{self}' at #{@ptr.address}>"
       end
     end
 
