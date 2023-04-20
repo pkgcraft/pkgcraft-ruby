@@ -128,13 +128,7 @@ module Pkgcraft
       end
 
       def use
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_dep_use_deps(self, length)
-        return if ptr.null?
-
-        use = ptr.get_array_of_string(0, length[:value])
-        C.pkgcraft_str_array_free(ptr, length[:value])
-        use
+        C.str_array(self, C.method(:pkgcraft_dep_use_deps))
       end
 
       def repo

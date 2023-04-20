@@ -161,60 +161,48 @@ module Pkgcraft
 
       def defined_phases
         if @defined_phases.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_defined_phases(self, length)
-          @defined_phases = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_defined_phases))
+          @defined_phases = Set.new(values).freeze
         end
         @defined_phases
       end
 
       def homepage
         if @homepage.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_homepage(self, length)
-          @homepage = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_homepage))
+          @homepage = Set.new(values).freeze
         end
         @homepage
       end
 
       def keywords
         if @keywords.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_keywords(self, length)
-          @keywords = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_keywords))
+          @keywords = Set.new(values).freeze
         end
         @keywords
       end
 
       def iuse
         if @iuse.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_iuse(self, length)
-          @iuse = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_iuse))
+          @iuse = Set.new(values).freeze
         end
         @iuse
       end
 
       def inherit
         if @inherit.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_inherit(self, length)
-          @inherit = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_inherit))
+          @inherit = Set.new(values).freeze
         end
         @inherit
       end
 
       def inherited
         if @inherited.nil?
-          length = C::LenPtr.new
-          ptr = C.pkgcraft_pkg_ebuild_inherited(self, length)
-          @inherited = Set.new(ptr.get_array_of_string(0, length[:value])).freeze
-          C.pkgcraft_str_array_free(ptr, length[:value])
+          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_inherited))
+          @inherited = Set.new(values).freeze
         end
         @inherited
       end

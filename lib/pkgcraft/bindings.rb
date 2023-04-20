@@ -59,6 +59,17 @@ module Pkgcraft
       end
     end
 
+    # Convert a string array pointer to an array of String objects.
+    def self.str_array(obj_ptr, func, *args)
+      length = C::LenPtr.new
+      ptr = func.call(obj_ptr, *args, length)
+      return if ptr.null?
+
+      value = ptr.get_array_of_string(0, length[:value])
+      C.pkgcraft_str_array_free(ptr, length[:value])
+      value
+    end
+
     # Return the pkgcraft-c library version.
     def self.version
       attach_function :pkgcraft_lib_version, [], String

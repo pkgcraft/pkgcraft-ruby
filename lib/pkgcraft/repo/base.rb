@@ -155,27 +155,15 @@ module Pkgcraft
       end
 
       def categories
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_repo_categories(@ptr, length)
-        categories = ptr.get_array_of_string(0, length[:value])
-        C.pkgcraft_str_array_free(ptr, length[:value])
-        categories.freeze
+        C.str_array(@ptr, C.method(:pkgcraft_repo_categories)).freeze
       end
 
       def packages(cat)
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_repo_packages(@ptr, cat, length)
-        pkgs = ptr.get_array_of_string(0, length[:value])
-        C.pkgcraft_str_array_free(ptr, length[:value])
-        pkgs.freeze
+        C.str_array(@ptr, C.method(:pkgcraft_repo_packages), cat).freeze
       end
 
       def versions(cat, pkg)
-        length = C::LenPtr.new
-        ptr = C.pkgcraft_repo_versions(@ptr, cat, pkg, length)
-        versions = ptr.get_array_of_string(0, length[:value])
-        C.pkgcraft_str_array_free(ptr, length[:value])
-        versions.freeze
+        C.str_array(@ptr, C.method(:pkgcraft_repo_versions), cat, pkg).freeze
       end
 
       def length
