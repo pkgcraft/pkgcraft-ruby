@@ -1,6 +1,28 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # FFI bindings for DepSpec related functionality
+  module C
+    # DepSpec wrapper
+    class DepSpec < FFI::ManagedStruct
+      layout :unit, :int,
+             :kind, :int,
+             :ptr,  :pointer
+
+      def self.release(ptr)
+        C.pkgcraft_dep_spec_free(ptr)
+      end
+    end
+
+    typedef DepSpec.by_ref, :DepSpec
+    attach_function :pkgcraft_dep_spec_cmp, [:DepSpec, :DepSpec], :int
+    attach_function :pkgcraft_dep_spec_hash, [:DepSpec], :uint64
+    attach_function :pkgcraft_dep_spec_str, [:DepSpec], :strptr
+    attach_function :pkgcraft_dep_spec_free, [:pointer], :void
+    attach_function :pkgcraft_dep_spec_into_iter_flatten, [:DepSpec], :pointer
+    attach_function :pkgcraft_dep_spec_into_iter_recursive, [:DepSpec], :pointer
+  end
+
   module Dep
     # Set of dependency objects.
     class DepSpec

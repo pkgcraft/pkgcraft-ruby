@@ -64,65 +64,8 @@ module Pkgcraft
       end
     end
 
-    # DepSet wrapper
-    class DepSet < FFI::ManagedStruct
-      layout :unit, :int,
-             :kind, :int,
-             :ptr,  :pointer
-
-      def self.release(ptr)
-        C.pkgcraft_dep_set_free(ptr)
-      end
-    end
-
-    # DepSpec wrapper
-    class DepSpec < FFI::ManagedStruct
-      layout :unit, :int,
-             :kind, :int,
-             :ptr,  :pointer
-
-      def self.release(ptr)
-        C.pkgcraft_dep_spec_free(ptr)
-      end
-    end
-
     # type aliases
     typedef :pointer, :eapi
-    typedef DepSet.by_ref, :DepSet
-    typedef DepSpec.by_ref, :DepSpec
-
-    # dep_set support
-    attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
-    attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
-    attach_function :pkgcraft_dep_set_str, [:DepSet], :strptr
-    attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], :DepSet
-    attach_function :pkgcraft_dep_set_license, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_properties, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_required_use, [:string, :eapi], :DepSet
-    attach_function :pkgcraft_dep_set_restrict, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_src_uri, [:string, :eapi], :DepSet
-    attach_function :pkgcraft_dep_set_free, [:pointer], :void
-    attach_function :pkgcraft_dep_set_into_iter, [:DepSet], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], :DepSpec
-    attach_function :pkgcraft_dep_set_into_iter_free, [:pointer], :void
-    attach_function :pkgcraft_dep_set_into_iter_flatten, [:DepSet], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_flatten_next, [:pointer], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_flatten_free, [:pointer], :void
-    attach_function :pkgcraft_dep_set_into_iter_recursive, [:DepSet], :pointer
-    attach_function :pkgcraft_dep_set_into_iter_recursive_next, [:pointer], :DepSpec
-    attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
-
-    # dep_spec support
-    attach_function :pkgcraft_dep_spec_cmp, [:DepSpec, :DepSpec], :int
-    attach_function :pkgcraft_dep_spec_hash, [:DepSpec], :uint64
-    attach_function :pkgcraft_dep_spec_str, [:DepSpec], :strptr
-    attach_function :pkgcraft_dep_spec_free, [:pointer], :void
-    attach_function :pkgcraft_dep_spec_into_iter_flatten, [:DepSpec], :pointer
-    attach_function :pkgcraft_dep_spec_into_iter_recursive, [:DepSpec], :pointer
-
-    # URI dep_spec support
-    attach_function :pkgcraft_uri_str, [:pointer], :strptr
-    attach_function :pkgcraft_uri_free, [:pointer], :void
 
     # eapi support
     attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr
