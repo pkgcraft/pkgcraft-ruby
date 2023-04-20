@@ -42,36 +42,24 @@ module Pkgcraft
     end
 
     # Package version
-    class Version
+    class Version < C::Version
       include InspectPointerRender
       include Comparable
-      attr_reader :ptr
 
       def initialize(str)
         @ptr = C.pkgcraft_version_new(str.to_s)
         raise Error::InvalidVersion if @ptr.null?
       end
 
-      # Create a Version from a pointer.
-      def self.from_ptr(ptr)
-        return if ptr.null?
-
-        obj = allocate
-        obj.instance_variable_set(:@ptr, ptr)
-        obj
-      end
-
-      private_class_method :from_ptr
-
       def op
-        op = C.pkgcraft_version_op(@ptr)
+        op = C.pkgcraft_version_op(self)
         return if op.zero?
 
         Operator[op]
       end
 
       def revision
-        s, ptr = C.pkgcraft_version_revision(@ptr)
+        s, ptr = C.pkgcraft_version_revision(self)
         return if ptr.null?
 
         C.pkgcraft_str_free(ptr)
@@ -79,27 +67,23 @@ module Pkgcraft
       end
 
       def intersects(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Version
-
-        C.pkgcraft_version_intersects(@ptr, other.ptr)
+        C.pkgcraft_version_intersects(self, other)
       end
 
       def to_s
-        s, ptr = C.pkgcraft_version_str(@ptr)
+        s, ptr = C.pkgcraft_version_str(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def <=>(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Version
-
-        C.pkgcraft_version_cmp(@ptr, other.ptr)
+        C.pkgcraft_version_cmp(self, other)
       end
 
       alias eql? ==
 
       def hash
-        @hash = C.pkgcraft_version_hash(@ptr) if @hash.nil?
+        @hash = C.pkgcraft_version_hash(self) if @hash.nil?
         @hash
       end
     end
@@ -112,7 +96,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, ptr = C.pkgcraft_version_str_with_op(@ptr)
+        s, ptr = C.pkgcraft_version_str_with_op(self)
         C.pkgcraft_str_free(ptr)
         s
       end

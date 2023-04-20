@@ -12,7 +12,7 @@ module Pkgcraft
         case format
         when 0
           obj = Pkgs::Ebuild.allocate
-          Pkgs::Ebuild.instance_method(:initialize).bind(obj).call
+          obj.class.instance_method(:initialize).bind(obj).call
         when 1
           obj = Pkgs::Fake.allocate
         else
@@ -35,7 +35,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_cpv, [Pkg], Pkgcraft::Dep::Cpv
     attach_function :pkgcraft_pkg_eapi, [Pkg], :eapi
     attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
-    attach_function :pkgcraft_pkg_version, [Pkg], Version
+    attach_function :pkgcraft_pkg_version, [Pkg], Pkgcraft::Dep::Version
     attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
     attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
     attach_function :pkgcraft_pkg_str, [Pkg], :strptr
@@ -89,7 +89,7 @@ module Pkgcraft
       end
 
       def version
-        @version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(self)) if @version.nil?
+        @version = C.pkgcraft_pkg_version(self) if @version.nil?
         @version
       end
 

@@ -79,6 +79,7 @@ module Pkgcraft
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
         @ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
+        @version = SENTINEL
         raise Error::InvalidDep if @ptr.null?
       end
 
@@ -100,7 +101,10 @@ module Pkgcraft
       end
 
       def version
-        @version = Version.send(:from_ptr, C.pkgcraft_dep_version(self)) if @version.nil?
+        if @version.equal?(SENTINEL)
+          @version = C.pkgcraft_dep_version(self)
+          @version = nil if @version.null?
+        end
         @version
       end
 

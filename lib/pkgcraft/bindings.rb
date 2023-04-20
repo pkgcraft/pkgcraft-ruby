@@ -106,13 +106,6 @@ module Pkgcraft
       end
     end
 
-    # Wrapper for version objects
-    class Version < FFI::AutoPointer
-      def self.release(ptr)
-        C.pkgcraft_version_free(ptr)
-      end
-    end
-
     # Wrapper for Restrict objects
     class Restrict < FFI::AutoPointer
       def self.release(ptr)
@@ -173,19 +166,6 @@ module Pkgcraft
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
-
-    # version support
-    attach_function :pkgcraft_version_free, [:pointer], :void
-    attach_function :pkgcraft_version_new, [:string], Version
-    attach_function :pkgcraft_version_cmp, [Version, Version], :int
-    attach_function :pkgcraft_version_hash, [Version], :uint64
-    attach_function :pkgcraft_version_intersects, [Version, Version], :bool
-    attach_function :pkgcraft_version_revision, [Version], :strptr
-    attach_function :pkgcraft_version_op, [Version], :int
-    attach_function :pkgcraft_version_op_from_str, [:string], :int
-    attach_function :pkgcraft_version_str, [Version], :strptr
-    attach_function :pkgcraft_version_str_with_op, [Version], :strptr
-    attach_function :pkgcraft_version_with_op, [:string], Version
 
     # restriction support
     attach_function :pkgcraft_restrict_and, [Restrict, Restrict], Restrict
