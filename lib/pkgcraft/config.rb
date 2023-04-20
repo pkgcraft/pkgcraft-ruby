@@ -5,8 +5,6 @@ require "pathname"
 module Pkgcraft
   # Config support
   module Configs
-    include Pkgcraft::Repos
-
     PORTAGE_REPOS_CONF_DEFAULTS = [
       "/etc/portage/repos.conf",
       "/usr/share/portage/config.repos.conf"
@@ -20,7 +18,7 @@ module Pkgcraft
       repos = {}
       (0...length).each do |i|
         ptr = c_repos[i]
-        repo = Repo.send(:from_ptr, ptr, ref)
+        repo = Pkgcraft::Repos::Repo.send(:from_ptr, ptr, ref)
         repos[repo.id] = repo
       end
       repos
@@ -89,14 +87,13 @@ module Pkgcraft
         # force repos attr refresh
         @repos = nil
 
-        Repo.send(:from_ptr, ptr, false)
+        Pkgcraft::Repos::Repo.send(:from_ptr, ptr, false)
       end
     end
 
     # System repositories.
     class Repos
       include Enumerable
-      include Pkgcraft::Repos
 
       # Create a Repos object from a Config pointer.
       def self.from_ptr(ptr)
@@ -147,5 +144,24 @@ module Pkgcraft
         @repos.to_s
       end
     end
+  end
+
+  # FFI bindings for config related functionality
+  module C
+    # Wrapper for config objects
+    class Config < FFI::AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_config_free(ptr)
+      end
+    end
+
+    # config support
+    attach_function :pkgcraft_config_new, [], Config
+    attach_function :pkgcraft_config_free, [:pointer], :void
+    attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
+    attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
+    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string], :repo
   end
 end

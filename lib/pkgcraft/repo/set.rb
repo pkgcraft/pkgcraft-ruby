@@ -11,7 +11,7 @@ module Pkgcraft
 
       def initialize(*repos)
         c_repos = FFI::MemoryPointer.new(:pointer, repos.length)
-        c_repos.write_array_of_pointer(repos.map(&:ptr))
+        c_repos.write_array_of_pointer(repos.map { |r| r.instance_variable_get(:@ptr) })
         obj = C.pkgcraft_repo_set_new(c_repos, repos.length)
         @ptr = obj.instance_variable_get(:@ptr)
       end

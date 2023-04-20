@@ -53,7 +53,8 @@ module Pkgcraft
         end
 
         def from_native(value, _context)
-          obj = new(value)
+          obj = allocate
+          FFI::AutoPointer.instance_method(:initialize).bind(obj).call(value)
           obj.instance_variable_set(:@ptr, value)
           obj
         end
@@ -102,13 +103,6 @@ module Pkgcraft
 
       def self.release(ptr)
         C.pkgcraft_log_free(ptr)
-      end
-    end
-
-    # Wrapper for config objects
-    class Config < FFI::AutoPointer
-      def self.release(ptr)
-        C.pkgcraft_config_free(ptr)
       end
     end
 
@@ -164,15 +158,6 @@ module Pkgcraft
     attach_function :pkgcraft_logging_enable, [:log_callback], :void
     attach_function :pkgcraft_log_free, [:pointer], :void
     attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
-
-    # config support
-    attach_function :pkgcraft_config_new, [], Config
-    attach_function :pkgcraft_config_free, [:pointer], :void
-    attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos_set, [Config, :int], RepoSet
-    attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
-    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string], :repo
 
     # repo support
     attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void

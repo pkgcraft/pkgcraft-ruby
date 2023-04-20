@@ -147,7 +147,9 @@ class TestRepos < Minitest::Test
     # empty
     config = Config.new
     assert_equal(RepoSet.new, config.repos.all)
+    assert_empty(config.repos.all)
     assert_equal(RepoSet.new, config.repos.ebuild)
+    assert_empty(config.repos.ebuild)
 
     # multiple
     r1 = EbuildTemp.new(id: "r1")
