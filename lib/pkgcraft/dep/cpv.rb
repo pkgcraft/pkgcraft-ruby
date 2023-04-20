@@ -12,15 +12,6 @@ module Pkgcraft
         raise Error::InvalidCpv if @ptr.null?
       end
 
-      # Create a Cpv from a pointer.
-      def self.from_ptr(ptr)
-        obj = allocate
-        obj.instance_variable_set(:@ptr, ptr)
-        obj
-      end
-
-      private_class_method :from_ptr
-
       def category
         @category, ptr = C.pkgcraft_cpv_category(self) if @category.nil?
         C.pkgcraft_str_free(ptr)

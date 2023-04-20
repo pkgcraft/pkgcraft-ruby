@@ -32,7 +32,7 @@ module Pkgcraft
     # pkg support
     attach_function :pkgcraft_pkg_format, [:pointer], :int
     attach_function :pkgcraft_pkg_free, [:pointer], :void
-    attach_function :pkgcraft_pkg_cpv, [Pkg], Cpv
+    attach_function :pkgcraft_pkg_cpv, [Pkg], Pkgcraft::Dep::Cpv
     attach_function :pkgcraft_pkg_eapi, [Pkg], :eapi
     attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
     attach_function :pkgcraft_pkg_version, [Pkg], Version
@@ -74,7 +74,7 @@ module Pkgcraft
       end
 
       def cpv
-        @cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(self)) if @cpv.nil?
+        @cpv = C.pkgcraft_pkg_cpv(self) if @cpv.nil?
         @cpv
       end
 
