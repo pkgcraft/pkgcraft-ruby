@@ -3,6 +3,25 @@
 require "pathname"
 
 module Pkgcraft
+  # FFI bindings for config related functionality
+  module C
+    # Wrapper for config objects
+    class Config < AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_config_free(ptr)
+      end
+    end
+
+    # config support
+    attach_function :pkgcraft_config_new, [], Config
+    attach_function :pkgcraft_config_free, [:pointer], :void
+    attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
+    attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
+    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string], :repo
+  end
+
   # Config support
   module Configs
     PORTAGE_REPOS_CONF_DEFAULTS = [
@@ -27,7 +46,7 @@ module Pkgcraft
     private_class_method :repos_to_dict
 
     # Config for the system.
-    class Config
+    class Config < C::Config
       include Pkgcraft::Repos
 
       def initialize
@@ -35,7 +54,7 @@ module Pkgcraft
       end
 
       def repos
-        @repos = Repos.send(:from_ptr, @ptr) if @repos.nil?
+        @repos = Repos.send(:from_ptr, self) if @repos.nil?
         @repos
       end
 
@@ -50,7 +69,7 @@ module Pkgcraft
           end
           raise "no repos.conf found on the system" if path.nil?
         end
-        c_repos = C.pkgcraft_config_load_repos_conf(@ptr, path, length)
+        c_repos = C.pkgcraft_config_load_repos_conf(self, path, length)
         raise Error::PkgcraftError if c_repos.null?
 
         # force repos attr refresh
@@ -66,7 +85,7 @@ module Pkgcraft
           path = repo.to_s
           add_repo_path(path, id, priority)
         elsif repo.is_a? Repo
-          ptr = C.pkgcraft_config_add_repo(@ptr, repo.ptr)
+          ptr = C.pkgcraft_config_add_repo(self, repo.ptr)
           raise Error::ConfigError if ptr.null?
 
           @repos = nil
@@ -81,7 +100,7 @@ module Pkgcraft
       def add_repo_path(path, id, priority)
         path = path.to_s
         id = id.nil? ? path : id.to_s
-        ptr = C.pkgcraft_config_add_repo_path(@ptr, id, priority, path)
+        ptr = C.pkgcraft_config_add_repo_path(self, id, priority, path)
         raise Error::PkgcraftError if ptr.null?
 
         # force repos attr refresh
@@ -96,14 +115,14 @@ module Pkgcraft
       include Enumerable
 
       # Create a Repos object from a Config pointer.
-      def self.from_ptr(ptr)
+      def self.from_ptr(config)
         length = C::LenPtr.new
-        c_repos = C.pkgcraft_config_repos(ptr, length)
+        c_repos = C.pkgcraft_config_repos(config, length)
         repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
         C.pkgcraft_repos_free(c_repos, length[:value])
 
         obj = allocate
-        obj.instance_variable_set(:@config_ptr, ptr)
+        obj.instance_variable_set(:@config, config)
         obj.instance_variable_set(:@repos, repos)
         obj
       end
@@ -111,12 +130,12 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def all
-        @all = C.pkgcraft_config_repos_set(@config_ptr, 0) if @all.nil?
+        @all = C.pkgcraft_config_repos_set(@config, 0) if @all.nil?
         @all
       end
 
       def ebuild
-        @ebuild = C.pkgcraft_config_repos_set(@config_ptr, 1) if @ebuild.nil?
+        @ebuild = C.pkgcraft_config_repos_set(@config, 1) if @ebuild.nil?
         @ebuild
       end
 
@@ -144,24 +163,5 @@ module Pkgcraft
         @repos.to_s
       end
     end
-  end
-
-  # FFI bindings for config related functionality
-  module C
-    # Wrapper for config objects
-    class Config < FFI::AutoPointer
-      def self.release(ptr)
-        C.pkgcraft_config_free(ptr)
-      end
-    end
-
-    # config support
-    attach_function :pkgcraft_config_new, [], Config
-    attach_function :pkgcraft_config_free, [:pointer], :void
-    attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
-    attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
-    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string], :repo
   end
 end
