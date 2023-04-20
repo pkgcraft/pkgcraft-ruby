@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # FFI bindings for error related functionality
+  module C
+    # Wrapper for errors
+    class Error < FFI::ManagedStruct
+      layout :message, :string,
+             :kind, :int
+
+      def self.release(ptr)
+        C.pkgcraft_error_free(ptr)
+      end
+    end
+
+    attach_function :pkgcraft_error_last, [], Error.by_ref
+    attach_function :pkgcraft_error_free, [:pointer], :void
+  end
+
   # Error support
   module Error
     # Generic pkgcraft error

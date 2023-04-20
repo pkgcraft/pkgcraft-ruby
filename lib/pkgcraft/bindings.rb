@@ -86,19 +86,6 @@ module Pkgcraft
       end
     end
 
-    # error support
-    class Error < FFI::ManagedStruct
-      layout :message, :string,
-             :kind, :int
-
-      def self.release(ptr)
-        C.pkgcraft_error_free(ptr)
-      end
-    end
-
-    attach_function :pkgcraft_error_last, [], Error.by_ref
-    attach_function :pkgcraft_error_free, [:pointer], :void
-
     # type aliases
     typedef :pointer, :eapi
     typedef DepSet.by_ref, :DepSet
