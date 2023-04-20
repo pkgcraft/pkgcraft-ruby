@@ -360,18 +360,22 @@ module Pkgcraft
   end
 
   private_constant :C
-end
 
-# Support outputting object ID for FFI::Pointer based objects.
-module InspectPointer
-  def inspect
-    "#<#{self.class} '#{self}' at 0x#{@ptr.address.to_s(16)}>"
+  # Support outputting object ID for FFI::Pointer based objects.
+  module InspectPointer
+    def inspect
+      "#<#{self.class} '#{self}' at 0x#{@ptr.address.to_s(16)}>"
+    end
   end
-end
 
-# Support outputting object ID for FFI::Struct based objects.
-module InspectStruct
-  def inspect
-    "#<#{self.class} '#{self}' at 0x#{@ptr[:ptr].address.to_s(16)}>"
+  private_constant :InspectPointer
+
+  # Support outputting object ID for FFI::Struct based objects.
+  module InspectStruct
+    def inspect
+      "#<#{self.class} '#{self}' at 0x#{@ptr[:ptr].address.to_s(16)}>"
+    end
   end
+
+  private_constant :InspectStruct
 end
