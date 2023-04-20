@@ -3,6 +3,28 @@
 require "set"
 
 module Pkgcraft
+  # FFI bindings for RepoSet related functionality
+  module C
+    # Wrapper for RepoSet pointers
+    class RepoSet < AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_repo_set_free(ptr)
+      end
+    end
+
+    # repo set support
+    attach_function :pkgcraft_repo_set_repos, [RepoSet, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_set_cmp, [RepoSet, RepoSet], :int
+    attach_function :pkgcraft_repo_set_hash, [RepoSet], :uint64
+    attach_function :pkgcraft_repo_set_iter, [RepoSet, Restrict], :pointer
+    attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
+    attach_function :pkgcraft_repo_set_iter_next, [:pointer], Pkg
+    attach_function :pkgcraft_repo_set_len, [RepoSet], :uint64
+    attach_function :pkgcraft_repo_set_is_empty, [RepoSet], :bool
+    attach_function :pkgcraft_repo_set_new, [:pointer, :uint64], RepoSet
+    attach_function :pkgcraft_repo_set_free, [:pointer], :void
+  end
+
   module Repos
     # Ordered repository set.
     class RepoSet < C::RepoSet
@@ -12,8 +34,7 @@ module Pkgcraft
       def initialize(*repos)
         c_repos = FFI::MemoryPointer.new(:pointer, repos.length)
         c_repos.write_array_of_pointer(repos.map { |r| r.instance_variable_get(:@ptr) })
-        obj = C.pkgcraft_repo_set_new(c_repos, repos.length)
-        @ptr = obj.instance_variable_get(:@ptr)
+        @ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
       end
 
       # Create a RepoSet from a pointer.

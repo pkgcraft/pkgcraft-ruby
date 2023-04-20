@@ -3,7 +3,7 @@
 require "pathname"
 
 module Pkgcraft
-  # FFI bindings for config related functionality
+  # FFI bindings for Config related functionality
   module C
     # Wrapper for config objects
     class Config < AutoPointer

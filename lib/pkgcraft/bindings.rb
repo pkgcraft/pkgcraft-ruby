@@ -141,13 +141,6 @@ module Pkgcraft
       end
     end
 
-    # Wrapper for RepoSet pointers
-    class RepoSet < AutoPointer
-      def self.release(ptr)
-        C.pkgcraft_repo_set_free(ptr)
-      end
-    end
-
     # type aliases
     typedef :pointer, :repo
     typedef :pointer, :eapi
@@ -195,18 +188,6 @@ module Pkgcraft
     # fake repo support
     attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
     attach_function :pkgcraft_repo_fake_extend, [:repo, :pointer, :size_t], :repo
-
-    # repo set support
-    attach_function :pkgcraft_repo_set_repos, [RepoSet, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_set_cmp, [RepoSet, RepoSet], :int
-    attach_function :pkgcraft_repo_set_hash, [RepoSet], :uint64
-    attach_function :pkgcraft_repo_set_iter, [RepoSet, Restrict], :pointer
-    attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
-    attach_function :pkgcraft_repo_set_iter_next, [:pointer], Pkg
-    attach_function :pkgcraft_repo_set_len, [RepoSet], :uint64
-    attach_function :pkgcraft_repo_set_is_empty, [RepoSet], :bool
-    attach_function :pkgcraft_repo_set_new, [:pointer, :uint64], RepoSet
-    attach_function :pkgcraft_repo_set_free, [:pointer], :void
 
     # pkg support
     attach_function :pkgcraft_pkg_format, [Pkg], :int
