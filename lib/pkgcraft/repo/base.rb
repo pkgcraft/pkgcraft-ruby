@@ -120,7 +120,7 @@ module Pkgcraft
             else
               Restrict.new(obj)
             end
-          ptr = C.pkgcraft_repo_iter_restrict(repo_ptr, restrict.ptr)
+          ptr = C.pkgcraft_repo_iter_restrict(repo_ptr, restrict)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_restrict_free))
         end
 

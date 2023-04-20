@@ -109,13 +109,6 @@ module Pkgcraft
       end
     end
 
-    # Wrapper for Restrict objects
-    class Restrict < FFI::AutoPointer
-      def self.release(ptr)
-        C.pkgcraft_restrict_free(ptr)
-      end
-    end
-
     # type aliases
     typedef :pointer, :eapi
     typedef DepSet.by_ref, :DepSet
@@ -169,17 +162,6 @@ module Pkgcraft
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
-
-    # restriction support
-    attach_function :pkgcraft_restrict_and, [Restrict, Restrict], Restrict
-    attach_function :pkgcraft_restrict_or, [Restrict, Restrict], Restrict
-    attach_function :pkgcraft_restrict_xor, [Restrict, Restrict], Restrict
-    attach_function :pkgcraft_restrict_not, [Restrict], Restrict
-    attach_function :pkgcraft_restrict_eq, [Restrict, Restrict], :bool
-    attach_function :pkgcraft_restrict_hash, [Restrict], :uint64
-    attach_function :pkgcraft_restrict_free, [:pointer], :void
-    attach_function :pkgcraft_restrict_parse_dep, [:string], Restrict
-    attach_function :pkgcraft_restrict_parse_pkg, [:string], Restrict
   end
 
   private_constant :C

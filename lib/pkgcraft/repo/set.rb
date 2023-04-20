@@ -43,15 +43,15 @@ module Pkgcraft
         include Pkgcraft::Restricts
 
         def initialize(repo_set, restrict = nil)
-          restrict_ptr =
+          restrict =
             if restrict.nil?
-              nil
+              Restrict.from_native(nil)
             elsif restrict.is_a? Restrict
-              restrict.ptr
+              restrict
             else
-              Restrict.new(restrict).ptr
+              Restrict.new(restrict)
             end
-          ptr = C.pkgcraft_repo_set_iter(repo_set, restrict_ptr)
+          ptr = C.pkgcraft_repo_set_iter(repo_set, restrict)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_iter_free))
         end
 
