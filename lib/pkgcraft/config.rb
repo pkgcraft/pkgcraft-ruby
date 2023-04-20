@@ -55,7 +55,7 @@ module Pkgcraft
       end
 
       def repos
-        @repos = Repos.send(:from_ptr, self) if @repos.nil?
+        @repos = Repos.new(self) if @repos.nil?
         @repos
       end
 
@@ -115,20 +115,13 @@ module Pkgcraft
     class Repos
       include Enumerable
 
-      # Create a Repos object from a Config pointer.
-      def self.from_ptr(config)
+      def initialize(config)
         length = C::LenPtr.new
         c_repos = C.pkgcraft_config_repos(config, length)
-        repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
+        @repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
         C.pkgcraft_repos_free(c_repos, length[:value])
-
-        obj = allocate
-        obj.instance_variable_set(:@config, config)
-        obj.instance_variable_set(:@repos, repos)
-        obj
+        @config = config
       end
-
-      private_class_method :from_ptr
 
       def all
         @all = C.pkgcraft_config_repos_set(@config, 0) if @all.nil?
@@ -164,5 +157,7 @@ module Pkgcraft
         @repos.to_s
       end
     end
+
+    private_constant :Repos
   end
 end
