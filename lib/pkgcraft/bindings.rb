@@ -46,13 +46,16 @@ module Pkgcraft
     # Wrapper for pointer-based objects.
     class AutoPointer < FFI::AutoPointer
       class << self
-        def to_native(value, _context)
+        def to_native(value, _context = nil)
           return value.instance_variable_get(:@ptr) if value.is_a?(self)
 
           raise TypeError.new("expected a kind of #{name}, was #{value.class}")
         end
 
-        def from_native(value, _context)
+        def from_native(value, _context = nil)
+          # convert nil values to proper null pointer objects
+          value = FFI::Pointer.new(0) if value.nil?
+
           obj = allocate
           FFI::AutoPointer.instance_method(:initialize).bind(obj).call(value)
           obj.instance_variable_set(:@ptr, value)

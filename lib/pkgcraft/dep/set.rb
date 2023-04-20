@@ -119,7 +119,7 @@ module Pkgcraft
 
           case @unit
           when 0
-            yield Dep.send(:from_native, ptr, nil)
+            yield Dep.from_native(ptr)
           when 1
             s = FFI::Pointer.read_string(ptr)
             C.pkgcraft_str_free(ptr)

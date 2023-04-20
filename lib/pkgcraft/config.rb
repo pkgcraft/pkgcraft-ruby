@@ -5,14 +5,13 @@ require "pathname"
 module Pkgcraft
   # FFI bindings for Config related functionality
   module C
-    # Wrapper for config objects
+    # Wrapper for Config pointers
     class Config < AutoPointer
       def self.release(ptr)
         C.pkgcraft_config_free(ptr)
       end
     end
 
-    # config support
     attach_function :pkgcraft_config_new, [], Config
     attach_function :pkgcraft_config_free, [:pointer], :void
     attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
