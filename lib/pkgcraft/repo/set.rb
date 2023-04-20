@@ -37,15 +37,6 @@ module Pkgcraft
         @ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
       end
 
-      # Create a RepoSet from a pointer.
-      def self.from_ptr(ptr)
-        obj = allocate
-        obj.instance_variable_set(:@ptr, ptr)
-        obj
-      end
-
-      private_class_method :from_ptr
-
       # Iterator over a RepoSet.
       class Iter
         include Enumerable
