@@ -5,15 +5,15 @@ require "set"
 module Pkgcraft
   module Repos
     # Ordered repository set.
-    class RepoSet
+    class RepoSet < C::RepoSet
       include Comparable
       include Enumerable
-      attr_reader :ptr
 
       def initialize(*repos)
         c_repos = FFI::MemoryPointer.new(:pointer, repos.length)
         c_repos.write_array_of_pointer(repos.map(&:ptr))
-        @ptr = C.pkgcraft_repo_set_new(c_repos, repos.length)
+        obj = C.pkgcraft_repo_set_new(c_repos, repos.length)
+        @ptr = obj.instance_variable_get(:@ptr)
       end
 
       # Create a RepoSet from a pointer.
@@ -30,7 +30,7 @@ module Pkgcraft
         include Enumerable
         include Pkgcraft::Restricts
 
-        def initialize(repo_ptr, restrict = nil)
+        def initialize(repo_set, restrict = nil)
           restrict_ptr =
             if restrict.nil?
               nil
@@ -39,7 +39,7 @@ module Pkgcraft
             else
               Restrict.new(restrict).ptr
             end
-          ptr = C.pkgcraft_repo_set_iter(repo_ptr, restrict_ptr)
+          ptr = C.pkgcraft_repo_set_iter(repo_set, restrict_ptr)
           @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_set_iter_free))
         end
 
@@ -56,7 +56,7 @@ module Pkgcraft
       private_constant :Iter
 
       def iter(restrict = nil)
-        Iter.new(@ptr, restrict)
+        Iter.new(self, restrict)
       end
 
       def each(restrict = nil, &block)
@@ -66,7 +66,7 @@ module Pkgcraft
       def repos
         length = C::LenPtr.new
         if @repos.nil?
-          c_repos = C.pkgcraft_repo_set_repos(@ptr, length)
+          c_repos = C.pkgcraft_repo_set_repos(self, length)
           repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
           @repos = Set.new(repos.values)
           C.pkgcraft_repos_free(c_repos, length[:value])
@@ -81,24 +81,22 @@ module Pkgcraft
       end
 
       def <=>(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? RepoSet
-
-        C.pkgcraft_repo_set_cmp(@ptr, other.ptr)
+        C.pkgcraft_repo_set_cmp(self, other)
       end
 
       alias eql? ==
 
       def hash
-        @hash = C.pkgcraft_repo_set_hash(@ptr) if @hash.nil?
+        @hash = C.pkgcraft_repo_set_hash(self) if @hash.nil?
         @hash
       end
 
       def length
-        C.pkgcraft_repo_set_len(@ptr)
+        C.pkgcraft_repo_set_len(self)
       end
 
       def empty?
-        C.pkgcraft_repo_set_is_empty(@ptr)
+        C.pkgcraft_repo_set_is_empty(self)
       end
     end
   end

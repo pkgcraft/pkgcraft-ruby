@@ -43,6 +43,23 @@ module Pkgcraft
       layout :value, :size_t
     end
 
+    # Wrapper for pointer-based objects.
+    class AutoPointer < FFI::AutoPointer
+      class << self
+        def to_native(value, _context)
+          return value.instance_variable_get(:@ptr) if value.is_a?(self)
+
+          raise TypeError.new("expected a kind of #{name}, was #{value.class}")
+        end
+
+        def from_native(value, _context)
+          obj = new(value)
+          obj.instance_variable_set(:@ptr, value)
+          obj
+        end
+      end
+    end
+
     # DepSet wrapper
     class DepSet < FFI::ManagedStruct
       layout :unit, :int,
@@ -130,8 +147,8 @@ module Pkgcraft
       end
     end
 
-    # Wrapper for RepoSet objects
-    class RepoSet < FFI::AutoPointer
+    # Wrapper for RepoSet pointers
+    class RepoSet < AutoPointer
       def self.release(ptr)
         C.pkgcraft_repo_set_free(ptr)
       end

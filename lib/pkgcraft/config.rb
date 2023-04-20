@@ -114,18 +114,12 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def all
-        if @all.nil?
-          ptr = C.pkgcraft_config_repos_set(@config_ptr, 0)
-          @all = RepoSet.send(:from_ptr, ptr)
-        end
+        @all = C.pkgcraft_config_repos_set(@config_ptr, 0) if @all.nil?
         @all
       end
 
       def ebuild
-        if @ebuild.nil?
-          ptr = C.pkgcraft_config_repos_set(@config_ptr, 1)
-          @ebuild = RepoSet.send(:from_ptr, ptr)
-        end
+        @ebuild = C.pkgcraft_config_repos_set(@config_ptr, 1) if @ebuild.nil?
         @ebuild
       end
 
