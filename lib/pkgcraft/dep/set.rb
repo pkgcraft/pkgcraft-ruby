@@ -19,12 +19,12 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
     attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
     attach_function :pkgcraft_dep_set_str, [:DepSet], :strptr
-    attach_function :pkgcraft_dep_set_dependencies, [:string, :eapi], :DepSet
+    attach_function :pkgcraft_dep_set_dependencies, [:string, :Eapi], :DepSet
     attach_function :pkgcraft_dep_set_license, [:string], :DepSet
     attach_function :pkgcraft_dep_set_properties, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_required_use, [:string, :eapi], :DepSet
+    attach_function :pkgcraft_dep_set_required_use, [:string, :Eapi], :DepSet
     attach_function :pkgcraft_dep_set_restrict, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_src_uri, [:string, :eapi], :DepSet
+    attach_function :pkgcraft_dep_set_src_uri, [:string, :Eapi], :DepSet
     attach_function :pkgcraft_dep_set_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter, [:DepSet], :pointer
     attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], :DepSpec

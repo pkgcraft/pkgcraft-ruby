@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # FFI bindings for Eapi related functionality
+  module C
+    typedef :pointer, :Eapi
+    attach_function :pkgcraft_eapi_as_str, [:Eapi], :strptr
+    attach_function :pkgcraft_eapi_cmp, [:Eapi, :Eapi], :int
+    attach_function :pkgcraft_eapi_has, [:Eapi, :string], :bool
+    attach_function :pkgcraft_eapi_hash, [:Eapi], :uint64
+    attach_function :pkgcraft_eapi_dep_keys, [:Eapi, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
+  end
+
   # EAPI support
   module Eapis
     # EAPI object

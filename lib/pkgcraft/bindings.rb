@@ -63,20 +63,6 @@ module Pkgcraft
         end
       end
     end
-
-    # type aliases
-    typedef :pointer, :eapi
-
-    # eapi support
-    attach_function :pkgcraft_eapi_as_str, [:eapi], :strptr
-    attach_function :pkgcraft_eapi_cmp, [:eapi, :eapi], :int
-    attach_function :pkgcraft_eapi_has, [:eapi, :string], :bool
-    attach_function :pkgcraft_eapi_hash, [:eapi], :uint64
-    attach_function :pkgcraft_eapi_dep_keys, [:eapi, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
   end
 
   private_constant :C

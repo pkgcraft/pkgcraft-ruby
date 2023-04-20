@@ -28,7 +28,7 @@ module Pkgcraft
     attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
 
     # ebuild repo support
-    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :eapi
+    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :Eapi
     attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
 
     # temp ebuild repo
