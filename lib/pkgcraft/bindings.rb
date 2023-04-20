@@ -18,7 +18,7 @@ module Pkgcraft
 
     # Return the pkgcraft-c library version.
     def self.version
-      attach_function :pkgcraft_lib_version, [], :string
+      attach_function :pkgcraft_lib_version, [], :strptr
 
       s, ptr = pkgcraft_lib_version
       pkgcraft_str_free(ptr)
