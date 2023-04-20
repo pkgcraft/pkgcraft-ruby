@@ -11,7 +11,9 @@ class TestCpv < Minitest::Test
   def test_new
     # revision
     cpv1 = Cpv.new("cat/pkg-1-r2")
+    refute_nil(cpv1.category)
     assert_equal("cat", cpv1.category)
+    refute_nil(cpv1.package)
     assert_equal("pkg", cpv1.package)
     assert_equal(cpv1.version, Version.new("1-r2"))
     assert_equal("2", cpv1.revision)
@@ -85,9 +87,10 @@ class TestCpv < Minitest::Test
 
   def test_hash
     TESTDATA_TOML["version"]["hashing"].each do |d|
-      cpvs = Set.new(d["versions"].map { |s| Cpv.new("cat/pkg-#{s}") }.compact)
+      set = Set.new(d["versions"].map { |s| Cpv.new("cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
-      assert_equal(cpvs.length, length)
+      assert_includes(set, set.entries.first)
+      assert_equal(set.length, length)
     end
   end
 end
