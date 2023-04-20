@@ -38,7 +38,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_version, [Pkg], Pkgcraft::Dep::Version
     attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
     attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
-    attach_function :pkgcraft_pkg_str, [Pkg], :strptr
+    attach_function :pkgcraft_pkg_str, [Pkg], String
     attach_function :pkgcraft_pkg_restrict, [Pkg], Restrict
   end
 
@@ -105,9 +105,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, c_str = C.pkgcraft_pkg_str(self)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_pkg_str(self)
       end
     end
   end

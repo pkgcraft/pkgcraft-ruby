@@ -17,7 +17,7 @@ module Pkgcraft
     typedef DepSpec.by_ref, :DepSpec
     attach_function :pkgcraft_dep_spec_cmp, [:DepSpec, :DepSpec], :int
     attach_function :pkgcraft_dep_spec_hash, [:DepSpec], :uint64
-    attach_function :pkgcraft_dep_spec_str, [:DepSpec], :strptr
+    attach_function :pkgcraft_dep_spec_str, [:DepSpec], String
     attach_function :pkgcraft_dep_spec_free, [:pointer], :void
     attach_function :pkgcraft_dep_spec_into_iter_flatten, [:DepSpec], :pointer
     attach_function :pkgcraft_dep_spec_into_iter_recursive, [:DepSpec], :pointer
@@ -80,9 +80,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, c_str = C.pkgcraft_dep_spec_str(@ptr)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_dep_spec_str(@ptr)
       end
     end
 

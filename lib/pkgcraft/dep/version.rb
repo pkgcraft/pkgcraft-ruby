@@ -59,11 +59,7 @@ module Pkgcraft
       end
 
       def revision
-        s, ptr = C.pkgcraft_version_revision(self)
-        return if ptr.null?
-
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_version_revision(self)
       end
 
       def intersects(other)
@@ -71,9 +67,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, ptr = C.pkgcraft_version_str(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_version_str(self)
       end
 
       def <=>(other)
@@ -96,9 +90,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, ptr = C.pkgcraft_version_str_with_op(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_version_str_with_op(self)
       end
     end
   end

@@ -9,8 +9,8 @@ module Pkgcraft
     attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
     attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
     attach_function :pkgcraft_repo_hash, [:repo], :uint64
-    attach_function :pkgcraft_repo_id, [:repo], :strptr
-    attach_function :pkgcraft_repo_path, [:repo], :strptr
+    attach_function :pkgcraft_repo_id, [:repo], String
+    attach_function :pkgcraft_repo_path, [:repo], String
     attach_function :pkgcraft_repo_contains_path, [:repo, :string], :bool
     attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
@@ -36,9 +36,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
     attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
     attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], :strptr
+      :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], String
     attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], :strptr
+      :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], String
 
     # fake repo support
     attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
@@ -79,8 +79,7 @@ module Pkgcraft
 
         ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_free)) unless ref
         obj.instance_variable_set(:@ptr, ptr)
-        id, c_str = C.pkgcraft_repo_id(ptr)
-        C.pkgcraft_str_free(c_str)
+        id = C.pkgcraft_repo_id(ptr)
         obj.instance_variable_set(:@id, id)
         obj
       end
@@ -151,11 +150,7 @@ module Pkgcraft
       end
 
       def path
-        if @path.nil?
-          path, c_str = C.pkgcraft_repo_path(@ptr)
-          @path = Pathname.new(path)
-          C.pkgcraft_str_free(c_str)
-        end
+        @path = Pathname.new(C.pkgcraft_repo_path(@ptr)) if @path.nil?
         @path
       end
 

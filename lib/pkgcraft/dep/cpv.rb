@@ -13,14 +13,12 @@ module Pkgcraft
       end
 
       def category
-        @category, ptr = C.pkgcraft_cpv_category(self) if @category.nil?
-        C.pkgcraft_str_free(ptr)
+        @category = C.pkgcraft_cpv_category(self) if @category.nil?
         @category
       end
 
       def package
-        @package, ptr = C.pkgcraft_cpv_package(self) if @package.nil?
-        C.pkgcraft_str_free(ptr)
+        @package = C.pkgcraft_cpv_package(self) if @package.nil?
         @package
       end
 
@@ -34,39 +32,27 @@ module Pkgcraft
       end
 
       def p
-        s, ptr = C.pkgcraft_cpv_p(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_p(self)
       end
 
       def pf
-        s, ptr = C.pkgcraft_cpv_pf(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_pf(self)
       end
 
       def pr
-        s, ptr = C.pkgcraft_cpv_pr(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_pr(self)
       end
 
       def pv
-        s, ptr = C.pkgcraft_cpv_pv(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_pv(self)
       end
 
       def pvr
-        s, ptr = C.pkgcraft_cpv_pvr(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_pvr(self)
       end
 
       def cpn
-        s, ptr = C.pkgcraft_cpv_cpn(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_cpn(self)
       end
 
       def intersects(other)
@@ -78,9 +64,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, ptr = C.pkgcraft_cpv_str(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_cpv_str(self)
       end
 
       def <=>(other)

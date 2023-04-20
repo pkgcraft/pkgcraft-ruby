@@ -89,14 +89,12 @@ module Pkgcraft
       end
 
       def category
-        @category, ptr = C.pkgcraft_dep_category(self) if @category.nil?
-        C.pkgcraft_str_free(ptr)
+        @category = C.pkgcraft_dep_category(self) if @category.nil?
         @category
       end
 
       def package
-        @package, ptr = C.pkgcraft_dep_package(self) if @package.nil?
-        C.pkgcraft_str_free(ptr)
+        @package = C.pkgcraft_dep_package(self) if @package.nil?
         @package
       end
 
@@ -117,15 +115,11 @@ module Pkgcraft
       end
 
       def slot
-        s, ptr = C.pkgcraft_dep_slot(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_slot(self)
       end
 
       def subslot
-        s, ptr = C.pkgcraft_dep_subslot(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_subslot(self)
       end
 
       def slot_op
@@ -144,57 +138,35 @@ module Pkgcraft
       end
 
       def repo
-        s, ptr = C.pkgcraft_dep_repo(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_repo(self)
       end
 
       def p
-        s, ptr = C.pkgcraft_dep_p(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_p(self)
       end
 
       def pf
-        s, ptr = C.pkgcraft_dep_pf(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_pf(self)
       end
 
       def pr
-        s, ptr = C.pkgcraft_dep_pr(self)
-        return if ptr.null?
-
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_pr(self)
       end
 
       def pv
-        s, ptr = C.pkgcraft_dep_pv(self)
-        return if ptr.null?
-
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_pv(self)
       end
 
       def pvr
-        s, ptr = C.pkgcraft_dep_pvr(self)
-        return if ptr.null?
-
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_pvr(self)
       end
 
       def cpn
-        s, ptr = C.pkgcraft_dep_cpn(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_cpn(self)
       end
 
       def cpv
-        s, ptr = C.pkgcraft_dep_cpv(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_cpv(self)
       end
 
       def intersects(other)
@@ -206,9 +178,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, ptr = C.pkgcraft_dep_str(self)
-        C.pkgcraft_str_free(ptr)
-        s
+        C.pkgcraft_dep_str(self)
       end
 
       def <=>(other)

@@ -18,7 +18,7 @@ module Pkgcraft
     typedef DepSet.by_ref, :DepSet
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
     attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
-    attach_function :pkgcraft_dep_set_str, [:DepSet], :strptr
+    attach_function :pkgcraft_dep_set_str, [:DepSet], String
     attach_function :pkgcraft_dep_set_dependencies, [:string, :Eapi], :DepSet
     attach_function :pkgcraft_dep_set_license, [:string], :DepSet
     attach_function :pkgcraft_dep_set_properties, [:string], :DepSet
@@ -37,7 +37,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
 
     # Uri support
-    attach_function :pkgcraft_uri_str, [:pointer], :strptr
+    attach_function :pkgcraft_uri_str, [:pointer], String
     attach_function :pkgcraft_uri_free, [:pointer], :void
   end
 
@@ -128,9 +128,7 @@ module Pkgcraft
       end
 
       def to_s
-        s, c_str = C.pkgcraft_dep_set_str(@ptr)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_dep_set_str(@ptr)
       end
     end
 
@@ -289,9 +287,7 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def to_s
-        s, c_str = C.pkgcraft_uri_str(@ptr)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_uri_str(@ptr)
       end
     end
   end

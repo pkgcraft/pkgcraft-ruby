@@ -4,7 +4,7 @@ module Pkgcraft
   # FFI bindings for Eapi related functionality
   module C
     typedef :pointer, :Eapi
-    attach_function :pkgcraft_eapi_as_str, [:Eapi], :strptr
+    attach_function :pkgcraft_eapi_as_str, [:Eapi], String
     attach_function :pkgcraft_eapi_cmp, [:Eapi, :Eapi], :int
     attach_function :pkgcraft_eapi_has, [:Eapi, :string], :bool
     attach_function :pkgcraft_eapi_hash, [:Eapi], :uint64
@@ -27,8 +27,7 @@ module Pkgcraft
       def initialize(ptr)
         @ptr = ptr
         @hash = C.pkgcraft_eapi_hash(ptr)
-        @id, c_str = C.pkgcraft_eapi_as_str(ptr)
-        C.pkgcraft_str_free(c_str)
+        @id = C.pkgcraft_eapi_as_str(ptr)
 
         # set dep keys
         length = C::LenPtr.new

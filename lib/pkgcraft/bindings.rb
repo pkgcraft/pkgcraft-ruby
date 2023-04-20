@@ -16,28 +16,6 @@ module Pkgcraft
     attach_function :pkgcraft_str_free, [:pointer], :void
     attach_function :pkgcraft_str_array_free, [:pointer, :size_t], :void
 
-    # Return the pkgcraft-c library version.
-    def self.version
-      attach_function :pkgcraft_lib_version, [], :strptr
-
-      s, ptr = pkgcraft_lib_version
-      pkgcraft_str_free(ptr)
-      version = Gem::Version.new(s)
-
-      # verify version requirements for pkgcraft C library
-      minver = Gem::Version.new(MINVER)
-      maxver = Gem::Version.new(MAXVER)
-      raise "pkgcraft C library #{version} fails requirement >=#{minver}" if version < minver
-      raise "pkgcraft C library #{version} fails requirement <=#{maxver}" if version > maxver
-
-      version
-    end
-
-    private_class_method :version
-
-    # Version of the pkgcraft-c library.
-    VERSION = version.freeze
-
     # array length pointer for working with array return values
     class LenPtr < FFI::Struct
       layout :value, :size_t
@@ -63,6 +41,42 @@ module Pkgcraft
         end
       end
     end
+
+    # Wrapper for string pointers.
+    class String
+      extend FFI::DataConverter
+      native_type FFI::Type::POINTER
+
+      class << self
+        def from_native(value, _context = nil)
+          # return nil for null pointers
+          return if value.null?
+
+          s = value.read_string
+          C.pkgcraft_str_free(value)
+          s
+        end
+      end
+    end
+
+    # Return the pkgcraft-c library version.
+    def self.version
+      attach_function :pkgcraft_lib_version, [], String
+      version = Gem::Version.new(pkgcraft_lib_version)
+
+      # verify version requirements for pkgcraft C library
+      minver = Gem::Version.new(MINVER)
+      maxver = Gem::Version.new(MAXVER)
+      raise "pkgcraft C library #{version} fails requirement >=#{minver}" if version < minver
+      raise "pkgcraft C library #{version} fails requirement <=#{maxver}" if version > maxver
+
+      version
+    end
+
+    private_class_method :version
+
+    # Version of the pkgcraft-c library.
+    VERSION = version.freeze
   end
 
   private_constant :C

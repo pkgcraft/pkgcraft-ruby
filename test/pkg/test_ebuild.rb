@@ -301,6 +301,13 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Set["base"], pkg.inherited)
   end
 
+  def test_long_description
+    repo = EbuildTemp.new
+    # none
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert_nil(pkg.long_description)
+  end
+
   def test_cmp
     repo = EbuildTemp.new
     pkg1 = repo.create_pkg("cat/pkg-1")

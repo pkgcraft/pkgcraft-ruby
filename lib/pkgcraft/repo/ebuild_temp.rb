@@ -17,8 +17,8 @@ module Pkgcraft
       def create_ebuild(cpv, *keys, data: nil)
         ptr = FFI::MemoryPointer.new(:pointer, keys.length)
         ptr.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
-        path, c_str = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, ptr, keys.length)
-        raise Error::PkgcraftError if c_str.null?
+        path = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, ptr, keys.length)
+        raise Error::PkgcraftError if path.nil?
 
         unless data.nil?
           File.open(path, "a") do |f|
@@ -26,15 +26,13 @@ module Pkgcraft
           end
         end
 
-        C.pkgcraft_str_free(c_str)
         Pathname.new(path)
       end
 
       def create_ebuild_raw(cpv, data)
-        path, c_str = C.pkgcraft_repo_ebuild_temp_create_ebuild_raw(@ptr_temp, cpv, data)
-        raise Error::PkgcraftError if c_str.null?
+        path = C.pkgcraft_repo_ebuild_temp_create_ebuild_raw(@ptr_temp, cpv, data)
+        raise Error::PkgcraftError if path.nil?
 
-        C.pkgcraft_str_free(c_str)
         Pathname.new(path)
       end
 

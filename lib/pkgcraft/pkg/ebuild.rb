@@ -4,12 +4,12 @@ module Pkgcraft
   # FFI bindings for ebuild package related functionality
   module C
     # ebuild pkg support
-    attach_function :pkgcraft_pkg_ebuild_path, [Pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_ebuild, [Pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_description, [Pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_slot, [Pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_subslot, [Pkg], :strptr
-    attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], :strptr
+    attach_function :pkgcraft_pkg_ebuild_path, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_ebuild, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_description, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_slot, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_subslot, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DepSet
     attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DepSet
     attach_function :pkgcraft_pkg_ebuild_bdepend, [Pkg], :DepSet
@@ -48,35 +48,26 @@ module Pkgcraft
       end
 
       def path
-        s, c_str = C.pkgcraft_pkg_ebuild_path(self)
-        C.pkgcraft_str_free(c_str)
-        Pathname.new(s)
+        Pathname.new(C.pkgcraft_pkg_ebuild_path(self))
       end
 
       def ebuild
-        s, c_str = C.pkgcraft_pkg_ebuild_ebuild(self)
-        raise Error::PkgcraftError if c_str.null?
+        s = C.pkgcraft_pkg_ebuild_ebuild(self)
+        raise Error::PkgcraftError if s.nil?
 
-        C.pkgcraft_str_free(c_str)
         s
       end
 
       def description
-        s, c_str = C.pkgcraft_pkg_ebuild_description(self)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_pkg_ebuild_description(self)
       end
 
       def slot
-        s, c_str = C.pkgcraft_pkg_ebuild_slot(self)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_pkg_ebuild_slot(self)
       end
 
       def subslot
-        s, c_str = C.pkgcraft_pkg_ebuild_subslot(self)
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_pkg_ebuild_subslot(self)
       end
 
       def dependencies(*keys)
@@ -229,11 +220,7 @@ module Pkgcraft
       end
 
       def long_description
-        s, c_str = C.pkgcraft_pkg_ebuild_long_description(self)
-        return if c_str.null?
-
-        C.pkgcraft_str_free(c_str)
-        s
+        C.pkgcraft_pkg_ebuild_long_description(self)
       end
     end
   end
