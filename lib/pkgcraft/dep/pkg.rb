@@ -71,11 +71,10 @@ module Pkgcraft
     end
 
     # Package dependency
-    class Dep
+    class Dep < C::Dep
       include InspectPointerRender
       include Pkgcraft::Eapis
       include Comparable
-      attr_reader :ptr
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
@@ -93,24 +92,24 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def blocker
-        val = C.pkgcraft_dep_blocker(@ptr)
+        val = C.pkgcraft_dep_blocker(self)
         return Blocker[val] unless val.zero?
       end
 
       def category
-        @category, ptr = C.pkgcraft_dep_category(@ptr) if @category.nil?
+        @category, ptr = C.pkgcraft_dep_category(self) if @category.nil?
         C.pkgcraft_str_free(ptr)
         @category
       end
 
       def package
-        @package, ptr = C.pkgcraft_dep_package(@ptr) if @package.nil?
+        @package, ptr = C.pkgcraft_dep_package(self) if @package.nil?
         C.pkgcraft_str_free(ptr)
         @package
       end
 
       def version
-        @version = Version.send(:from_ptr, C.pkgcraft_dep_version(@ptr)) if @version.nil?
+        @version = Version.send(:from_ptr, C.pkgcraft_dep_version(self)) if @version.nil?
         @version
       end
 
@@ -123,25 +122,25 @@ module Pkgcraft
       end
 
       def slot
-        s, ptr = C.pkgcraft_dep_slot(@ptr)
+        s, ptr = C.pkgcraft_dep_slot(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def subslot
-        s, ptr = C.pkgcraft_dep_subslot(@ptr)
+        s, ptr = C.pkgcraft_dep_subslot(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def slot_op
-        val = C.pkgcraft_dep_slot_op(@ptr)
+        val = C.pkgcraft_dep_slot_op(self)
         return SlotOperator[val] unless val.zero?
       end
 
       def use
         length = C::LenPtr.new
-        ptr = C.pkgcraft_dep_use_deps(@ptr, length)
+        ptr = C.pkgcraft_dep_use_deps(self, length)
         return if ptr.null?
 
         use = ptr.get_array_of_string(0, length[:value])
@@ -150,25 +149,25 @@ module Pkgcraft
       end
 
       def repo
-        s, ptr = C.pkgcraft_dep_repo(@ptr)
+        s, ptr = C.pkgcraft_dep_repo(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def p
-        s, ptr = C.pkgcraft_dep_p(@ptr)
+        s, ptr = C.pkgcraft_dep_p(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pf
-        s, ptr = C.pkgcraft_dep_pf(@ptr)
+        s, ptr = C.pkgcraft_dep_pf(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pr
-        s, ptr = C.pkgcraft_dep_pr(@ptr)
+        s, ptr = C.pkgcraft_dep_pr(self)
         return if ptr.null?
 
         C.pkgcraft_str_free(ptr)
@@ -176,7 +175,7 @@ module Pkgcraft
       end
 
       def pv
-        s, ptr = C.pkgcraft_dep_pv(@ptr)
+        s, ptr = C.pkgcraft_dep_pv(self)
         return if ptr.null?
 
         C.pkgcraft_str_free(ptr)
@@ -184,7 +183,7 @@ module Pkgcraft
       end
 
       def pvr
-        s, ptr = C.pkgcraft_dep_pvr(@ptr)
+        s, ptr = C.pkgcraft_dep_pvr(self)
         return if ptr.null?
 
         C.pkgcraft_str_free(ptr)
@@ -192,27 +191,27 @@ module Pkgcraft
       end
 
       def cpn
-        s, ptr = C.pkgcraft_dep_cpn(@ptr)
+        s, ptr = C.pkgcraft_dep_cpn(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def cpv
-        s, ptr = C.pkgcraft_dep_cpv(@ptr)
+        s, ptr = C.pkgcraft_dep_cpv(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def intersects(other)
-        return C.pkgcraft_dep_intersects(@ptr, other.ptr) if other.is_a? Dep
+        return C.pkgcraft_dep_intersects(self, other) if other.is_a? Dep
 
-        return C.pkgcraft_dep_intersects_cpv(@ptr, other.ptr) if other.is_a? Cpv
+        return C.pkgcraft_dep_intersects_cpv(self, other) if other.is_a? Cpv
 
         raise TypeError.new("Invalid type: #{other.class}")
       end
 
       def to_s
-        s, ptr = C.pkgcraft_dep_str(@ptr)
+        s, ptr = C.pkgcraft_dep_str(self)
         C.pkgcraft_str_free(ptr)
         s
       end
@@ -220,13 +219,13 @@ module Pkgcraft
       def <=>(other)
         raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Dep
 
-        C.pkgcraft_dep_cmp(@ptr, other.ptr)
+        C.pkgcraft_dep_cmp(self, other)
       end
 
       alias eql? ==
 
       def hash
-        @hash = C.pkgcraft_dep_hash(@ptr) if @hash.nil?
+        @hash = C.pkgcraft_dep_hash(self) if @hash.nil?
         @hash
       end
     end

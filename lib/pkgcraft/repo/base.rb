@@ -1,6 +1,50 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # FFI bindings for Repo related functionality
+  module C
+    typedef :pointer, :repo
+
+    # repo support
+    attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
+    attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
+    attach_function :pkgcraft_repo_hash, [:repo], :uint64
+    attach_function :pkgcraft_repo_id, [:repo], :strptr
+    attach_function :pkgcraft_repo_path, [:repo], :strptr
+    attach_function :pkgcraft_repo_contains_path, [:repo, :string], :bool
+    attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_len, [:repo], :uint64
+    attach_function :pkgcraft_repo_is_empty, [:repo], :bool
+    attach_function :pkgcraft_repo_iter, [:repo], :pointer
+    attach_function :pkgcraft_repo_iter_free, [:pointer], :void
+    attach_function :pkgcraft_repo_iter_next, [:pointer], Pkgcraft::Pkgs::Pkg
+    attach_function :pkgcraft_repo_iter_restrict, [:repo, Restrict], :pointer
+    attach_function :pkgcraft_repo_iter_restrict_free, [:repo], :void
+    attach_function :pkgcraft_repo_iter_restrict_next, [:pointer], Pkgcraft::Pkgs::Pkg
+    attach_function :pkgcraft_repo_format, [:repo], :int
+    attach_function :pkgcraft_repo_free, [:repo], :void
+    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
+
+    # ebuild repo support
+    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :eapi
+    attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
+
+    # temp ebuild repo
+    attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
+    attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
+    attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
+    attach_function \
+      :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], :strptr
+    attach_function \
+      :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], :strptr
+
+    # fake repo support
+    attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
+    attach_function :pkgcraft_repo_fake_extend, [:repo, :pointer, :size_t], :repo
+  end
+
   # Repo support
   module Repos
     # Package repo.
@@ -54,10 +98,10 @@ module Pkgcraft
 
         def each
           loop do
-            ptr = C.pkgcraft_repo_iter_next(@ptr)
-            break if ptr.null?
+            pkg = C.pkgcraft_repo_iter_next(@ptr)
+            break if pkg.nil?
 
-            yield Pkg.send(:from_ptr, ptr)
+            yield pkg
           end
         end
       end
@@ -82,10 +126,10 @@ module Pkgcraft
 
         def each
           loop do
-            ptr = C.pkgcraft_repo_iter_restrict_next(@ptr)
-            break if ptr.null?
+            pkg = C.pkgcraft_repo_iter_restrict_next(@ptr)
+            break if pkg.nil?
 
-            yield Pkg.send(:from_ptr, ptr)
+            yield pkg
           end
         end
       end

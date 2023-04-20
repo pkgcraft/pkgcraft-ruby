@@ -11,11 +11,11 @@ module Pkgcraft
       def initialize(obj)
         case obj
         when Dep::Cpv
-          @ptr = C.pkgcraft_cpv_restrict(obj.ptr)
+          @ptr = C.pkgcraft_cpv_restrict(obj)
         when Dep::Dep
-          @ptr = C.pkgcraft_dep_restrict(obj.ptr)
-        when Pkg::Pkg
-          @ptr = C.pkgcraft_pkg_restrict(obj.ptr)
+          @ptr = C.pkgcraft_dep_restrict(obj)
+        when Pkgs::Pkg
+          @ptr = C.pkgcraft_pkg_restrict(obj)
         when String
           @ptr = Restrict.send(:from_str, obj)
         else
@@ -35,12 +35,12 @@ module Pkgcraft
       # Try to convert a string to a Restrict pointer.
       def self.from_str(str)
         begin
-          return C.pkgcraft_cpv_restrict(Dep::Cpv.new(str).ptr)
+          return C.pkgcraft_cpv_restrict(Dep::Cpv.new(str))
         rescue InvalidCpv # rubocop:disable Lint/SuppressedException
         end
 
         begin
-          return C.pkgcraft_dep_restrict(Dep::Dep.new(str).ptr)
+          return C.pkgcraft_dep_restrict(Dep::Dep.new(str))
         rescue InvalidDep # rubocop:disable Lint/SuppressedException
         end
 

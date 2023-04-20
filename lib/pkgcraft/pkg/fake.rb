@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  module Pkg
+  module Pkgs
     # Fake package.
     class Fake < Pkg; end
   end

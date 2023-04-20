@@ -3,14 +3,13 @@
 module Pkgcraft
   module Dep
     # CPV object support (category/package-version)
-    class Cpv
+    class Cpv < C::Cpv
       include InspectPointerRender
       include Comparable
-      attr_reader :ptr
 
       def initialize(str)
         @ptr = C.pkgcraft_cpv_new(str.to_s)
-        raise Error::InvalidCpv if ptr.null?
+        raise Error::InvalidCpv if @ptr.null?
       end
 
       # Create a Cpv from a pointer.
@@ -23,19 +22,19 @@ module Pkgcraft
       private_class_method :from_ptr
 
       def category
-        @category, ptr = C.pkgcraft_cpv_category(@ptr) if @category.nil?
+        @category, ptr = C.pkgcraft_cpv_category(self) if @category.nil?
         C.pkgcraft_str_free(ptr)
         @category
       end
 
       def package
-        @package, ptr = C.pkgcraft_cpv_package(@ptr) if @package.nil?
+        @package, ptr = C.pkgcraft_cpv_package(self) if @package.nil?
         C.pkgcraft_str_free(ptr)
         @package
       end
 
       def version
-        @version = Version.send(:from_ptr, C.pkgcraft_cpv_version(@ptr)) if @version.nil?
+        @version = Version.send(:from_ptr, C.pkgcraft_cpv_version(self)) if @version.nil?
         @version
       end
 
@@ -44,65 +43,63 @@ module Pkgcraft
       end
 
       def p
-        s, ptr = C.pkgcraft_cpv_p(@ptr)
+        s, ptr = C.pkgcraft_cpv_p(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pf
-        s, ptr = C.pkgcraft_cpv_pf(@ptr)
+        s, ptr = C.pkgcraft_cpv_pf(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pr
-        s, ptr = C.pkgcraft_cpv_pr(@ptr)
+        s, ptr = C.pkgcraft_cpv_pr(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pv
-        s, ptr = C.pkgcraft_cpv_pv(@ptr)
+        s, ptr = C.pkgcraft_cpv_pv(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def pvr
-        s, ptr = C.pkgcraft_cpv_pvr(@ptr)
+        s, ptr = C.pkgcraft_cpv_pvr(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def cpn
-        s, ptr = C.pkgcraft_cpv_cpn(@ptr)
+        s, ptr = C.pkgcraft_cpv_cpn(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def intersects(other)
-        return C.pkgcraft_cpv_intersects(@ptr, other.ptr) if other.is_a? Cpv
+        return C.pkgcraft_cpv_intersects(self, other) if other.is_a? Cpv
 
-        return C.pkgcraft_cpv_intersects_dep(@ptr, other.ptr) if other.is_a? Dep
+        return C.pkgcraft_cpv_intersects_dep(self, other) if other.is_a? Dep
 
         raise TypeError.new("invalid type: #{other.class}")
       end
 
       def to_s
-        s, ptr = C.pkgcraft_cpv_str(@ptr)
+        s, ptr = C.pkgcraft_cpv_str(self)
         C.pkgcraft_str_free(ptr)
         s
       end
 
       def <=>(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Cpv
-
-        C.pkgcraft_cpv_cmp(@ptr, other.ptr)
+        C.pkgcraft_cpv_cmp(self, other)
       end
 
       alias eql? ==
 
       def hash
-        @hash = C.pkgcraft_cpv_hash(@ptr) if @hash.nil?
+        @hash = C.pkgcraft_cpv_hash(self) if @hash.nil?
         @hash
       end
     end

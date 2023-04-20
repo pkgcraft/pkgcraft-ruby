@@ -1,33 +1,53 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  # Package support
-  module Pkg
-    # Create a Pkg from a pointer.
-    def self.from_ptr(ptr)
-      format = C.pkgcraft_pkg_format(ptr)
-      case format
-      when 0
-        obj = Ebuild.allocate
-      when 1
-        obj = Fake.allocate
-      else
-        "unsupported pkg format: #{format}"
+  # FFI bindings for Pkg related functionality
+  module C
+    # Wrapper for Pkg objects
+    class Pkg < AutoPointer
+      def self.from_native(value, _context)
+        return if value.null?
+
+        format = C.pkgcraft_pkg_format(value)
+        case format
+        when 0
+          obj = Pkgs::Ebuild.allocate
+          Pkgs::Ebuild.instance_method(:initialize).bind(obj).call
+        when 1
+          obj = Pkgs::Fake.allocate
+        else
+          "unsupported pkg format: #{format}"
+        end
+
+        FFI::AutoPointer.instance_method(:initialize).bind(obj).call(value)
+        obj.instance_variable_set(:@ptr, value)
+        obj
       end
 
-      obj.instance_variable_set(:@ptr, ptr)
-      obj.send(:initialize)
-      obj
+      def self.release(ptr)
+        C.pkgcraft_pkg_free(ptr)
+      end
     end
 
-    private_class_method :from_ptr
+    # pkg support
+    attach_function :pkgcraft_pkg_format, [:pointer], :int
+    attach_function :pkgcraft_pkg_free, [:pointer], :void
+    attach_function :pkgcraft_pkg_cpv, [Pkg], Cpv
+    attach_function :pkgcraft_pkg_eapi, [Pkg], :eapi
+    attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
+    attach_function :pkgcraft_pkg_version, [Pkg], Version
+    attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
+    attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
+    attach_function :pkgcraft_pkg_str, [Pkg], :strptr
+    attach_function :pkgcraft_pkg_restrict, [Pkg], Restrict
+  end
 
+  # Package support
+  module Pkgs
     # Generic package.
-    class Pkg
+    class Pkg < C::Pkg
       include InspectPointerRender
       include Comparable
-
-      attr_reader :ptr
 
       def p
         cpv.p
@@ -54,40 +74,38 @@ module Pkgcraft
       end
 
       def cpv
-        @cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(@ptr)) if @cpv.nil?
+        @cpv = Dep::Cpv.send(:from_ptr, C.pkgcraft_pkg_cpv(self)) if @cpv.nil?
         @cpv
       end
 
       def eapi
-        @eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(@ptr)) if @eapi.nil?
+        @eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(self)) if @eapi.nil?
         @eapi
       end
 
       def repo
-        @repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(@ptr), true) if @repo.nil?
+        @repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(self), true) if @repo.nil?
         @repo
       end
 
       def version
-        @version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(@ptr)) if @version.nil?
+        @version = Dep::Version.send(:from_ptr, C.pkgcraft_pkg_version(self)) if @version.nil?
         @version
       end
 
       def <=>(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Pkg
-
-        C.pkgcraft_pkg_cmp(@ptr, other.ptr)
+        C.pkgcraft_pkg_cmp(self, other)
       end
 
       alias eql? ==
 
       def hash
-        @hash = C.pkgcraft_pkg_hash(@ptr) if @hash.nil?
+        @hash = C.pkgcraft_pkg_hash(self) if @hash.nil?
         @hash
       end
 
       def to_s
-        s, c_str = C.pkgcraft_pkg_str(@ptr)
+        s, c_str = C.pkgcraft_pkg_str(self)
         C.pkgcraft_str_free(c_str)
         s
       end
