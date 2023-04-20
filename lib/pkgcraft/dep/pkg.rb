@@ -72,7 +72,7 @@ module Pkgcraft
 
     # Package dependency
     class Dep
-      include InspectPointer
+      include InspectPointerRender
       include Pkgcraft::Eapis
       include Comparable
       attr_reader :ptr

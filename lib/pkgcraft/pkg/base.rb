@@ -24,7 +24,7 @@ module Pkgcraft
 
     # Generic package.
     class Pkg
-      include InspectPointer
+      include InspectPointerRender
       include Comparable
 
       attr_reader :ptr

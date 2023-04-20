@@ -5,7 +5,7 @@ module Pkgcraft
   module Repos
     # Package repo.
     class Repo
-      include InspectPointer
+      include InspectPointerRender
       include Comparable
       include Enumerable
       attr_reader :id

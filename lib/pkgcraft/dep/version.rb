@@ -43,7 +43,7 @@ module Pkgcraft
 
     # Package version
     class Version
-      include InspectPointer
+      include InspectPointerRender
       include Comparable
       attr_reader :ptr
 

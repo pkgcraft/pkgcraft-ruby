@@ -4,7 +4,7 @@ module Pkgcraft
   module Dep
     # CPV object support (category/package-version)
     class Cpv
-      include InspectPointer
+      include InspectPointerRender
       include Comparable
       attr_reader :ptr
 

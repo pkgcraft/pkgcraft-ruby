@@ -47,6 +47,7 @@ module Pkgcraft
 
     # Config for the system.
     class Config < C::Config
+      include InspectPointer
       include Pkgcraft::Repos
 
       def initialize

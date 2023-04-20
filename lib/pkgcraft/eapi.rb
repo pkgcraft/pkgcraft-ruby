@@ -5,7 +5,7 @@ module Pkgcraft
   module Eapis
     # EAPI object
     class Eapi
-      include InspectPointer
+      include InspectPointerRender
       include Comparable
       attr_reader :ptr, :hash, :dep_keys
 
