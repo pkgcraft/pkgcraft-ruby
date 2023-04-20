@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # singleton used as default for cached values allowed to be nil
   SENTINEL = Object.new.freeze
   private_constant :SENTINEL
 end
