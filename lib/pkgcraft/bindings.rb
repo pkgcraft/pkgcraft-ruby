@@ -99,25 +99,10 @@ module Pkgcraft
     attach_function :pkgcraft_error_last, [], Error.by_ref
     attach_function :pkgcraft_error_free, [:pointer], :void
 
-    # logging support
-    class PkgcraftLog < FFI::ManagedStruct
-      layout :message, :string,
-             :level, :int
-
-      def self.release(ptr)
-        C.pkgcraft_log_free(ptr)
-      end
-    end
-
     # type aliases
     typedef :pointer, :eapi
     typedef DepSet.by_ref, :DepSet
     typedef DepSpec.by_ref, :DepSpec
-
-    callback :log_callback, [PkgcraftLog.by_ref], :void
-    attach_function :pkgcraft_logging_enable, [:log_callback], :void
-    attach_function :pkgcraft_log_free, [:pointer], :void
-    attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
 
     # dep_set support
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool

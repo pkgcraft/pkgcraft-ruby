@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 module Pkgcraft
+  # FFI bindings for logging related functionality
+  module C
+    # Wrapper for log messages
+    class PkgcraftLog < FFI::ManagedStruct
+      layout :message, :string,
+             :level, :int
+
+      def self.release(ptr)
+        C.pkgcraft_log_free(ptr)
+      end
+    end
+
+    callback :log_callback, [PkgcraftLog.by_ref], :void
+    attach_function :pkgcraft_logging_enable, [:log_callback], :void
+    attach_function :pkgcraft_log_free, [:pointer], :void
+    attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
+  end
+
   # Logging support
   module Logging
     require "logger"
