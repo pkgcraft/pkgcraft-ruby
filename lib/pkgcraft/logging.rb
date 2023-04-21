@@ -3,49 +3,68 @@
 module Pkgcraft
   # FFI bindings for logging related functionality
   module C
-    # Wrapper for log messages
-    class PkgcraftLog < FFI::ManagedStruct
-      layout :message, :string,
-             :level, :int
+    LogLevel = enum(
+      :TRACE, 0,
+      :DEBUG,
+      :INFO,
+      :WARN,
+      :ERROR
+    )
 
-      def self.release(ptr)
-        C.pkgcraft_log_free(ptr)
-      end
+    # Wrapper for log messages
+    class PkgcraftLog < FFI::Struct
+      layout :message, :string,
+             :level, LogLevel
     end
 
     callback :log_callback, [PkgcraftLog.by_ref], :void
-    attach_function :pkgcraft_logging_enable, [:log_callback], :void
+    attach_function :pkgcraft_logging_enable, [:log_callback, LogLevel], :void
     attach_function :pkgcraft_log_free, [:pointer], :void
-    attach_function :pkgcraft_log_test, [PkgcraftLog.by_ref], :void
+    attach_function :pkgcraft_log_test, [:string, LogLevel], :void
   end
 
   # Logging support
   module Logging
     require "logger"
 
-    LOG = Logger.new($stderr)
-    private_constant :LOG
+    @logger = Logger.new($stderr)
 
     LogCallback = proc do |log|
       msg = log[:message]
 
       case log[:level]
-      when 0..1
-        LOG.debug(msg)
-      when 2
-        LOG.info(msg)
-      when 3
-        LOG.warn(msg)
+      when :TRACE, :DEBUG
+        @logger.debug(msg)
+      when :INFO
+        @logger.info(msg)
+      when :WARN
+        @logger.warn(msg)
+      when :ERROR
+        @logger.error(msg)
       else
-        LOG.error(msg)
+        raise "unknown log level: #{log[:level]}"
       end
+
+      C.pkgcraft_log_free(log)
     end
 
     private_constant :LogCallback
 
-    # Enable forwarding pkgcraft logs into ruby's log system.
-    def self.enable
-      C.pkgcraft_logging_enable(LogCallback)
+    # Set a custom log level for pkgcraft.
+    def self.enable(level = 3)
+      levels = C::LogLevel.symbol_map.values
+      raise "Invalid log level: #{level}" unless levels.include? level
+
+      C.pkgcraft_logging_enable(LogCallback, C::LogLevel[level])
+    end
+
+    # Inject log messages into pkgcraft to replay for test purposes.
+    def self.log_test(message, level, file = $stderr)
+      @logger = Logger.new(file)
+      levels = C::LogLevel.symbol_map.values
+      raise "Invalid log level: #{level}" unless levels.include? level
+
+      C.pkgcraft_log_test(message, C::LogLevel[level])
     end
   end
 end
