@@ -29,18 +29,21 @@ class TestPkgEbuild < Minitest::Test
 
     # explicit
     pkg = repo.create_pkg("cat/pkg-1", "EAPI=5")
+    refute_nil(pkg.eapi)
     assert_equal(EAPI5, pkg.eapi)
   end
 
   def test_repo
     repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
+    refute_nil(pkg.repo)
     assert_equal(repo, pkg.repo)
   end
 
   def test_version
     repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1")
+    refute_nil(pkg.version)
     assert_equal(Version.new("1"), pkg.version)
   end
 
@@ -329,9 +332,10 @@ class TestPkgEbuild < Minitest::Test
   def test_hash
     repo = EbuildTemp.new
     TESTDATA_TOML["version"]["hashing"].each do |d|
-      pkgs = Set.new(d["versions"].map { |s| repo.create_pkg("cat/pkg-#{s}") }.compact)
+      set = Set.new(d["versions"].map { |s| repo.create_pkg("cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
-      assert_equal(pkgs.length, length)
+      assert_includes(set, set.entries.first)
+      assert_equal(set.length, length)
     end
   end
 
