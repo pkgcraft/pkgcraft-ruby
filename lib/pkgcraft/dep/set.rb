@@ -159,7 +159,7 @@ module Pkgcraft
           when 0
             yield Dep.from_native(ptr)
           when 1
-            s = FFI::Pointer.read_string(ptr)
+            s = ptr.read_string
             C.pkgcraft_str_free(ptr)
             yield s
           when 2

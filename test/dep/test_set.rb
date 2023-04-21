@@ -57,7 +57,7 @@ class TestDependencies < Minitest::Test
     assert_equal(["a/b", "u? ( c/d )"], dep.map(&:to_s))
   end
 
-  def test_iter_flatten
+  def test_iter_flatten_dep
     # empty
     dep = Dependencies.new
     assert_empty(dep.iter_flatten.entries)
@@ -69,6 +69,20 @@ class TestDependencies < Minitest::Test
     # multiple
     dep = Dependencies.new("a/b u? ( c/d )")
     assert_equal(["a/b", "c/d"], dep.iter_flatten.map(&:to_s))
+  end
+
+  def test_iter_flatten_string
+    # empty
+    license = License.new
+    assert_empty(license.iter_flatten.entries)
+
+    # single
+    license = License.new("BSD")
+    assert_equal(["BSD"], license.iter_flatten.map(&:to_s))
+
+    # multiple
+    dep = License.new("BSD u? ( GPL-3 )")
+    assert_equal(["BSD", "GPL-3"], dep.iter_flatten.map(&:to_s))
   end
 
   def test_iter_recursive
