@@ -30,6 +30,8 @@ module Pkgcraft
     # ebuild repo support
     attach_function :pkgcraft_repo_ebuild_eapi, [:repo], :Eapi
     attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_ebuild_metadata_arches, [:repo, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_ebuild_metadata_categories, [:repo, LenPtr.by_ref], :pointer
 
     # temp ebuild repo
     attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer

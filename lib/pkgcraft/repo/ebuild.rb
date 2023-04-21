@@ -20,6 +20,32 @@ module Pkgcraft
         end
         @masters
       end
+
+      def metadata
+        @metadata = Metadata.new(@ptr) if @metadata.nil?
+        @metadata
+      end
+    end
+
+    # Ebuild repo metadata.
+    class Metadata
+      def initialize(ptr)
+        @ptr = ptr
+      end
+
+      def arches
+        if @arches.nil?
+          @arches = C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_ebuild_metadata_arches))
+        end
+        @arches
+      end
+
+      def categories
+        if @categories.nil?
+          @categories = C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_ebuild_metadata_categories))
+        end
+        @categories
+      end
     end
   end
 end
