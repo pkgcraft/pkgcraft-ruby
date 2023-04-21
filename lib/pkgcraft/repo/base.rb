@@ -155,15 +155,15 @@ module Pkgcraft
       end
 
       def categories
-        C.str_array(@ptr, C.method(:pkgcraft_repo_categories)).freeze
+        C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_categories)).freeze
       end
 
       def packages(cat)
-        C.str_array(@ptr, C.method(:pkgcraft_repo_packages), cat).freeze
+        C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_packages), cat).freeze
       end
 
       def versions(cat, pkg)
-        C.str_array(@ptr, C.method(:pkgcraft_repo_versions), cat, pkg).freeze
+        C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_versions), cat, pkg).freeze
       end
 
       def length

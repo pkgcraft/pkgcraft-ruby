@@ -161,7 +161,7 @@ module Pkgcraft
 
       def defined_phases
         if @defined_phases.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_defined_phases))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_defined_phases))
           @defined_phases = Set.new(values).freeze
         end
         @defined_phases
@@ -169,7 +169,7 @@ module Pkgcraft
 
       def homepage
         if @homepage.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_homepage))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_homepage))
           @homepage = Set.new(values).freeze
         end
         @homepage
@@ -177,7 +177,7 @@ module Pkgcraft
 
       def keywords
         if @keywords.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_keywords))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_keywords))
           @keywords = Set.new(values).freeze
         end
         @keywords
@@ -185,7 +185,7 @@ module Pkgcraft
 
       def iuse
         if @iuse.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_iuse))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_iuse))
           @iuse = Set.new(values).freeze
         end
         @iuse
@@ -193,7 +193,7 @@ module Pkgcraft
 
       def inherit
         if @inherit.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_inherit))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_inherit))
           @inherit = Set.new(values).freeze
         end
         @inherit
@@ -201,7 +201,7 @@ module Pkgcraft
 
       def inherited
         if @inherited.nil?
-          values = C.str_array(self, C.method(:pkgcraft_pkg_ebuild_inherited))
+          values = C.ptr_to_array(self, C.method(:pkgcraft_pkg_ebuild_inherited))
           @inherited = Set.new(values).freeze
         end
         @inherited

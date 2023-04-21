@@ -28,7 +28,7 @@ module Pkgcraft
         @ptr = ptr
         @hash = C.pkgcraft_eapi_hash(ptr)
         @id = C.pkgcraft_eapi_as_str(ptr)
-        @dep_keys = C.str_array(@ptr, C.method(:pkgcraft_eapi_dep_keys)).freeze
+        @dep_keys = C.ptr_to_array(@ptr, C.method(:pkgcraft_eapi_dep_keys)).freeze
       end
 
       # Create an Eapi from a pointer.
