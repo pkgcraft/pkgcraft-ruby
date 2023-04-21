@@ -8,25 +8,21 @@ module Pkgcraft
         if [String, Pathname].any? { |c| cpvs_or_path.is_a? c }
           super(cpvs_or_path, id, priority)
         else
-          cpvs = cpvs_or_path
-          c_cpvs = FFI::MemoryPointer.new(:pointer, cpvs.length)
-          c_cpvs.write_array_of_pointer(cpvs.map { |s| FFI::MemoryPointer.from_string(s) })
-
           # generate a semi-random repo ID if none was given
           if id.nil?
             rand = (0...10).map { ("a".."z").to_a[rand(26)] }.join
             id = "fake-#{rand}"
           end
 
-          ptr = C.pkgcraft_repo_fake_new(id, priority, c_cpvs, cpvs.length)
+          c_cpvs, length = C.iter_to_ptr(cpvs_or_path)
+          ptr = C.pkgcraft_repo_fake_new(id, priority, c_cpvs, length)
           Repo.send(:from_ptr, ptr, false, self)
         end
       end
 
       def extend(cpvs)
-        c_cpvs = FFI::MemoryPointer.new(:pointer, cpvs.length)
-        c_cpvs.write_array_of_pointer(cpvs.map { |s| FFI::MemoryPointer.from_string(s) })
-        ptr = C.pkgcraft_repo_fake_extend(@ptr, c_cpvs, cpvs.length)
+        c_cpvs, length = C.iter_to_ptr(cpvs)
+        ptr = C.pkgcraft_repo_fake_extend(@ptr, c_cpvs, length)
         raise Error::PkgcraftError if ptr.null?
       end
     end

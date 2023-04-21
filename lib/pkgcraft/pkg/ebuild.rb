@@ -71,9 +71,8 @@ module Pkgcraft
       end
 
       def dependencies(*keys)
-        c_keys = FFI::MemoryPointer.new(:pointer, keys.length)
-        c_keys.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
-        ptr = C.pkgcraft_pkg_ebuild_dependencies(self, c_keys, keys.length)
+        c_keys, length = C.iter_to_ptr(keys)
+        ptr = C.pkgcraft_pkg_ebuild_dependencies(self, c_keys, length)
         raise Error::PkgcraftError if ptr.null?
 
         DepSet.send(:from_ptr, ptr)

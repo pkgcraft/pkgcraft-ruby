@@ -15,9 +15,8 @@ module Pkgcraft
       end
 
       def create_ebuild(cpv, *keys, data: nil)
-        ptr = FFI::MemoryPointer.new(:pointer, keys.length)
-        ptr.write_array_of_pointer(keys.map { |s| FFI::MemoryPointer.from_string(s) })
-        path = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, ptr, keys.length)
+        c_keys, length = C.iter_to_ptr(keys)
+        path = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, c_keys, length)
         raise Error::PkgcraftError if path.nil?
 
         unless data.nil?
