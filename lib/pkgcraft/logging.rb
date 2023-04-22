@@ -59,8 +59,7 @@ module Pkgcraft
     end
 
     # Inject log messages into pkgcraft to replay for test purposes.
-    def self.log_test(message, level, file = $stderr)
-      @logger = Logger.new(file)
+    def self.log_test(message, level)
       levels = C::LogLevel.symbol_map.values
       raise "Invalid log level: #{level}" unless levels.include? level
 
