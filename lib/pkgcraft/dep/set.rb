@@ -19,12 +19,12 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
     attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
     attach_function :pkgcraft_dep_set_str, [:DepSet], String
-    attach_function :pkgcraft_dep_set_dependencies, [:string, :Eapi], :DepSet
+    attach_function :pkgcraft_dep_set_dependencies, [:string, Eapi], :DepSet
     attach_function :pkgcraft_dep_set_license, [:string], :DepSet
     attach_function :pkgcraft_dep_set_properties, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_required_use, [:string, :Eapi], :DepSet
+    attach_function :pkgcraft_dep_set_required_use, [:string, Eapi], :DepSet
     attach_function :pkgcraft_dep_set_restrict, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_src_uri, [:string, :Eapi], :DepSet
+    attach_function :pkgcraft_dep_set_src_uri, [:string, Eapi], :DepSet
     attach_function :pkgcraft_dep_set_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter, [:DepSet], :pointer
     attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], :DepSpec
@@ -209,7 +209,7 @@ module Pkgcraft
 
       def initialize(str = nil, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi.ptr)
+        ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi)
         raise Error::PkgcraftError if ptr.null?
 
         DepSet.send(:from_ptr, ptr, self)
@@ -242,7 +242,7 @@ module Pkgcraft
 
       def initialize(str = nil, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_required_use(str.to_s, eapi.ptr)
+        ptr = C.pkgcraft_dep_set_required_use(str.to_s, eapi)
         raise Error::PkgcraftError if ptr.null?
 
         DepSet.send(:from_ptr, ptr, self)
@@ -265,7 +265,7 @@ module Pkgcraft
 
       def initialize(str = nil, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_src_uri(str.to_s, eapi.ptr)
+        ptr = C.pkgcraft_dep_set_src_uri(str.to_s, eapi)
         raise Error::PkgcraftError if ptr.null?
 
         DepSet.send(:from_ptr, ptr, self)

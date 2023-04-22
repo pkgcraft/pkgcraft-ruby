@@ -3,12 +3,29 @@
 module Pkgcraft
   # FFI bindings for Eapi related functionality
   module C
-    typedef :pointer, :Eapi
-    attach_function :pkgcraft_eapi_as_str, [:Eapi], String
-    attach_function :pkgcraft_eapi_cmp, [:Eapi, :Eapi], :int
-    attach_function :pkgcraft_eapi_has, [:Eapi, :string], :bool
-    attach_function :pkgcraft_eapi_hash, [:Eapi], :uint64
-    attach_function :pkgcraft_eapi_dep_keys, [:Eapi, LenPtr.by_ref], :pointer
+    # Wrapper for Eapi pointers
+    class Eapi < Pointer
+      def self.from_native(value, _context = nil)
+        if Pkgcraft::Eapis.const_defined?(:EAPIS)
+          id = C.pkgcraft_eapi_as_str(value)
+          Pkgcraft::Eapis::EAPIS[id]
+        else
+          obj = super(value)
+          obj.instance_variable_set(:@hash, C.pkgcraft_eapi_hash(value))
+          obj.instance_variable_set(:@id, C.pkgcraft_eapi_as_str(value))
+          dep_keys = C.ptr_to_array(value, C.method(:pkgcraft_eapi_dep_keys))
+          obj.instance_variable_set(:@dep_keys, dep_keys.freeze)
+          obj
+        end
+      end
+    end
+
+    typedef :pointer, :eapi_ptr
+    attach_function :pkgcraft_eapi_as_str, [:eapi_ptr], String
+    attach_function :pkgcraft_eapi_cmp, [Eapi, Eapi], :int
+    attach_function :pkgcraft_eapi_has, [Eapi, :string], :bool
+    attach_function :pkgcraft_eapi_hash, [:eapi_ptr], :uint64
+    attach_function :pkgcraft_eapi_dep_keys, [:eapi_ptr, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
@@ -18,27 +35,10 @@ module Pkgcraft
   # EAPI support
   module Eapis
     # EAPI object
-    class Eapi
+    class Eapi < C::Eapi
       include InspectPointerRender
       include Comparable
-      attr_reader :ptr, :hash, :dep_keys
-
-      # Create a new Eapi object from a given pointer.
-      def initialize(ptr)
-        @ptr = ptr
-        @hash = C.pkgcraft_eapi_hash(ptr)
-        @id = C.pkgcraft_eapi_as_str(ptr)
-        @dep_keys = C.ptr_to_array(@ptr, C.method(:pkgcraft_eapi_dep_keys)).freeze
-      end
-
-      # Create an Eapi from a pointer.
-      def self.from_ptr(ptr)
-        id, c_str = C.pkgcraft_eapi_as_str(ptr)
-        C.pkgcraft_str_free(c_str)
-        EAPIS[id]
-      end
-
-      private_class_method :from_ptr
+      attr_reader :hash, :dep_keys
 
       # Try to convert an object to an Eapi object.
       def self.from_obj(obj)
@@ -56,7 +56,7 @@ module Pkgcraft
 
       # Check if an EAPI has a given feature.
       def has(feature)
-        C.pkgcraft_eapi_has(@ptr, feature.to_s)
+        C.pkgcraft_eapi_has(self, feature.to_s)
       end
 
       def to_s
@@ -64,9 +64,7 @@ module Pkgcraft
       end
 
       def <=>(other)
-        raise TypeError.new("invalid type: #{other.class}") unless other.is_a? Eapi
-
-        C.pkgcraft_eapi_cmp(@ptr, other.ptr)
+        C.pkgcraft_eapi_cmp(self, other)
       end
 
       alias eql? ==
@@ -81,8 +79,7 @@ module Pkgcraft
       c_eapis = ptr.get_array_of_pointer(0, length[:value])
       eapis = []
       c_eapis.each do |eapi_ptr|
-        id, c_str = C.pkgcraft_eapi_as_str(eapi_ptr)
-        C.pkgcraft_str_free(c_str)
+        id = C.pkgcraft_eapi_as_str(eapi_ptr)
         eapis.append(EAPIS[id])
       end
 
@@ -97,7 +94,7 @@ module Pkgcraft
       c_eapis = ptr.get_array_of_pointer(0, length[:value])
       eapis = {}
       (0...length[:value]).each do |i|
-        eapi = Eapi.new(c_eapis[i])
+        eapi = Eapi.from_native(c_eapis[i])
         # set constants for all official EAPIs, e.g. EAPI0, EAPI1, ...
         Eapis.const_set("EAPI#{i}", eapi)
         eapis[eapi.to_s] = eapi
@@ -123,7 +120,7 @@ module Pkgcraft
       eapis = {}
       eapis.update(EAPIS_OFFICIAL)
       (eapis.length...length[:value]).each do |i|
-        eapi = Eapi.new(c_eapis[i])
+        eapi = Eapi.from_native(c_eapis[i])
         eapis[eapi.to_s] = eapi
         @eapi_latest = eapi if i == length[:value] - 1
       end

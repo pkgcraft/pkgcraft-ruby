@@ -33,7 +33,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_format, [:pointer], :int
     attach_function :pkgcraft_pkg_free, [:pointer], :void
     attach_function :pkgcraft_pkg_cpv, [Pkg], Pkgcraft::Dep::Cpv
-    attach_function :pkgcraft_pkg_eapi, [Pkg], :Eapi
+    attach_function :pkgcraft_pkg_eapi, [Pkg], Pkgcraft::Eapis::Eapi
     attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
     attach_function :pkgcraft_pkg_version, [Pkg], Pkgcraft::Dep::Version
     attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
@@ -79,7 +79,7 @@ module Pkgcraft
       end
 
       def eapi
-        @eapi = Eapis::Eapi.send(:from_ptr, C.pkgcraft_pkg_eapi(self)) if @eapi.nil?
+        @eapi = C.pkgcraft_pkg_eapi(self) if @eapi.nil?
         @eapi
       end
 

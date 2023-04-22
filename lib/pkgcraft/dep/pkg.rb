@@ -78,7 +78,7 @@ module Pkgcraft
 
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
-        @ptr = C.pkgcraft_dep_new(str.to_s, eapi.ptr)
+        @ptr = C.pkgcraft_dep_new(str.to_s, eapi)
         @version = SENTINEL
         raise Error::InvalidDep if @ptr.null?
       end

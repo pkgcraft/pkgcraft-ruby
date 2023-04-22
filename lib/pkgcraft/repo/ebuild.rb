@@ -7,7 +7,7 @@ module Pkgcraft
       include Eapis
 
       def eapi
-        @eapi = Eapi.send(:from_ptr, C.pkgcraft_repo_ebuild_eapi(@ptr)) if @eapi.nil?
+        @eapi = C.pkgcraft_repo_ebuild_eapi(@ptr) if @eapi.nil?
         @eapi
       end
 
