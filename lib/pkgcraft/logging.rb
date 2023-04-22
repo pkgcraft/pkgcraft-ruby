@@ -13,9 +13,13 @@ module Pkgcraft
     )
 
     # Wrapper for log messages
-    class PkgcraftLog < FFI::Struct
+    class PkgcraftLog < FFI::ManagedStruct
       layout :message, :string,
              :level, LogLevel
+
+      def self.release(ptr)
+        C.pkgcraft_log_free(ptr)
+      end
     end
 
     callback :log_callback, [PkgcraftLog.by_ref], :void
@@ -49,7 +53,7 @@ module Pkgcraft
       msg = log[:message]
 
       case log[:level]
-      when :TRACE, :DEBUG
+      when :DEBUG, :TRACE
         @logger.debug(msg)
       when :INFO
         @logger.info(msg)
@@ -58,8 +62,6 @@ module Pkgcraft
       when :ERROR
         @logger.error(msg)
       end
-
-      C.pkgcraft_log_free(log)
     end
 
     private_constant :LogCallback
