@@ -4,7 +4,8 @@ module Pkgcraft
   # FFI bindings for logging related functionality
   module C
     LogLevel = enum(
-      :TRACE, 0,
+      :OFF, 0,
+      :TRACE,
       :DEBUG,
       :INFO,
       :WARN,
@@ -27,7 +28,22 @@ module Pkgcraft
   module Logging
     require "logger"
 
-    @logger = Logger.new($stderr)
+    def self.convert_level(level)
+      case level
+      when Logger::DEBUG
+        C::LogLevel[:DEBUG]
+      when Logger::INFO
+        C::LogLevel[:INFO]
+      when Logger::WARN
+        C::LogLevel[:WARN]
+      when Logger::ERROR
+        C::LogLevel[:ERROR]
+      else
+        C::LogLevel[:OFF]
+      end
+    end
+
+    private_class_method :convert_level
 
     LogCallback = proc do |log|
       msg = log[:message]
@@ -50,20 +66,25 @@ module Pkgcraft
 
     private_constant :LogCallback
 
-    # Set a custom log level for pkgcraft.
-    def self.enable(level = 3)
-      levels = C::LogLevel.symbol_map.values
-      raise "Invalid log level: #{level}" unless levels.include? level
-
-      C.pkgcraft_logging_enable(LogCallback, C::LogLevel[level])
-    end
-
     # Inject log messages into pkgcraft to replay for test purposes.
     def self.log_test(message, level)
-      levels = C::LogLevel.symbol_map.values
-      raise "Invalid log level: #{level}" unless levels.include? level
+      C.pkgcraft_log_test(message, convert_level(level))
+    end
 
-      C.pkgcraft_log_test(message, C::LogLevel[level])
+    # Custom logger that supports switching pkgcraft log levels.
+    class PkgcraftLogger < Logger
+      def level=(severity)
+        level = Logging.send(:convert_level, severity)
+        C.pkgcraft_logging_enable(LogCallback, level)
+        super(severity)
+      end
+    end
+
+    # disable logging output by default
+    @logger = PkgcraftLogger.new($stderr, level: -1)
+
+    def self.logger
+      @logger
     end
   end
 end

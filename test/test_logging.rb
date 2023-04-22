@@ -6,26 +6,31 @@ class TestLogging < Minitest::Test
   include Pkgcraft
 
   def test_simple
-    # matching level outputs
-    Logging.enable(3)
-    _, err = capture_subprocess_io do
-      Logging.log_test("pkgcraft", 3)
-    end
-    refute_empty(err)
+    [Logger::DEBUG, Logger::INFO, Logger::WARN, Logger::ERROR].each do |level|
+      Logging.logger.level = level
+      _, err = capture_subprocess_io do
+        Logging.log_test("pkgcraft", level)
+      end
+      refute_empty(err)
 
-    # lower level skips output
-    _, err = capture_subprocess_io do
-      Logging.log_test("pkgcraft", 2)
-    end
-    assert_empty(err)
+      # setting a higher level filters the message
+      Logging.logger.level = level + 1
+      _, err = capture_subprocess_io do
+        Logging.log_test("pkgcraft", level)
+      end
+      assert_empty(err)
 
-    # higher level outputs
-    _, err = capture_subprocess_io do
-      Logging.log_test("pkgcraft", 4)
+      # setting a lower level passes the message, except when 0 since -1 disables logging
+      next unless level.positive?
+
+      Logging.logger.level = level - 1
+      _, err = capture_subprocess_io do
+        Logging.log_test("pkgcraft", level)
+      end
+      refute_empty(err)
     end
-    refute_empty(err)
 
     # disable all logging
-    Logging.enable(0)
+    Logging.logger.level = -1
   end
 end
