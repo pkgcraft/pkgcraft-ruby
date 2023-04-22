@@ -57,8 +57,6 @@ module Pkgcraft
         @logger.warn(msg)
       when :ERROR
         @logger.error(msg)
-      else
-        raise "unknown log level: #{log[:level]}"
       end
 
       C.pkgcraft_log_free(log)
