@@ -23,12 +23,24 @@ module Pkgcraft
         C.pkgcraft_version_free(ptr)
       end
     end
+  end
+end
 
+require_relative "dep/cpv"
+require_relative "dep/pkg"
+require_relative "dep/spec"
+require_relative "dep/set"
+require_relative "dep/version"
+
+module Pkgcraft
+  # FFI bindings for Dep related functionality
+  module C
     # cpv support
     attach_function :pkgcraft_cpv_free, [:pointer], :void
     attach_function :pkgcraft_cpv_new, [:string], Cpv
     attach_function :pkgcraft_cpv_category, [Cpv], String
     attach_function :pkgcraft_cpv_package, [Cpv], String
+    attach_function :pkgcraft_cpv_version, [Cpv], Pkgcraft::Dep::Version
     attach_function :pkgcraft_cpv_p, [Cpv], String
     attach_function :pkgcraft_cpv_pf, [Cpv], String
     attach_function :pkgcraft_cpv_pr, [Cpv], String
@@ -49,6 +61,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
     attach_function :pkgcraft_dep_category, [Dep], String
     attach_function :pkgcraft_dep_package, [Dep], String
+    attach_function :pkgcraft_dep_version, [Dep], Pkgcraft::Dep::Version
     attach_function :pkgcraft_dep_slot, [Dep], String
     attach_function :pkgcraft_dep_subslot, [Dep], String
     attach_function :pkgcraft_dep_slot_op, [Dep], :int
@@ -81,22 +94,5 @@ module Pkgcraft
     attach_function :pkgcraft_version_str, [Version], String
     attach_function :pkgcraft_version_str_with_op, [Version], String
     attach_function :pkgcraft_version_with_op, [:string], Version
-  end
-end
-
-require_relative "dep/cpv"
-require_relative "dep/pkg"
-require_relative "dep/spec"
-require_relative "dep/set"
-require_relative "dep/version"
-
-module Pkgcraft
-  # FFI bindings for Dep related functionality
-  module C
-    # cpv support
-    attach_function :pkgcraft_cpv_version, [Cpv], Pkgcraft::Dep::Version
-
-    # dep support
-    attach_function :pkgcraft_dep_version, [Dep], Pkgcraft::Dep::Version
   end
 end
