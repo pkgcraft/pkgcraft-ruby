@@ -21,51 +21,37 @@ module Pkgcraft
       layout :value, :size_t
     end
 
+    # Pointer-based object conversion support.
+    module PointerConversion
+      def to_native(value, _context = nil)
+        return value.instance_variable_get(:@ptr) if value.is_a?(self)
+
+        raise TypeError.new("expected a kind of #{name}, was #{value.class}")
+      end
+
+      def from_native(value, _context = nil)
+        # convert nil values to proper null pointer objects
+        value = FFI::Pointer.new(0) if value.nil?
+
+        obj = allocate
+        superclass.instance_method(:initialize).bind(obj).call(value)
+        obj.instance_variable_set(:@ptr, value)
+        obj
+      end
+    end
+
     # Wrapper for pointer-based objects that will be garbage-collected.
     class AutoPointer < FFI::AutoPointer
-      class << self
-        def to_native(value, _context = nil)
-          return value.instance_variable_get(:@ptr) if value.is_a?(self)
-
-          raise TypeError.new("expected a kind of #{name}, was #{value.class}")
-        end
-
-        def from_native(value, _context = nil)
-          # convert nil values to proper null pointer objects
-          value = FFI::Pointer.new(0) if value.nil?
-
-          obj = allocate
-          superclass.instance_method(:initialize).bind(obj).call(value)
-          obj.instance_variable_set(:@ptr, value)
-          obj
-        end
-      end
+      extend PointerConversion
     end
 
     # Wrapper for pointer-based objects that aren't released.
     class Pointer < FFI::Pointer
       extend FFI::DataConverter
+      extend PointerConversion
 
       def self.native_type
         FFI::Type::POINTER
-      end
-
-      class << self
-        def to_native(value, _context = nil)
-          return value.instance_variable_get(:@ptr) if value.is_a?(self)
-
-          raise TypeError.new("expected a kind of #{name}, was #{value.class}")
-        end
-
-        def from_native(value, _context = nil)
-          # convert nil values to proper null pointer objects
-          value = FFI::Pointer.new(0) if value.nil?
-
-          obj = allocate
-          superclass.instance_method(:initialize).bind(obj).call(value)
-          obj.instance_variable_set(:@ptr, value)
-          obj
-        end
       end
     end
 
