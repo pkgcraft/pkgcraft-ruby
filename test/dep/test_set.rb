@@ -57,7 +57,7 @@ class TestDependencies < Minitest::Test
     assert_equal(["a/b", "u? ( c/d )"], dep.map(&:to_s))
   end
 
-  def test_iter_flatten_dep
+  def test_iter_flatten
     # empty
     dep = Dependencies.new
     assert_empty(dep.iter_flatten.entries)
@@ -69,20 +69,6 @@ class TestDependencies < Minitest::Test
     # multiple
     dep = Dependencies.new("a/b u? ( c/d )")
     assert_equal(["a/b", "c/d"], dep.iter_flatten.map(&:to_s))
-  end
-
-  def test_iter_flatten_string
-    # empty
-    license = License.new
-    assert_empty(license.iter_flatten.entries)
-
-    # single
-    license = License.new("BSD")
-    assert_equal(["BSD"], license.iter_flatten.map(&:to_s))
-
-    # multiple
-    dep = License.new("BSD u? ( GPL-3 )")
-    assert_equal(["BSD", "GPL-3"], dep.iter_flatten.map(&:to_s))
   end
 
   def test_iter_recursive
@@ -97,5 +83,43 @@ class TestDependencies < Minitest::Test
     # multiple
     dep = Dependencies.new("a/b u? ( c/d )")
     assert_equal(["a/b", "u? ( c/d )", "c/d"], dep.iter_recursive.map(&:to_s))
+  end
+end
+
+class TestLicense < Minitest::Test
+  include Pkgcraft::Dep
+  include Pkgcraft::Error
+
+  def test_iter_flatten
+    # empty
+    license = License.new
+    assert_empty(license.iter_flatten.entries)
+
+    # single
+    license = License.new("BSD")
+    assert_equal(["BSD"], license.iter_flatten.map(&:to_s))
+
+    # multiple
+    license = License.new("BSD u? ( GPL-3 )")
+    assert_equal(["BSD", "GPL-3"], license.iter_flatten.map(&:to_s))
+  end
+end
+
+class TestSrcUri < Minitest::Test
+  include Pkgcraft::Dep
+  include Pkgcraft::Error
+
+  def test_iter_flatten
+    # empty
+    uris = SrcUri.new
+    assert_empty(uris.iter_flatten.entries)
+
+    # single
+    uris = SrcUri.new("https://a.com")
+    assert_equal(["https://a.com"], uris.iter_flatten.map(&:to_s))
+
+    # multiple
+    uris = SrcUri.new("https://a.com u? ( https://b.com )")
+    assert_equal(["https://a.com", "https://b.com"], uris.iter_flatten.map(&:to_s))
   end
 end

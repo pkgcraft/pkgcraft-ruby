@@ -3,7 +3,7 @@
 module Pkgcraft
   # FFI bindings for DepSet related functionality
   module C
-    # DepSet wrapper
+    # Wrapper for DepSet objects.
     class DepSet < FFI::ManagedStruct
       layout :unit, :int,
              :kind, :int,
@@ -11,6 +11,13 @@ module Pkgcraft
 
       def self.release(ptr)
         C.pkgcraft_dep_set_free(ptr)
+      end
+    end
+
+    # Wrapper for Uri pointers.
+    class Uri < AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_uri_free(ptr)
       end
     end
 
@@ -163,7 +170,7 @@ module Pkgcraft
             C.pkgcraft_str_free(ptr)
             yield s
           when 2
-            yield Uri.send(:from_ptr, ptr)
+            yield Uri.from_native(ptr)
           else
             raise TypeError.new("unknown DepSet type: #{@unit}")
           end
@@ -273,19 +280,7 @@ module Pkgcraft
     end
 
     # URI objects for the SRC_URI DepSet.
-    class Uri
-      attr_reader :ptr
-
-      # Create a Uri from a pointer.
-      def self.from_ptr(ptr)
-        obj = allocate
-        ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_uri_free))
-        obj.instance_variable_set(:@ptr, ptr)
-        obj
-      end
-
-      private_class_method :from_ptr
-
+    class Uri < C::Uri
       def to_s
         C.pkgcraft_uri_str(@ptr)
       end
