@@ -44,7 +44,9 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
 
     # Uri support
-    attach_function :pkgcraft_uri_str, [:pointer], String
+    attach_function :pkgcraft_uri_rename, [Uri], String
+    attach_function :pkgcraft_uri_str, [Uri], String
+    attach_function :pkgcraft_uri_uri, [Uri], String
     attach_function :pkgcraft_uri_free, [:pointer], :void
   end
 
@@ -281,8 +283,16 @@ module Pkgcraft
 
     # URI objects for the SRC_URI DepSet.
     class Uri < C::Uri
+      def uri
+        C.pkgcraft_uri_uri(self)
+      end
+
+      def rename
+        C.pkgcraft_uri_rename(self)
+      end
+
       def to_s
-        C.pkgcraft_uri_str(@ptr)
+        C.pkgcraft_uri_str(self)
       end
     end
   end
