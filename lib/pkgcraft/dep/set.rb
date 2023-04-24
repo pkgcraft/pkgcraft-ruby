@@ -295,5 +295,7 @@ module Pkgcraft
         C.pkgcraft_uri_str(self)
       end
     end
+
+    private_constant :Uri
   end
 end
