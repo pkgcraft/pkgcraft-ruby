@@ -29,7 +29,6 @@ module Pkgcraft
     attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_free, [:pointer, :size_t], :void
   end
 
   # EAPI support
@@ -83,7 +82,7 @@ module Pkgcraft
         eapis.append(EAPIS[id])
       end
 
-      C.pkgcraft_eapis_free(ptr, length[:value])
+      C.pkgcraft_array_free(ptr, length[:value])
       eapis
     end
 
@@ -100,7 +99,7 @@ module Pkgcraft
         eapis[eapi.to_s] = eapi
         @eapi_latest_official = eapi if i == length[:value] - 1
       end
-      C.pkgcraft_eapis_free(ptr, length[:value])
+      C.pkgcraft_array_free(ptr, length[:value])
       eapis
     end
 
@@ -124,7 +123,7 @@ module Pkgcraft
         eapis[eapi.to_s] = eapi
         @eapi_latest = eapi if i == length[:value] - 1
       end
-      C.pkgcraft_eapis_free(ptr, length[:value])
+      C.pkgcraft_array_free(ptr, length[:value])
       eapis
     end
 

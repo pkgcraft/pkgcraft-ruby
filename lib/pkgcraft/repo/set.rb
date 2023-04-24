@@ -81,7 +81,7 @@ module Pkgcraft
           c_repos = C.pkgcraft_repo_set_repos(self, length)
           repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
           @repos = Set.new(repos.values)
-          C.pkgcraft_repos_free(c_repos, length[:value])
+          C.pkgcraft_array_free(c_repos, length[:value])
         end
         @repos
       end

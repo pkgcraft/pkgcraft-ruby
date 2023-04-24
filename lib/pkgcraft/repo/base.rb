@@ -6,7 +6,6 @@ module Pkgcraft
     typedef :pointer, :repo
 
     # repo support
-    attach_function :pkgcraft_repos_free, [:pointer, :size_t], :void
     attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
     attach_function :pkgcraft_repo_hash, [:repo], :uint64
     attach_function :pkgcraft_repo_id, [:repo], String

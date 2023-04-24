@@ -76,7 +76,7 @@ module Pkgcraft
         @repos = nil
 
         repos = Configs.send(:repos_to_dict, c_repos, length[:value], false)
-        C.pkgcraft_repos_free(c_repos, length[:value])
+        C.pkgcraft_array_free(c_repos, length[:value])
         repos
       end
 
@@ -118,7 +118,7 @@ module Pkgcraft
         length = C::LenPtr.new
         c_repos = C.pkgcraft_config_repos(config, length)
         @repos = Configs.send(:repos_to_dict, c_repos, length[:value], true)
-        C.pkgcraft_repos_free(c_repos, length[:value])
+        C.pkgcraft_array_free(c_repos, length[:value])
         @config = config
       end
 
