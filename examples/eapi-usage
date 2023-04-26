@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# Determine the EAPI usage rates in a given repo.
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "optparse"
+require "pkgcraft"
+
+options = { repo: "gentoo" }
+OptionParser.new do |opt|
+  opt.on("-r", "--repo [REPO_NAME]") { |o| options[:repo] = o }
+end.parse!
+
+config = Pkgcraft::Configs::Config.new
+config.load_repos_conf
+repo = config.repos[options[:repo]]
+raise "unknown repo: #{options[:repo]}" if repo.nil?
+
+eapis = Hash.new { |h, k| h[k] = [] }
+repo.each do |pkg|
+  eapis[pkg.eapi].append(pkg.cpv)
+end
+
+eapis.each do |eapi, cpvs|
+  puts "EAPI #{eapi}: #{cpvs.length}"
+end
