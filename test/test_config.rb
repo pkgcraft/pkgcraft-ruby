@@ -61,10 +61,8 @@ class TestConfig < Minitest::Test
     config.load_repos_conf(f.path)
     assert(config.repos.key?("test"))
 
-    # reloading causes error
-    assert_raises PkgcraftError do
-      config.load_repos_conf(f.path)
-    end
+    # reloading causes log output
+    config.load_repos_conf(f.path)
 
     # dir path
     Dir.mktmpdir do |d|
@@ -109,10 +107,8 @@ class TestConfig < Minitest::Test
     config.add_repo(r2, id: "r2")
     assert_equal([r1, r2], config.repos.entries)
 
-    # duplicate repo
-    assert_raises ConfigError do
-      config.add_repo(r1)
-    end
+    # reloading causes log output
+    config.add_repo(r1)
 
     # nonexistent repo
     assert_raises PkgcraftError do
