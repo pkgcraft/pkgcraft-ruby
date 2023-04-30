@@ -49,11 +49,11 @@ class TestRepoBase < Minitest::Test
 
     # single
     repo.create_ebuild("cat/pkg-1")
-    assert_equal(["1"], repo.versions("cat", "pkg"))
+    assert_equal([Version.new("1")], repo.versions("cat", "pkg"))
 
     # multiple
     repo.create_ebuild("cat/pkg-2")
-    assert_equal(["1", "2"], repo.versions("cat", "pkg"))
+    assert_equal([Version.new("1"), Version.new("2")], repo.versions("cat", "pkg"))
   end
 
   def test_length

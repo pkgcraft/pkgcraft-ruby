@@ -164,7 +164,15 @@ module Pkgcraft
       end
 
       def versions(cat, pkg)
-        C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_versions), cat, pkg).freeze
+        length = C::LenPtr.new
+        ptr = C.pkgcraft_repo_versions(@ptr, cat, pkg, length)
+        c_versions = ptr.get_array_of_pointer(0, length[:value])
+        versions = []
+        c_versions.each do |p|
+          versions.append(Pkgcraft::Dep::Version.from_native(p))
+        end
+        C.pkgcraft_array_free(ptr, length[:value])
+        versions.freeze
       end
 
       def length
