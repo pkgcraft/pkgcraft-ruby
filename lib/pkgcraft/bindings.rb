@@ -92,6 +92,21 @@ module Pkgcraft
       [ptr, strs.length]
     end
 
+    # Convert an array of pointers to their respective Ruby objects.
+    def self.ptr_to_obj_array(obj_cls, func, *args)
+      length = C::LenPtr.new
+      ptr = func.call(*args, length)
+      return if ptr.null?
+
+      ptrs = ptr.get_array_of_pointer(0, length[:value])
+      objs = []
+      ptrs.each do |p|
+        objs.append(obj_cls.from_native(p))
+      end
+      C.pkgcraft_array_free(ptr, length[:value])
+      objs
+    end
+
     # Return the pkgcraft-c library version.
     def self.version
       attach_function :pkgcraft_lib_version, [], String

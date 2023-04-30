@@ -88,18 +88,20 @@ module Pkgcraft
 
     # Return the mapping of all official EAPIs.
     def self.eapis_official
-      length = C::LenPtr.new
-      ptr = C.pkgcraft_eapis_official(length)
-      c_eapis = ptr.get_array_of_pointer(0, length[:value])
+      eapi_objs = C.ptr_to_obj_array(
+        Pkgcraft::Eapis::Eapi,
+        C.method(:pkgcraft_eapis_official)
+      )
+
       eapis = {}
-      (0...length[:value]).each do |i|
-        eapi = Eapi.from_native(c_eapis[i])
+      eapi_objs.each do |eapi|
+        id = eapi.to_s
         # set constants for all official EAPIs, e.g. EAPI0, EAPI1, ...
-        Eapis.const_set("EAPI#{i}", eapi)
-        eapis[eapi.to_s] = eapi
-        @eapi_latest_official = eapi if i == length[:value] - 1
+        Eapis.const_set("EAPI#{id}", eapi)
+        eapis[id] = eapi
       end
-      C.pkgcraft_array_free(ptr, length[:value])
+
+      @eapi_latest_official = eapi_objs.last
       eapis
     end
 
@@ -113,17 +115,18 @@ module Pkgcraft
 
     # Return the mapping of all EAPIs.
     def self.eapis
-      length = C::LenPtr.new
-      ptr = C.pkgcraft_eapis(length)
-      c_eapis = ptr.get_array_of_pointer(0, length[:value])
+      eapi_objs = C.ptr_to_obj_array(
+        Pkgcraft::Eapis::Eapi,
+        C.method(:pkgcraft_eapis)
+      )
+
       eapis = {}
       eapis.update(EAPIS_OFFICIAL)
-      (eapis.length...length[:value]).each do |i|
-        eapi = Eapi.from_native(c_eapis[i])
+      eapi_objs[eapis.length..].each do |eapi|
         eapis[eapi.to_s] = eapi
-        @eapi_latest = eapi if i == length[:value] - 1
       end
-      C.pkgcraft_array_free(ptr, length[:value])
+
+      @eapi_latest = eapi_objs.last
       eapis
     end
 
