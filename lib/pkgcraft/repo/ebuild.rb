@@ -35,14 +35,16 @@ module Pkgcraft
 
       def arches
         if @arches.nil?
-          @arches = C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_ebuild_metadata_arches))
+          func = C.method(:pkgcraft_repo_ebuild_metadata_arches)
+          @arches = C.ptr_to_string_array(@ptr, func)
         end
         @arches
       end
 
       def categories
         if @categories.nil?
-          @categories = C.ptr_to_array(@ptr, C.method(:pkgcraft_repo_ebuild_metadata_categories))
+          func = C.method(:pkgcraft_repo_ebuild_metadata_categories)
+          @categories = C.ptr_to_string_array(@ptr, func)
         end
         @categories
       end
