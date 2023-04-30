@@ -85,7 +85,7 @@ module Pkgcraft
     end
 
     # Convert an enumerable object of string convertible objects to a char**.
-    def self.iter_to_ptr(iterable)
+    def self.string_iter_to_ptr(iterable)
       strs = iterable.collect(&:to_s)
       ptr = FFI::MemoryPointer.new(:pointer, strs.length)
       ptr.write_array_of_pointer(strs.map { |s| FFI::MemoryPointer.from_string(s) })

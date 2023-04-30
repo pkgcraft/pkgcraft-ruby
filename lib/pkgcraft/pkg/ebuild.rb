@@ -71,7 +71,7 @@ module Pkgcraft
       end
 
       def dependencies(*keys)
-        c_keys, length = C.iter_to_ptr(keys)
+        c_keys, length = C.string_iter_to_ptr(keys)
         ptr = C.pkgcraft_pkg_ebuild_dependencies(self, c_keys, length)
         raise Error::PkgcraftError if ptr.null?
 

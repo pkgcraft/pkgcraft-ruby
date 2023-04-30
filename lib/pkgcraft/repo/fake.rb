@@ -14,14 +14,14 @@ module Pkgcraft
             id = "fake-#{rand}"
           end
 
-          c_cpvs, length = C.iter_to_ptr(cpvs_or_path)
+          c_cpvs, length = C.string_iter_to_ptr(cpvs_or_path)
           ptr = C.pkgcraft_repo_fake_new(id, priority, c_cpvs, length)
           Repo.send(:from_ptr, ptr, false, self)
         end
       end
 
       def extend(cpvs)
-        c_cpvs, length = C.iter_to_ptr(cpvs)
+        c_cpvs, length = C.string_iter_to_ptr(cpvs)
         ptr = C.pkgcraft_repo_fake_extend(@ptr, c_cpvs, length)
         raise Error::PkgcraftError if ptr.null?
       end

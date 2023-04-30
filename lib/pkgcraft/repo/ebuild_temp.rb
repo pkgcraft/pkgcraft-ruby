@@ -15,7 +15,7 @@ module Pkgcraft
       end
 
       def create_ebuild(cpv, *keys, data: nil)
-        c_keys, length = C.iter_to_ptr(keys)
+        c_keys, length = C.string_iter_to_ptr(keys)
         path = C.pkgcraft_repo_ebuild_temp_create_ebuild(@ptr_temp, cpv, c_keys, length)
         raise Error::PkgcraftError if path.nil?
 
