@@ -156,11 +156,11 @@ module Pkgcraft
       end
 
       def categories
-        C.ptr_to_string_array(@ptr, C.method(:pkgcraft_repo_categories)).freeze
+        C.ptr_to_string_array(C.method(:pkgcraft_repo_categories), @ptr).freeze
       end
 
       def packages(cat)
-        C.ptr_to_string_array(@ptr, C.method(:pkgcraft_repo_packages), cat).freeze
+        C.ptr_to_string_array(C.method(:pkgcraft_repo_packages), @ptr, cat).freeze
       end
 
       def versions(cat, pkg)

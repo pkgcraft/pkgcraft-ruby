@@ -160,7 +160,7 @@ module Pkgcraft
 
       def defined_phases
         if @defined_phases.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_defined_phases))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_defined_phases), self)
           @defined_phases = Set.new(values).freeze
         end
         @defined_phases
@@ -168,7 +168,7 @@ module Pkgcraft
 
       def homepage
         if @homepage.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_homepage))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_homepage), self)
           @homepage = Set.new(values).freeze
         end
         @homepage
@@ -176,7 +176,7 @@ module Pkgcraft
 
       def keywords
         if @keywords.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_keywords))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_keywords), self)
           @keywords = Set.new(values).freeze
         end
         @keywords
@@ -184,7 +184,7 @@ module Pkgcraft
 
       def iuse
         if @iuse.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_iuse))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_iuse), self)
           @iuse = Set.new(values).freeze
         end
         @iuse
@@ -192,7 +192,7 @@ module Pkgcraft
 
       def inherit
         if @inherit.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_inherit))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_inherit), self)
           @inherit = Set.new(values).freeze
         end
         @inherit
@@ -200,7 +200,7 @@ module Pkgcraft
 
       def inherited
         if @inherited.nil?
-          values = C.ptr_to_string_array(self, C.method(:pkgcraft_pkg_ebuild_inherited))
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_inherited), self)
           @inherited = Set.new(values).freeze
         end
         @inherited

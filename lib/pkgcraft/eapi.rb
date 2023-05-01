@@ -13,7 +13,7 @@ module Pkgcraft
           obj = super(value)
           obj.instance_variable_set(:@hash, C.pkgcraft_eapi_hash(value))
           obj.instance_variable_set(:@id, C.pkgcraft_eapi_as_str(value))
-          dep_keys = C.ptr_to_string_array(value, C.method(:pkgcraft_eapi_dep_keys))
+          dep_keys = C.ptr_to_string_array(C.method(:pkgcraft_eapi_dep_keys), value)
           obj.instance_variable_set(:@dep_keys, dep_keys.freeze)
           obj
         end

@@ -74,9 +74,9 @@ module Pkgcraft
     end
 
     # Convert a char** to an array of String objects.
-    def self.ptr_to_string_array(obj_ptr, func, *args)
+    def self.ptr_to_string_array(func, *args)
       length = C::LenPtr.new
-      ptr = func.call(obj_ptr, *args, length)
+      ptr = func.call(*args, length)
       return if ptr.null?
 
       value = ptr.get_array_of_string(0, length[:value])

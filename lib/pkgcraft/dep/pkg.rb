@@ -128,7 +128,7 @@ module Pkgcraft
       end
 
       def use
-        C.ptr_to_string_array(self, C.method(:pkgcraft_dep_use_deps))
+        C.ptr_to_string_array(C.method(:pkgcraft_dep_use_deps), self)
       end
 
       def repo
