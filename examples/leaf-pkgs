@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+# Find all packages in a given repo that don't have any reverse dependencies.
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "optparse"
+require "pkgcraft"
+
+options = { repo: "gentoo" }
+OptionParser.new do |opt|
+  opt.on("-r", "--repo [REPO_NAME]") { |o| options[:repo] = o }
+end.parse!
+
+config = Pkgcraft::Configs::Config.new
+config.load_repos_conf
+repo = config.repos[options[:repo]]
+raise "unknown repo: #{options[:repo]}" if repo.nil?
+
+cache = Hash.new { |h, k| h[k] = Set.new }
+cpvs = []
+
+# create revdeps cache
+repo.each do |pkg|
+  cpvs.append(pkg.cpv)
+  pkg.dependencies.iter_flatten.each do |dep|
+    cache[dep.cpn].add(dep)
+  end
+end
+
+# find packages lacking revdeps
+cpvs.each do |cpv|
+  cache.fetch(cpv.cpn, []).each do |dep|
+    if dep.intersects(cpv) && dep.blocker.nil?
+      cpv = nil
+      break
+    end
+  end
+  puts cpv unless cpv.nil?
+end
