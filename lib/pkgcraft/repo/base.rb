@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module Pkgcraft
-  # FFI bindings for Repo related functionality
+  # FFI bindings for generic repo related functionality
   module C
     typedef :pointer, :repo
-
-    # repo support
     attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
     attach_function :pkgcraft_repo_hash, [:repo], :uint64
     attach_function :pkgcraft_repo_id, [:repo], String
@@ -25,25 +23,6 @@ module Pkgcraft
     attach_function :pkgcraft_repo_format, [:repo], :int
     attach_function :pkgcraft_repo_free, [:repo], :void
     attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
-
-    # ebuild repo support
-    attach_function :pkgcraft_repo_ebuild_eapi, [:repo], Pkgcraft::Eapis::Eapi
-    attach_function :pkgcraft_repo_ebuild_masters, [:repo, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_ebuild_metadata_arches, [:repo, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_ebuild_metadata_categories, [:repo, LenPtr.by_ref], :pointer
-
-    # temp ebuild repo
-    attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
-    attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
-    attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
-    attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], String
-    attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], String
-
-    # fake repo support
-    attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
-    attach_function :pkgcraft_repo_fake_extend, [:repo, :pointer, :size_t], :repo
   end
 
   # Repo support
