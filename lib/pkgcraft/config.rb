@@ -34,8 +34,7 @@ module Pkgcraft
     def self.repos_to_dict(repos_ptr, length, ref)
       c_repos = repos_ptr.get_array_of_pointer(0, length)
       repos = {}
-      (0...length).each do |i|
-        ptr = c_repos[i]
+      c_repos.each do |ptr|
         repo = Pkgcraft::Repos::Repo.send(:from_ptr, ptr, ref)
         repos[repo.id] = repo
       end
