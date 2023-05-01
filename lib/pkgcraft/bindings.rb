@@ -98,11 +98,8 @@ module Pkgcraft
       ptr = func.call(*args, length)
       return if ptr.null?
 
-      ptrs = ptr.get_array_of_pointer(0, length[:value])
-      objs = []
-      ptrs.each do |p|
-        objs.append(obj_cls.from_native(p))
-      end
+      objs = ptr.get_array_of_pointer(0, length[:value])
+      objs = objs.map { |p| obj_cls.from_native(p) }
       C.pkgcraft_array_free(ptr, length[:value])
       objs
     end

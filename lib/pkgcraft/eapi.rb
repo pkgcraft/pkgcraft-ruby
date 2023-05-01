@@ -75,11 +75,9 @@ module Pkgcraft
       ptr = C.pkgcraft_eapis_range(str.to_s, length)
       raise Error::PkgcraftError if ptr.null?
 
-      c_eapis = ptr.get_array_of_pointer(0, length[:value])
-      eapis = []
-      c_eapis.each do |eapi_ptr|
-        id = C.pkgcraft_eapi_as_str(eapi_ptr)
-        eapis.append(EAPIS[id])
+      eapis = ptr.get_array_of_pointer(0, length[:value])
+      eapis = eapis.map do |eapi_ptr|
+        EAPIS[C.pkgcraft_eapi_as_str(eapi_ptr)]
       end
 
       C.pkgcraft_array_free(ptr, length[:value])
