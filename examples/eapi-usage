@@ -21,6 +21,4 @@ repo.each do |pkg|
   eapis[pkg.eapi].append(pkg.cpv)
 end
 
-eapis.each do |eapi, cpvs|
-  puts "EAPI #{eapi}: #{cpvs.length}"
-end
+eapis.each { |eapi, cpvs| puts "EAPI #{eapi}: #{cpvs.length}" }
