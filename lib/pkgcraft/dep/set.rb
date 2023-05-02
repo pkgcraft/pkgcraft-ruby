@@ -44,7 +44,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_into_iter_recursive_free, [:pointer], :void
 
     # Uri support
-    attach_function :pkgcraft_uri_rename, [Uri], String
+    attach_function :pkgcraft_uri_filename, [Uri], String
     attach_function :pkgcraft_uri_str, [Uri], String
     attach_function :pkgcraft_uri_uri, [Uri], String
     attach_function :pkgcraft_uri_free, [:pointer], :void
@@ -287,8 +287,8 @@ module Pkgcraft
         C.pkgcraft_uri_uri(self)
       end
 
-      def rename
-        C.pkgcraft_uri_rename(self)
+      def filename
+        C.pkgcraft_uri_filename(self)
       end
 
       def to_s

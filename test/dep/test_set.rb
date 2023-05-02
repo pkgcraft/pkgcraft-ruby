@@ -112,13 +112,13 @@ class TestSrcUri < Minitest::Test
   def test_uri
     # no rename
     uri = SrcUri.new("https://a.zip").iter_flatten.entries.first
-    assert_nil(uri.rename)
     assert_equal("https://a.zip", uri.uri)
+    assert_equal("a.zip", uri.filename)
 
     # rename
     uri = SrcUri.new("https://a.zip -> a-1.zip").iter_flatten.entries.first
-    assert_equal("a-1.zip", uri.rename)
     assert_equal("https://a.zip", uri.uri)
+    assert_equal("a-1.zip", uri.filename)
   end
 
   def test_iter_flatten
