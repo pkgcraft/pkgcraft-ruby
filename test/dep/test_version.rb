@@ -23,26 +23,30 @@ class TestVersion < Minitest::Test
     v2 = Version.new("2")
     assert(v1 < v2)
 
+    # valid op-ed
+    v1 = Version.new(">1")
+    assert_equal(:Greater, v1.op)
+    assert_nil(v1.revision)
+    assert_equal(">1", v1.to_s)
+    assert_includes(v1.inspect, ">1")
+
+    v2 = Version.new("=2")
+    assert_equal(:Equal, v2.op)
+    assert(v1 < v2)
+
     # invalid
-    ["=1", "", nil].each do |s|
+    ["-1", "", nil].each do |s|
       assert_raises InvalidVersion do
         Version.new(s)
       end
     end
   end
 
-  # Convert string to op-ed version falling back to non-op version.
-  def parse(str)
-    VersionWithOp.new(str)
-  rescue InvalidVersion
-    Version.new(str)
-  end
-
   def test_intersects
     TESTDATA_TOML["version"]["intersects"].each do |d|
       d["vals"].combination(2).each do |s1, s2|
-        obj1 = parse(s1)
-        obj2 = parse(s2)
+        obj1 = Version.new(s1)
+        obj2 = Version.new(s2)
 
         # elements intersect themselves
         assert(obj1.intersects(obj1))
@@ -89,31 +93,6 @@ class TestVersion < Minitest::Test
       versions = Set.new(d["versions"].map { |s| Version.new(s) }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(versions.length, length)
-    end
-  end
-end
-
-class TestVersionWithOp < Minitest::Test
-  include Pkgcraft::Dep
-  include Pkgcraft::Error
-
-  def test_new
-    # valid
-    v1 = VersionWithOp.new(">1")
-    assert_equal(:Greater, v1.op)
-    assert_nil(v1.revision)
-    assert_equal(">1", v1.to_s)
-    assert_includes(v1.inspect, ">1")
-
-    v2 = VersionWithOp.new("=2")
-    assert_equal(:Equal, v2.op)
-    assert(v1 < v2)
-
-    # invalid
-    ["1", "", nil].each do |s|
-      assert_raises InvalidVersion do
-        VersionWithOp.new(s)
-      end
     end
   end
 end

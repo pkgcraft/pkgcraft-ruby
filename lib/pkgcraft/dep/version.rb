@@ -81,17 +81,5 @@ module Pkgcraft
         @hash
       end
     end
-
-    # Package version with an operator
-    class VersionWithOp < Version
-      def initialize(str)
-        @ptr = C.pkgcraft_version_with_op(str.to_s)
-        raise Error::InvalidVersion if @ptr.null?
-      end
-
-      def to_s
-        C.pkgcraft_version_str_with_op(self)
-      end
-    end
   end
 end
