@@ -222,3 +222,31 @@ class TestDep < Minitest::Test
     end
   end
 end
+
+class TestCpn < Minitest::Test
+  include Pkgcraft
+  include Pkgcraft::Dep
+  include Pkgcraft::Error
+
+  def test_new
+    dep = Cpn.new("cat/pkg")
+    assert_nil(dep.version)
+    assert_nil(dep.revision)
+    assert_equal("pkg", dep.p)
+    assert_equal("pkg", dep.pf)
+    assert_nil(dep.pr)
+    assert_nil(dep.pv)
+    assert_nil(dep.pvr)
+    assert_equal("cat/pkg", dep.cpn)
+    assert_equal("cat/pkg", dep.cpv)
+    assert_equal("cat/pkg", dep.to_s)
+    assert_includes(dep.inspect, "cat/pkg")
+
+    # invalid
+    ["=cat/pkg-1", "cat/pkg-1", "", nil].each do |s|
+      assert_raises InvalidDep do
+        Cpn.new(s)
+      end
+    end
+  end
+end

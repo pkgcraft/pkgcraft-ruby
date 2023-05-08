@@ -57,6 +57,7 @@ module Pkgcraft
     # dep support
     attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_new, [:string, Eapi], Dep
+    attach_function :pkgcraft_dep_new_cpn, [:string], Dep
     attach_function :pkgcraft_dep_blocker, [Dep], :int
     attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
     attach_function :pkgcraft_dep_category, [Dep], String
