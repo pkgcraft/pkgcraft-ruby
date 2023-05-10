@@ -12,7 +12,7 @@ OptionParser.new do |opt|
 end.parse!
 
 config = Pkgcraft::Configs::Config.new
-config.load_repos_conf
+config.load
 repo = config.repos[options[:repo]]
 raise "unknown repo: #{options[:repo]}" if repo.nil?
 

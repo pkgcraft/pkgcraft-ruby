@@ -14,7 +14,8 @@ module Pkgcraft
 
     attach_function :pkgcraft_config_new, [], Config
     attach_function :pkgcraft_config_free, [:pointer], :void
-    attach_function :pkgcraft_config_load_repos_conf, [Config, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_config_load, [Config], :pointer
+    attach_function :pkgcraft_config_load_portage_conf, [Config, :string], :pointer
     attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
     attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
@@ -23,13 +24,6 @@ module Pkgcraft
 
   # Config support
   module Configs
-    PORTAGE_REPOS_CONF_DEFAULTS = [
-      "/etc/portage/repos.conf",
-      "/usr/share/portage/config.repos.conf"
-    ].freeze
-
-    private_constant :PORTAGE_REPOS_CONF_DEFAULTS
-
     # Convert an array of repo pointers to a mapping.
     def self.repos_to_dict(repos_ptr, length, ref)
       c_repos = repos_ptr.get_array_of_pointer(0, length)
@@ -57,26 +51,20 @@ module Pkgcraft
         @repos
       end
 
-      def load_repos_conf(path = nil, defaults: PORTAGE_REPOS_CONF_DEFAULTS)
-        length = C::LenPtr.new
-        if path.nil?
-          defaults.each do |p|
-            if Pathname.new(p).exist?
-              path = p
-              break
-            end
-          end
-          raise "no repos.conf found on the system" if path.nil?
-        end
-        c_repos = C.pkgcraft_config_load_repos_conf(self, path, length)
-        raise Error::PkgcraftError if c_repos.null?
+      def load
+        ptr = C.pkgcraft_config_load(self)
+        raise Error::PkgcraftError if ptr.null?
 
         # force repos attr refresh
         @repos = nil
+      end
 
-        repos = Configs.send(:repos_to_dict, c_repos, length[:value], false)
-        C.pkgcraft_array_free(c_repos, length[:value])
-        repos
+      def load_portage_conf(path = nil)
+        ptr = C.pkgcraft_config_load_portage_conf(self, path)
+        raise Error::PkgcraftError if ptr.null?
+
+        # force repos attr refresh
+        @repos = nil
       end
 
       def add_repo(repo, id: nil, priority: 0)
