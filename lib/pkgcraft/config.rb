@@ -18,8 +18,8 @@ module Pkgcraft
     attach_function :pkgcraft_config_load_portage_conf, [Config, :string], :pointer
     attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
-    attach_function :pkgcraft_config_add_repo, [Config, :repo], :repo
-    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string], :repo
+    attach_function :pkgcraft_config_add_repo, [Config, :repo, :bool], :repo
+    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string, :bool], :repo
   end
 
   # Config support
@@ -67,12 +67,12 @@ module Pkgcraft
         @repos = nil
       end
 
-      def add_repo(repo, id: nil, priority: 0)
+      def add_repo(repo, id: nil, priority: 0, external: false)
         if [String, Pathname].any? { |c| repo.is_a? c }
           path = repo.to_s
-          add_repo_path(path, id, priority)
+          add_repo_path(path, id, priority, external: external)
         elsif repo.is_a? Repo
-          ptr = C.pkgcraft_config_add_repo(self, repo.ptr)
+          ptr = C.pkgcraft_config_add_repo(self, repo.ptr, external)
           raise Error::ConfigError if ptr.null?
 
           @repos = nil
@@ -84,10 +84,10 @@ module Pkgcraft
 
       private
 
-      def add_repo_path(path, id, priority)
+      def add_repo_path(path, id, priority, external: true)
         path = path.to_s
         id = id.nil? ? path : id.to_s
-        ptr = C.pkgcraft_config_add_repo_path(self, id, priority, path)
+        ptr = C.pkgcraft_config_add_repo_path(self, id, priority, path, external)
         raise Error::PkgcraftError if ptr.null?
 
         # force repos attr refresh
