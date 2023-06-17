@@ -6,8 +6,8 @@ module Pkgcraft
   # FFI bindings for pkgcraft
   module C
     # version requirements for pkgcraft-c
-    MINVER = "0.0.8"
-    MAXVER = "0.0.8"
+    MIN_VERSION = "0.0.9"
+    MAX_VERSION = "0.0.9"
 
     extend FFI::Library
     ffi_lib ["pkgcraft"]
@@ -110,8 +110,8 @@ module Pkgcraft
       version = Gem::Version.new(pkgcraft_lib_version)
 
       # verify version requirements for pkgcraft C library
-      minver = Gem::Version.new(MINVER)
-      maxver = Gem::Version.new(MAXVER)
+      minver = Gem::Version.new(MIN_VERSION)
+      maxver = Gem::Version.new(MAX_VERSION)
       raise "pkgcraft C library #{version} fails requirement >=#{minver}" if version < minver
       raise "pkgcraft C library #{version} fails requirement <=#{maxver}" if version > maxver
 
