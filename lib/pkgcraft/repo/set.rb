@@ -71,8 +71,8 @@ module Pkgcraft
         Iter.new(self, restrict)
       end
 
-      def each(restrict = nil, &block)
-        iter(restrict).each(&block)
+      def each(restrict = nil, &)
+        iter(restrict).each(&)
       end
 
       def repos

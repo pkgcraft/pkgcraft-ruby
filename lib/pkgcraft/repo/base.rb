@@ -121,8 +121,8 @@ module Pkgcraft
         IterRestrict.new(@ptr, restrict)
       end
 
-      def each(restrict = nil, &block)
-        iter(restrict).each(&block)
+      def each(restrict = nil, &)
+        iter(restrict).each(&)
       end
 
       def [](cpv)

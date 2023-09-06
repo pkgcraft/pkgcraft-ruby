@@ -70,7 +70,7 @@ module Pkgcraft
       def add_repo(repo, id: nil, priority: 0, external: false)
         if [String, Pathname].any? { |c| repo.is_a? c }
           path = repo.to_s
-          add_repo_path(path, id, priority, external: external)
+          add_repo_path(path, id, priority, external:)
         elsif repo.is_a? Repo
           ptr = C.pkgcraft_config_add_repo(self, repo.ptr, external)
           raise Error::ConfigError if ptr.null?
@@ -119,8 +119,8 @@ module Pkgcraft
         @ebuild
       end
 
-      def each(&block)
-        @repos.values.each(&block)
+      def each(&)
+        @repos.values.each(&)
       end
 
       def key?(key)

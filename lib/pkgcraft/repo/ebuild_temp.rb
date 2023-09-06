@@ -47,7 +47,7 @@ module Pkgcraft
       end
 
       def create_pkg(cpv, *keys, data: nil)
-        create_ebuild(cpv, *keys, data: data)
+        create_ebuild(cpv, *keys, data:)
         iter(cpv).first
       end
     end

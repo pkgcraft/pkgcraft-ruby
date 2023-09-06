@@ -220,7 +220,7 @@ class TestPkgEbuild < Minitest::Test
 
     # single
     data = "src_configure() { :; }"
-    pkg = repo.create_pkg("cat/pkg-1", data: data)
+    pkg = repo.create_pkg("cat/pkg-1", data:)
     assert_equal(Set["configure"], pkg.defined_phases)
 
     # multiple
@@ -229,7 +229,7 @@ class TestPkgEbuild < Minitest::Test
       src_configure() { :; }
       src_compile() { :; }
     PHASES
-    pkg = repo.create_pkg("cat/pkg-1", data: data)
+    pkg = repo.create_pkg("cat/pkg-1", data:)
     refute_empty(pkg.defined_phases)
     assert_equal(Set["prepare", "configure", "compile"], pkg.defined_phases)
   end

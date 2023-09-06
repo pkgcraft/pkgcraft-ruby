@@ -111,8 +111,8 @@ module Pkgcraft
         Iter.new(@ptr)
       end
 
-      def each(&block)
-        iter.each(&block)
+      def each(&)
+        iter.each(&)
       end
 
       def iter_flatten
