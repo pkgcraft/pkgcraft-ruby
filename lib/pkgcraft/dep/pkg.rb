@@ -85,7 +85,7 @@ module Pkgcraft
 
       def blocker
         val = C.pkgcraft_dep_blocker(self)
-        return Blocker[val] unless val.zero?
+        Blocker[val] unless val.zero?
       end
 
       def category
@@ -107,11 +107,11 @@ module Pkgcraft
       end
 
       def revision
-        return version.revision unless version.nil?
+        version&.revision
       end
 
       def op
-        return version.op unless version.nil?
+        version&.op
       end
 
       def slot
@@ -124,7 +124,7 @@ module Pkgcraft
 
       def slot_op
         val = C.pkgcraft_dep_slot_op(self)
-        return SlotOperator[val] unless val.zero?
+        SlotOperator[val] unless val.zero?
       end
 
       def use
