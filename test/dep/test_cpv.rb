@@ -37,7 +37,7 @@ class TestCpv < Minitest::Test
     assert_equal("cat/pkg", cpv2.cpn)
     assert_equal("cat/pkg-2", cpv2.to_s)
     assert_includes(cpv2.inspect, "cat/pkg-2")
-    assert(cpv1 < cpv2)
+    assert_operator(cpv1, :<, cpv2)
 
     # invalid
     ["=cat/pkg-1", "", nil].each do |s|
@@ -58,7 +58,7 @@ class TestCpv < Minitest::Test
     # invalid type
     cpv = Cpv.new("cat/pkg-1")
     assert_raises TypeError do
-      assert(cpv < "cat/pkg-1")
+      cpv < "cat/pkg-1"
     end
   end
 

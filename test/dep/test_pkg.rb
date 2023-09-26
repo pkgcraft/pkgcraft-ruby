@@ -159,7 +159,7 @@ class TestDep < Minitest::Test
     # invalid type
     dep = Dep.new("=cat/pkg-1")
     assert_raises TypeError do
-      assert(dep < "=cat/pkg-1")
+      dep < "=cat/pkg-1"
     end
 
     TESTDATA_TOML["version"]["compares"].each do |s|

@@ -67,12 +67,12 @@ class TestRepoSet < Minitest::Test
     s0 = RepoSet.new
     s1 = RepoSet.new(r1)
     s2 = RepoSet.new(r2)
-    assert(s1 < s2)
-    assert(s1 > s0)
+    assert_operator(s1, :<, s2)
+    assert_operator(s1, :>, s0)
 
     # invalid type
     assert_raises TypeError do
-      assert(s1 < r1)
+      s1 < r1
     end
   end
 

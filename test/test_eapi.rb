@@ -9,7 +9,7 @@ class TestEapi < Minitest::Test
 
   def test_eapis
     # verify objects are shared between EAPIS_OFFICIAL and EAPIS
-    assert(EAPIS.length > EAPIS_OFFICIAL.length)
+    assert_operator(EAPIS.length, :>, EAPIS_OFFICIAL.length)
     EAPIS_OFFICIAL.each do |id, eapi|
       assert_same(eapi, EAPIS[id])
     end
@@ -63,13 +63,13 @@ class TestEapi < Minitest::Test
   def test_cmp
     latest = EAPI_LATEST
     latest_official = EAPI_LATEST_OFFICIAL
-    assert(EAPI7 < EAPI8)
-    assert(latest_official > EAPI7)
-    assert(latest >= latest_official)
+    assert_operator(EAPI7, :<, EAPI8)
+    assert_operator(latest_official, :>, EAPI7)
+    assert_operator(latest, :>=, latest_official)
 
     # invalid type
     assert_raises TypeError do
-      assert(EAPI8 < "8")
+      EAPI8 < "8"
     end
   end
 

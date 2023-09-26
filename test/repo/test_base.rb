@@ -97,12 +97,12 @@ class TestRepoBase < Minitest::Test
     r1 = EbuildTemp.new(id: "1")
     r2 = EbuildTemp.new(id: "2")
     r3 = EbuildTemp.new(id: "3", priority: 1)
-    assert(r1 < r2)
-    assert(r3 < r1)
+    assert_operator(r1, :<, r2)
+    assert_operator(r3, :<, r1)
 
     # invalid type
     assert_raises TypeError do
-      assert(r1 < "repo")
+      r1 < "repo"
     end
   end
 

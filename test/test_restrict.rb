@@ -42,13 +42,13 @@ class TestRestrict < Minitest::Test
 
     # invalid type
     assert_raises TypeError do
-      assert(r1 & nil)
+      r1 & nil
     end
     assert_raises TypeError do
-      assert(r1 | nil)
+      r1 | nil
     end
     assert_raises TypeError do
-      assert(r1 ^ nil)
+      r1 ^ nil
     end
   end
 end

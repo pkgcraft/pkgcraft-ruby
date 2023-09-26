@@ -21,7 +21,7 @@ class TestVersion < Minitest::Test
     assert_includes(v1.inspect, "1-r2")
 
     v2 = Version.new("2")
-    assert(v1 < v2)
+    assert_operator(v1, :<, v2)
 
     # valid op-ed
     v1 = Version.new(">1")
@@ -32,7 +32,7 @@ class TestVersion < Minitest::Test
 
     v2 = Version.new("=2")
     assert_equal(:Equal, v2.op)
-    assert(v1 < v2)
+    assert_operator(v1, :<, v2)
 
     # invalid
     ["-1", "", nil].each do |s|
@@ -73,7 +73,7 @@ class TestVersion < Minitest::Test
     # invalid type
     ver = Version.new("1")
     assert_raises TypeError do
-      assert(ver < "1")
+      ver < "1"
     end
   end
 
