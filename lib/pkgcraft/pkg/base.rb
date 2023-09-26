@@ -10,10 +10,10 @@ module Pkgcraft
 
         format = C.pkgcraft_pkg_format(value)
         case format
-        when 0
+        when 1
           obj = Pkgs::Ebuild.allocate
           obj.class.instance_method(:initialize).bind(obj).call
-        when 1
+        when 2
           obj = Pkgs::Fake.allocate
         else
           "unsupported pkg format: #{format}"
