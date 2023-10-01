@@ -40,7 +40,7 @@ jobs:
     steps:
     - name: Checkout code to determine the minimum supported ruby version
       if: ${{ inputs.ruby-version == '' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: pkgcraft/pkgcraft-ruby
 
@@ -91,7 +91,7 @@ jobs:
         path: ${{ env.pkgcraft_dir }}
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: pkgcraft/pkgcraft-ruby
         submodules: true
