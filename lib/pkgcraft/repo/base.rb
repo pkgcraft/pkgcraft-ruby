@@ -14,6 +14,9 @@ module Pkgcraft
     attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_len, [:repo], :uint64
     attach_function :pkgcraft_repo_is_empty, [:repo], :bool
+    attach_function :pkgcraft_repo_iter_cpv, [:repo], :pointer
+    attach_function :pkgcraft_repo_iter_cpv_free, [:pointer], :void
+    attach_function :pkgcraft_repo_iter_cpv_next, [:pointer], Pkgcraft::Dep::Cpv
     attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], Pkgcraft::Pkgs::Pkg
@@ -66,7 +69,28 @@ module Pkgcraft
 
       private_class_method :from_ptr
 
-      # Iterator over a repo.
+      # Iterator of Cpvs over a repo.
+      class IterCpv
+        include Enumerable
+
+        def initialize(repo_ptr)
+          ptr = C.pkgcraft_repo_iter_cpv(repo_ptr)
+          @ptr = FFI::AutoPointer.new(ptr, C.method(:pkgcraft_repo_iter_cpv_free))
+        end
+
+        def each
+          loop do
+            cpv = C.pkgcraft_repo_iter_cpv_next(@ptr)
+            break if cpv.null?
+
+            yield cpv
+          end
+        end
+      end
+
+      private_constant :IterCpv
+
+      # Iterator of packages over a repo.
       class Iter
         include Enumerable
 
@@ -87,7 +111,7 @@ module Pkgcraft
 
       private_constant :Iter
 
-      # Iterator that applies a restriction over a repo iterator.
+      # Iterator of packages that applies a restriction over a repo.
       class IterRestrict
         include Enumerable
         include Pkgcraft::Restricts
@@ -114,6 +138,10 @@ module Pkgcraft
       end
 
       private_constant :IterRestrict
+
+      def iter_cpv
+        IterCpv.new(@ptr)
+      end
 
       def iter(restrict = nil)
         return Iter.new(@ptr) if restrict.nil?

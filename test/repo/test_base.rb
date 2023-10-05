@@ -125,6 +125,20 @@ class TestRepoBase < Minitest::Test
     assert_includes(repo.inspect, "repo")
   end
 
+  def test_iter_cpv
+    # empty
+    repo = EbuildTemp.new
+    assert_empty(repo)
+
+    # single
+    pkg1 = repo.create_pkg("cat/pkg-1")
+    assert_equal([pkg1.cpv], repo.iter_cpv.entries)
+
+    # multiple
+    pkg2 = repo.create_pkg("a/b-1")
+    assert_equal([pkg2.cpv, pkg1.cpv], repo.iter_cpv.entries)
+  end
+
   def test_iter
     # empty
     repo = EbuildTemp.new
