@@ -28,9 +28,9 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(EAPI_LATEST_OFFICIAL, pkg.eapi)
 
     # explicit
-    pkg = repo.create_pkg("cat/pkg-1", "EAPI=5")
+    pkg = repo.create_pkg("cat/pkg-1", "EAPI=7")
     refute_nil(pkg.eapi)
-    assert_equal(EAPI5, pkg.eapi)
+    assert_equal(EAPI7, pkg.eapi)
   end
 
   def test_repo
