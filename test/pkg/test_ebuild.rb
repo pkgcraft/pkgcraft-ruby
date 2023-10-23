@@ -318,8 +318,8 @@ class TestPkgEbuild < Minitest::Test
     pkg3 = repo.create_pkg("cat/pkg-1-r0")
     assert_operator(pkg1, :<, pkg2)
     assert_operator(pkg1, :<=, pkg2)
-    assert_operator(pkg1, :==, pkg3)
-    assert_operator(pkg1, :!=, pkg2)
+    assert_equal(pkg1, pkg3)
+    refute_equal(pkg1, pkg2)
     assert_operator(pkg2, :>=, pkg1)
     assert_operator(pkg2, :>, pkg1)
 
