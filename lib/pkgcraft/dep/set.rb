@@ -5,9 +5,8 @@ module Pkgcraft
   module C
     # Wrapper for DepSet objects.
     class DepSet < FFI::ManagedStruct
-      layout :unit, :int,
-             :kind, :int,
-             :ptr,  :pointer
+      layout :set, :int,
+             :ptr, :pointer
 
       def self.release(ptr)
         C.pkgcraft_dep_set_free(ptr)
@@ -61,21 +60,21 @@ module Pkgcraft
       def self.from_ptr(ptr, obj = nil)
         unless ptr.null?
           if obj.nil?
-            case ptr[:kind]
+            case ptr[:set]
             when 0
               obj = Dependencies.allocate
             when 1
-              obj = License.allocate
-            when 2
-              obj = Properties.allocate
-            when 3
-              obj = RequiredUse.allocate
-            when 4
-              obj = Restrict.allocate
-            when 5
               obj = SrcUri.allocate
+            when 2
+              obj = License.allocate
+            when 3
+              obj = Properties.allocate
+            when 4
+              obj = RequiredUse.allocate
+            when 5
+              obj = Restrict.allocate
             else
-              "unsupported DepSet kind: #{ptr[:kind]}"
+              "unsupported DepSet kind: #{ptr[:set]}"
             end
           end
           obj.instance_variable_set(:@ptr, ptr)
@@ -156,7 +155,7 @@ module Pkgcraft
         end
 
         @ptr = FFI::AutoPointer.new(iter_p, C.method(:pkgcraft_dep_set_into_iter_flatten_free))
-        @unit = obj.ptr[:unit]
+        @set = obj.ptr[:set]
       end
 
       def each
@@ -164,17 +163,15 @@ module Pkgcraft
           ptr = C.pkgcraft_dep_set_into_iter_flatten_next(@ptr)
           break if ptr.null?
 
-          case @unit
+          case @set
           when 0
             yield Dep.from_native(ptr)
           when 1
+            yield Uri.from_native(ptr)
+          else
             s = ptr.read_string
             C.pkgcraft_str_free(ptr)
             yield s
-          when 2
-            yield Uri.from_native(ptr)
-          else
-            raise TypeError.new("unknown DepSet type: #{@unit}")
           end
         end
       end
@@ -197,7 +194,7 @@ module Pkgcraft
         end
 
         @ptr = FFI::AutoPointer.new(iter_p, C.method(:pkgcraft_dep_set_into_iter_recursive_free))
-        @unit = obj.ptr[:unit]
+        @set = obj.ptr[:set]
       end
 
       def each

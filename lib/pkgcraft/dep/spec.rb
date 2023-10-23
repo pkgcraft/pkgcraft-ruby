@@ -5,7 +5,7 @@ module Pkgcraft
   module C
     # DepSpec wrapper
     class DepSpec < FFI::ManagedStruct
-      layout :unit, :int,
+      layout :set, :int,
              :kind, :int,
              :ptr,  :pointer
 
