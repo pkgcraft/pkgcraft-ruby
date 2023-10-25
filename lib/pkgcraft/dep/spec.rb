@@ -18,6 +18,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_spec_cmp, [:DepSpec, :DepSpec], :int
     attach_function :pkgcraft_dep_spec_hash, [:DepSpec], :uint64
     attach_function :pkgcraft_dep_spec_str, [:DepSpec], String
+    attach_function :pkgcraft_dep_spec_parse, [:string, Eapi, :int], :DepSpec
     attach_function :pkgcraft_dep_spec_free, [:pointer], :void
     attach_function :pkgcraft_dep_spec_into_iter_flatten, [:DepSpec], :pointer
     attach_function :pkgcraft_dep_spec_into_iter_recursive, [:DepSpec], :pointer

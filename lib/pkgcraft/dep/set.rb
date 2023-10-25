@@ -25,12 +25,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
     attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
     attach_function :pkgcraft_dep_set_str, [:DepSet], String
-    attach_function :pkgcraft_dep_set_dependencies, [:string, Eapi], :DepSet
-    attach_function :pkgcraft_dep_set_license, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_properties, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_required_use, [:string, Eapi], :DepSet
-    attach_function :pkgcraft_dep_set_restrict, [:string], :DepSet
-    attach_function :pkgcraft_dep_set_src_uri, [:string, Eapi], :DepSet
+    attach_function :pkgcraft_dep_set_parse, [:string, Eapi, :int], :DepSet
     attach_function :pkgcraft_dep_set_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter, [:DepSet], :pointer
     attach_function :pkgcraft_dep_set_into_iter_next, [:pointer], :DepSpec
@@ -52,6 +47,7 @@ module Pkgcraft
   module Dep
     # Set of dependency objects.
     class DepSet
+      include Pkgcraft::Eapis
       include InspectStruct
       include Enumerable
       attr_reader :ptr
@@ -84,6 +80,29 @@ module Pkgcraft
       end
 
       private_class_method :from_ptr
+
+      def initialize(str = nil, eapi = EAPI_LATEST)
+        eapi = Eapi.from_obj(eapi)
+        if is_a? Dependencies
+          kind = 0
+        elsif is_a? SrcUri
+          kind = 1
+        elsif is_a? License
+          kind = 2
+        elsif is_a? Properties
+          kind = 3
+        elsif is_a? RequiredUse
+          kind = 4
+        elsif is_a? Restrict
+          kind = 5
+        else
+          "unsupported DepSet kind: #{ptr[:set]}"
+        end
+        ptr = C.pkgcraft_dep_set_parse(str.to_s, eapi, kind)
+        raise Error::PkgcraftError if ptr.null?
+
+        DepSet.send(:from_ptr, ptr, self)
+      end
 
       # Iterator over a DepSet.
       class Iter
@@ -209,74 +228,12 @@ module Pkgcraft
 
     private_constant :IterRecursive
 
-    # Set of package dependencies.
-    class Dependencies < DepSet
-      include Pkgcraft::Eapis
-
-      def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_dependencies(str.to_s, eapi)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
-
-    # Set of LICENSE dependencies.
-    class License < DepSet
-      def initialize(str = nil)
-        ptr = C.pkgcraft_dep_set_license(str.to_s)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
-
-    # Set of PROPERTIES dependencies.
-    class Properties < DepSet
-      def initialize(str = nil)
-        ptr = C.pkgcraft_dep_set_properties(str.to_s)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
-
-    # Set of REQUIRED_USE dependencies.
-    class RequiredUse < DepSet
-      include Pkgcraft::Eapis
-
-      def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_required_use(str.to_s, eapi)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
-
-    # Set of RESTRICT dependencies.
-    class Restrict < DepSet
-      def initialize(str = nil)
-        ptr = C.pkgcraft_dep_set_restrict(str.to_s)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
-
-    # Set of SRC_URI dependencies.
-    class SrcUri < DepSet
-      include Pkgcraft::Eapis
-
-      def initialize(str = nil, eapi = EAPI_LATEST)
-        eapi = Eapi.from_obj(eapi)
-        ptr = C.pkgcraft_dep_set_src_uri(str.to_s, eapi)
-        raise Error::PkgcraftError if ptr.null?
-
-        DepSet.send(:from_ptr, ptr, self)
-      end
-    end
+    class Dependencies < DepSet; end
+    class License < DepSet; end
+    class Properties < DepSet; end
+    class RequiredUse < DepSet; end
+    class Restrict < DepSet; end
+    class SrcUri < DepSet; end
 
     # URI objects for the SRC_URI DepSet.
     class Uri < C::Uri
