@@ -55,8 +55,8 @@ class TestEapi < Minitest::Test
 
   def test_has
     refute(EAPI_LATEST_OFFICIAL.has("nonexistent"))
-    refute(EAPI_LATEST_OFFICIAL.has("repo_ids"))
-    assert(EAPI_LATEST_OFFICIAL.has("usev_two_args"))
+    refute(EAPI_LATEST_OFFICIAL.has("RepoIds"))
+    assert(EAPI_LATEST_OFFICIAL.has("UsevTwoArgs"))
     refute(EAPI_LATEST_OFFICIAL.has(nil))
   end
 
