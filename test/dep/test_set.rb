@@ -9,6 +9,8 @@ class TestDependencies < Minitest::Test
   def test_string
     # no args
     dep = Dependencies.new
+    assert_equal(0, dep.length)
+    assert_empty(dep)
     assert_empty(dep.to_s)
     assert_includes(dep.inspect, dep.to_s)
 

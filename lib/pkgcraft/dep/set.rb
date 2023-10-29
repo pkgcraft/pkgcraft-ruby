@@ -25,6 +25,8 @@ module Pkgcraft
     attach_function :pkgcraft_dep_set_eq, [:DepSet, :DepSet], :bool
     attach_function :pkgcraft_dep_set_hash, [:DepSet], :uint64
     attach_function :pkgcraft_dep_set_str, [:DepSet], String
+    attach_function :pkgcraft_dep_set_len, [:DepSet], :uint64
+    attach_function :pkgcraft_dep_set_is_empty, [:DepSet], :bool
     attach_function :pkgcraft_dep_set_parse, [:string, Eapi, :int], :DepSet
     attach_function :pkgcraft_dep_set_free, [:pointer], :void
     attach_function :pkgcraft_dep_set_into_iter, [:DepSet], :pointer
@@ -152,6 +154,14 @@ module Pkgcraft
       def hash
         @hash = C.pkgcraft_dep_set_hash(@ptr) if @hash.nil?
         @hash
+      end
+
+      def length
+        C.pkgcraft_dep_set_len(@ptr)
+      end
+
+      def empty?
+        C.pkgcraft_dep_set_is_empty(@ptr)
       end
 
       def to_s
