@@ -56,28 +56,25 @@ module Pkgcraft
 
       # Create a DepSet from a pointer.
       def self.from_ptr(ptr, obj = nil)
-        unless ptr.null?
-          if obj.nil?
-            case ptr[:set]
-            when 0
-              obj = Dependencies.allocate
-            when 1
-              obj = SrcUri.allocate
-            when 2
-              obj = License.allocate
-            when 3
-              obj = Properties.allocate
-            when 4
-              obj = RequiredUse.allocate
-            when 5
-              obj = Restrict.allocate
-            else
-              "unsupported DepSet kind: #{ptr[:set]}"
-            end
+        if obj.nil?
+          case ptr[:set]
+          when 0
+            obj = Dependencies.allocate
+          when 1
+            obj = SrcUri.allocate
+          when 2
+            obj = License.allocate
+          when 3
+            obj = Properties.allocate
+          when 4
+            obj = RequiredUse.allocate
+          when 5
+            obj = Restrict.allocate
+          else
+            "unsupported DepSet kind: #{ptr[:set]}"
           end
-          obj.instance_variable_set(:@ptr, ptr)
         end
-
+        obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 

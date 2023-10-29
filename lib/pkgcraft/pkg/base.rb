@@ -12,7 +12,6 @@ module Pkgcraft
         case format
         when 1
           obj = Pkgs::Ebuild.allocate
-          obj.class.instance_method(:initialize).bind(obj).call
         when 2
           obj = Pkgs::Fake.allocate
         else

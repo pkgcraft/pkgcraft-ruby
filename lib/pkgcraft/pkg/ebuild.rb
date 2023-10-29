@@ -34,19 +34,6 @@ module Pkgcraft
     class Ebuild < Pkg
       include Pkgcraft::Dep
 
-      def initialize
-        @depend = SENTINEL
-        @bdepend = SENTINEL
-        @idepend = SENTINEL
-        @pdepend = SENTINEL
-        @rdepend = SENTINEL
-        @license = SENTINEL
-        @properties = SENTINEL
-        @required_use = SENTINEL
-        @restrict = SENTINEL
-        @src_uri = SENTINEL
-      end
-
       def path
         Pathname.new(C.pkgcraft_pkg_ebuild_path(self))
       end
@@ -79,7 +66,7 @@ module Pkgcraft
       end
 
       def depend
-        if @depend.equal?(SENTINEL)
+        if @depend.nil?
           ptr = C.pkgcraft_pkg_ebuild_depend(self)
           @depend = Dependencies.send(:from_ptr, ptr)
         end
@@ -87,7 +74,7 @@ module Pkgcraft
       end
 
       def bdepend
-        if @bdepend.equal?(SENTINEL)
+        if @bdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_bdepend(self)
           @bdepend = Dependencies.send(:from_ptr, ptr)
         end
@@ -95,7 +82,7 @@ module Pkgcraft
       end
 
       def idepend
-        if @idepend.equal?(SENTINEL)
+        if @idepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_idepend(self)
           @idepend = Dependencies.send(:from_ptr, ptr)
         end
@@ -103,7 +90,7 @@ module Pkgcraft
       end
 
       def pdepend
-        if @pdepend.equal?(SENTINEL)
+        if @pdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_pdepend(self)
           @pdepend = Dependencies.send(:from_ptr, ptr)
         end
@@ -111,7 +98,7 @@ module Pkgcraft
       end
 
       def rdepend
-        if @rdepend.equal?(SENTINEL)
+        if @rdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_rdepend(self)
           @rdepend = Dependencies.send(:from_ptr, ptr)
         end
@@ -119,7 +106,7 @@ module Pkgcraft
       end
 
       def license
-        if @license.equal?(SENTINEL)
+        if @license.nil?
           ptr = C.pkgcraft_pkg_ebuild_license(self)
           @license = License.send(:from_ptr, ptr)
         end
@@ -127,7 +114,7 @@ module Pkgcraft
       end
 
       def properties
-        if @properties.equal?(SENTINEL)
+        if @properties.nil?
           ptr = C.pkgcraft_pkg_ebuild_properties(self)
           @properties = Properties.send(:from_ptr, ptr)
         end
@@ -135,7 +122,7 @@ module Pkgcraft
       end
 
       def required_use
-        if @required_use.equal?(SENTINEL)
+        if @required_use.nil?
           ptr = C.pkgcraft_pkg_ebuild_required_use(self)
           @required_use = RequiredUse.send(:from_ptr, ptr)
         end
@@ -143,7 +130,7 @@ module Pkgcraft
       end
 
       def restrict
-        if @restrict.equal?(SENTINEL)
+        if @restrict.nil?
           ptr = C.pkgcraft_pkg_ebuild_restrict(self)
           @restrict = Restrict.send(:from_ptr, ptr)
         end
@@ -151,7 +138,7 @@ module Pkgcraft
       end
 
       def src_uri
-        if @src_uri.equal?(SENTINEL)
+        if @src_uri.nil?
           ptr = C.pkgcraft_pkg_ebuild_src_uri(self)
           @src_uri = SrcUri.send(:from_ptr, ptr)
         end

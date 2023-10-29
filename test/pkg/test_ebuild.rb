@@ -119,11 +119,11 @@ class TestPkgEbuild < Minitest::Test
     EAPI_LATEST.dep_keys.map(&:downcase).each do |attr|
       # undefined
       pkg = repo.create_pkg("cat/pkg-1")
-      assert_nil(pkg.send(attr))
+      assert_empty(pkg.send(attr))
 
       # empty
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=")
-      assert_nil(pkg.send(attr))
+      assert_empty(pkg.send(attr))
 
       # defined
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
@@ -136,11 +136,11 @@ class TestPkgEbuild < Minitest::Test
     repo = EbuildTemp.new
     # undefined
     pkg = repo.create_pkg("cat/pkg-1")
-    assert_nil(pkg.license)
+    assert_empty(pkg.license)
 
     # empty
     pkg = repo.create_pkg("cat/pkg-1", "LICENSE=")
-    assert_nil(pkg.license)
+    assert_empty(pkg.license)
 
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "LICENSE=BSD")
@@ -152,11 +152,11 @@ class TestPkgEbuild < Minitest::Test
     repo = EbuildTemp.new
     # undefined
     pkg = repo.create_pkg("cat/pkg-1")
-    assert_nil(pkg.properties)
+    assert_empty(pkg.properties)
 
     # empty
     pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=")
-    assert_nil(pkg.properties)
+    assert_empty(pkg.properties)
 
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=live")
@@ -168,11 +168,11 @@ class TestPkgEbuild < Minitest::Test
     repo = EbuildTemp.new
     # undefined
     pkg = repo.create_pkg("cat/pkg-1")
-    assert_nil(pkg.required_use)
+    assert_empty(pkg.required_use)
 
     # empty
     pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=")
-    assert_nil(pkg.required_use)
+    assert_empty(pkg.required_use)
 
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
@@ -184,11 +184,11 @@ class TestPkgEbuild < Minitest::Test
     repo = EbuildTemp.new
     # undefined
     pkg = repo.create_pkg("cat/pkg-1")
-    assert_nil(pkg.restrict)
+    assert_empty(pkg.restrict)
 
     # empty
     pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=")
-    assert_nil(pkg.restrict)
+    assert_empty(pkg.restrict)
 
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=test")
@@ -200,11 +200,11 @@ class TestPkgEbuild < Minitest::Test
     repo = EbuildTemp.new
     # undefined
     pkg = repo.create_pkg("cat/pkg-1")
-    assert_nil(pkg.src_uri)
+    assert_empty(pkg.src_uri)
 
     # empty
     pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=")
-    assert_nil(pkg.src_uri)
+    assert_empty(pkg.src_uri)
 
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
