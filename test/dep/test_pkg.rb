@@ -16,7 +16,7 @@ class TestDep < Minitest::Test
     assert_equal("cat", dep1.category)
     assert_equal("pkg", dep1.package)
     assert_equal(dep1.version, Version.new("=1-r2"))
-    assert_equal("2", dep1.revision)
+    assert_equal(dep1.revision, Revision.new("2"))
     assert_equal("pkg-1", dep1.p)
     assert_equal("pkg-1-r2", dep1.pf)
     assert_equal("r2", dep1.pr)
@@ -66,7 +66,7 @@ class TestDep < Minitest::Test
     assert_equal("repo", dep.repo)
     assert_equal(dep.version, Version.new(">=1-r2"))
     assert_equal(Operator::GreaterOrEqual, dep.op)
-    assert_equal("2", dep.revision)
+    assert_equal(dep.revision, Revision.new("2"))
     assert_equal("pkg-1", dep.p)
     assert_equal("pkg-1-r2", dep.pf)
     assert_equal("r2", dep.pr)
@@ -119,7 +119,11 @@ class TestDep < Minitest::Test
           else
             assert_equal(Version.new(d["version"]), dep.version)
           end
-          optional_value(d["revision"], dep.revision)
+          if d["revision"].nil?
+            assert_nil(dep.revision)
+          else
+            assert_equal(Revision.new(d["revision"]), dep.revision)
+          end
           optional_value(d["slot"], dep.slot)
           optional_value(d["subslot"], dep.subslot)
           if d["slot_op"].nil?

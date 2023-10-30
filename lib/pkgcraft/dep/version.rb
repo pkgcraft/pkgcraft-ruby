@@ -41,13 +41,50 @@ module Pkgcraft
       end
     end
 
+    # Package revision
+    class Revision < C::Revision
+      include InspectPointerRender
+      include Comparable
+
+      def initialize(str)
+        @ptr = C.pkgcraft_revision_new(str.to_s)
+        raise Error::InvalidVersion if @ptr.null?
+      end
+
+      def to_s
+        C.pkgcraft_revision_str(self)
+      end
+
+      def <=>(other)
+        C.pkgcraft_revision_cmp(self, other)
+      end
+
+      alias eql? ==
+
+      def hash
+        @hash = C.pkgcraft_revision_hash(self) if @hash.nil?
+        @hash
+      end
+    end
+
     # Package version
     class Version < C::Version
       include InspectPointerRender
       include Comparable
 
+      # Create a Version from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.instance_variable_set(:@ptr, ptr)
+        obj.instance_variable_set(:@revision, SENTINEL)
+        obj
+      end
+
+      private_class_method :from_ptr
+
       def initialize(str)
         @ptr = C.pkgcraft_version_new(str.to_s)
+        @revision = SENTINEL
         raise Error::InvalidVersion if @ptr.null?
       end
 
@@ -59,7 +96,11 @@ module Pkgcraft
       end
 
       def revision
-        C.pkgcraft_version_revision(self)
+        if @revision.equal?(SENTINEL)
+          ptr = C.pkgcraft_version_revision(self)
+          @revision = ptr.null? ? nil : ptr
+        end
+        @revision
       end
 
       def intersects(other)

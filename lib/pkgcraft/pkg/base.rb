@@ -34,7 +34,6 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_cpv, [Pkg], Pkgcraft::Dep::Cpv
     attach_function :pkgcraft_pkg_eapi, [Pkg], Pkgcraft::Eapis::Eapi
     attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
-    attach_function :pkgcraft_pkg_version, [Pkg], Pkgcraft::Dep::Version
     attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
     attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
     attach_function :pkgcraft_pkg_str, [Pkg], String
@@ -88,8 +87,7 @@ module Pkgcraft
       end
 
       def version
-        @version = C.pkgcraft_pkg_version(self) if @version.nil?
-        @version
+        cpv.version
       end
 
       def <=>(other)

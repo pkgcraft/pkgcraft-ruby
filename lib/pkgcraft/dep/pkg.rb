@@ -100,8 +100,8 @@ module Pkgcraft
 
       def version
         if @version.equal?(SENTINEL)
-          @version = C.pkgcraft_dep_version(self)
-          @version = nil if @version.null?
+          ptr = C.pkgcraft_dep_version(self)
+          @version = ptr.null? ? nil : Version.send(:from_ptr, ptr)
         end
         @version
       end

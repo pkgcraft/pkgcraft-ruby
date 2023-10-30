@@ -23,7 +23,10 @@ module Pkgcraft
       end
 
       def version
-        @version = C.pkgcraft_cpv_version(self) if @version.nil?
+        if @version.nil?
+          ptr = C.pkgcraft_cpv_version(self)
+          @version = Version.send(:from_ptr, ptr)
+        end
         @version
       end
 

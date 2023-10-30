@@ -16,7 +16,7 @@ class TestVersion < Minitest::Test
     assert_includes(v1.inspect, "1")
     v1 = Version.new("1-r2")
     assert_nil(v1.op)
-    assert_equal("2", v1.revision)
+    assert_equal(v1.revision, Revision.new("2"))
     assert_equal("1-r2", v1.to_s)
     assert_includes(v1.inspect, "1-r2")
 

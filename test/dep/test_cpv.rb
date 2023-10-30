@@ -16,7 +16,7 @@ class TestCpv < Minitest::Test
     refute_nil(cpv1.package)
     assert_equal("pkg", cpv1.package)
     assert_equal(cpv1.version, Version.new("1-r2"))
-    assert_equal("2", cpv1.revision)
+    assert_equal(cpv1.revision, Revision.new("2"))
     assert_equal("pkg-1", cpv1.p)
     assert_equal("pkg-1-r2", cpv1.pf)
     assert_equal("r2", cpv1.pr)

@@ -23,6 +23,13 @@ module Pkgcraft
         C.pkgcraft_version_free(ptr)
       end
     end
+
+    # Wrapper for revision pointers
+    class Revision < AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_revision_free(ptr)
+      end
+    end
   end
 end
 
@@ -89,9 +96,16 @@ module Pkgcraft
     attach_function :pkgcraft_version_cmp, [Version, Version], :int
     attach_function :pkgcraft_version_hash, [Version], :uint64
     attach_function :pkgcraft_version_intersects, [Version, Version], :bool
-    attach_function :pkgcraft_version_revision, [Version], String
+    attach_function :pkgcraft_version_revision, [Version], Pkgcraft::Dep::Revision
     attach_function :pkgcraft_version_op, [Version], :int
     attach_function :pkgcraft_version_op_from_str, [:string], :int
     attach_function :pkgcraft_version_str, [Version], String
+
+    # revision support
+    attach_function :pkgcraft_revision_free, [:pointer], :void
+    attach_function :pkgcraft_revision_new, [:string], Revision
+    attach_function :pkgcraft_revision_cmp, [Revision, Revision], :int
+    attach_function :pkgcraft_revision_hash, [Revision], :uint64
+    attach_function :pkgcraft_revision_str, [Revision], String
   end
 end
