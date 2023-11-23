@@ -55,7 +55,7 @@ class TestDep < Minitest::Test
     assert_includes(dep.inspect, "cat/pkg")
 
     # all fields -- extended EAPI default allows repo deps
-    dep = Dep.new("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
+    dep = Dep.new("!!>=cat/pkg-1-r2:0/2=::repo[a,b,c]")
     assert_equal("cat", dep.category)
     assert_equal("pkg", dep.package)
     assert_equal(Blocker::Strong, dep.blocker)
@@ -74,8 +74,8 @@ class TestDep < Minitest::Test
     assert_equal("1-r2", dep.pvr)
     assert_equal("cat/pkg", dep.cpn)
     assert_equal("cat/pkg-1-r2", dep.cpv)
-    assert_equal("!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo", dep.to_s)
-    assert_includes(dep.inspect, "!!>=cat/pkg-1-r2:0/2=[a,b,c]::repo")
+    assert_equal("!!>=cat/pkg-1-r2:0/2=::repo[a,b,c]", dep.to_s)
+    assert_includes(dep.inspect, "!!>=cat/pkg-1-r2:0/2=::repo[a,b,c]")
 
     # explicitly specifying an official EAPI fails
     ["8", EAPI8].each do |eapi|
