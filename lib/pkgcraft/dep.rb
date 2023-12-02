@@ -74,7 +74,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_subslot, [Dep], String
     attach_function :pkgcraft_dep_slot_op, [Dep], :int
     attach_function :pkgcraft_dep_slot_op_from_str, [:string], :int
-    attach_function :pkgcraft_dep_use_deps, [Dep, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_dep_use_deps_str, [Dep, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_dep_repo, [Dep], String
     attach_function :pkgcraft_dep_p, [Dep], String
     attach_function :pkgcraft_dep_pf, [Dep], String
