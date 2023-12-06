@@ -106,6 +106,7 @@ class TestDep < Minitest::Test
       passing_eapis = Set.new(Eapis.range(d["eapis"]))
       EAPIS.each_value do |eapi|
         if passing_eapis.include?(eapi)
+          assert(Dep.valid(s, eapi))
           dep = Dep.new(s, eapi)
           assert_equal(d["category"], dep.category)
           assert_equal(d["package"], dep.package)
@@ -136,6 +137,10 @@ class TestDep < Minitest::Test
           assert_equal(s, dep.to_s)
           assert_includes(dep.inspect, s)
         else
+          refute(Dep.valid(s, eapi))
+          assert_raises InvalidDep do
+            Dep.valid(s, eapi, raised: true)
+          end
           assert_raises InvalidDep do
             Dep.new(s, eapi)
           end
@@ -145,6 +150,10 @@ class TestDep < Minitest::Test
 
     TESTDATA_TOML["dep"]["invalid"].each do |s|
       EAPIS.each_value do |eapi|
+        refute(Dep.valid(s, eapi))
+        assert_raises InvalidDep do
+          Dep.valid(s, eapi, raised: true)
+        end
         assert_raises InvalidDep do
           Dep.new(s, eapi)
         end
