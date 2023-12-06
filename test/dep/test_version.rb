@@ -8,12 +8,14 @@ class TestVersion < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Error
 
-  def test_new
-    # valid
+  def test_new_and_valid
+    # unrevisioned
     v1 = Version.new("1")
     assert_nil(v1.revision)
     assert_equal("1", v1.to_s)
     assert_includes(v1.inspect, "1")
+
+    # revisioned
     v1 = Version.new("1-r2")
     assert_nil(v1.op)
     assert_equal(v1.revision, Revision.new("2"))
@@ -23,7 +25,7 @@ class TestVersion < Minitest::Test
     v2 = Version.new("2")
     assert_operator(v1, :<, v2)
 
-    # valid op-ed
+    # unrevisioned with operator
     v1 = Version.new(">1")
     assert_equal(:Greater, v1.op)
     assert_nil(v1.revision)
@@ -34,8 +36,25 @@ class TestVersion < Minitest::Test
     assert_equal(:Equal, v2.op)
     assert_operator(v1, :<, v2)
 
+    # valid
+    TESTDATA_TOML["version"]["valid"].each do |s|
+      assert(Version.valid(s))
+      Version.new(s)
+    end
+
     # invalid
-    ["-1", "", nil].each do |s|
+    TESTDATA_TOML["version"]["invalid"].each do |s|
+      refute(Version.valid(s))
+      assert_raises InvalidVersion do
+        Version.valid(s, raised: true)
+      end
+      assert_raises InvalidVersion do
+        Version.new(s)
+      end
+    end
+
+    # invalid types
+    [Object, nil].each do |s|
       assert_raises InvalidVersion do
         Version.new(s)
       end
