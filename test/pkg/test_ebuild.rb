@@ -128,7 +128,7 @@ class TestPkgEbuild < Minitest::Test
       # defined
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
       refute_nil(pkg.send(attr))
-      assert_equal(Dependencies.new("cat/pkg"), pkg.send(attr))
+      assert_equal(Package.new("cat/pkg"), pkg.send(attr))
     end
   end
 

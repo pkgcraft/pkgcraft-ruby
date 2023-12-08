@@ -2,27 +2,59 @@
 
 require "test_helper"
 
-class TestDependencies < Minitest::Test
+class TestDependency < Minitest::Test
+  include Pkgcraft::Dep
+
+  def test_iter_flatten
+    # single
+    dep = Package.new("cat/pkg").entries.first
+    assert_equal(["cat/pkg"], dep.iter_flatten.map(&:to_s))
+    dep = Package.new("u? ( a/b )").entries.first
+    assert_equal(["a/b"], dep.iter_flatten.map(&:to_s))
+    assert_includes(dep.inspect, dep.to_s)
+
+    # multiple nested
+    dep = Package.new("u? ( || ( a/b c/d ) e/f )").entries.first
+    assert_equal(["a/b", "c/d", "e/f"], dep.iter_flatten.map(&:to_s))
+  end
+
+  def test_iter_recursive
+    # single
+    dep = Package.new("cat/pkg").entries.first
+    assert_equal(["cat/pkg"], dep.iter_recursive.map(&:to_s))
+    dep = Package.new("u? ( a/b )").entries.first
+    assert_equal(["u? ( a/b )", "a/b"], dep.iter_recursive.map(&:to_s))
+
+    # multiple nested
+    dep = Package.new("u? ( || ( a/b c/d ) e/f )").entries.first
+    assert_equal(
+      ["u? ( || ( a/b c/d ) e/f )", "|| ( a/b c/d )", "a/b", "c/d", "e/f"],
+      dep.iter_recursive.map(&:to_s)
+    )
+  end
+end
+
+class TestPackage < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Error
 
   def test_string
     # no args
-    dep = Dependencies.new
+    dep = Package.new
     assert_equal(0, dep.length)
     assert_empty(dep)
     assert_empty(dep.to_s)
     assert_includes(dep.inspect, dep.to_s)
 
     ["", "a/b"].each do |s|
-      dep = Dependencies.new(s)
+      dep = Package.new(s)
       assert_equal(s, dep.to_s)
     end
   end
 
   def test_invalid
     assert_raises PkgcraftError do
-      Dependencies.new("u? ( cat/pkg)")
+      Package.new("u? ( cat/pkg)")
     end
   end
 
@@ -31,8 +63,8 @@ class TestDependencies < Minitest::Test
       ["a/dep", "a/dep"],
       ["a/b c/d", "c/d a/b"]
     ].each do |s1, s2|
-      dep1 = Dependencies.new(s1)
-      dep2 = Dependencies.new(s2)
+      dep1 = Package.new(s1)
+      dep2 = Package.new(s2)
       assert_equal(dep1, dep2)
       set = Set[dep1, dep2]
       assert_equal(1, set.length)
@@ -47,43 +79,43 @@ class TestDependencies < Minitest::Test
 
   def test_iter
     # empty
-    dep = Dependencies.new
+    dep = Package.new
     assert_empty(dep.entries)
 
     # single
-    dep = Dependencies.new("cat/pkg")
+    dep = Package.new("cat/pkg")
     assert_equal(["cat/pkg"], dep.map(&:to_s))
 
     # multiple
-    dep = Dependencies.new("a/b u? ( c/d )")
+    dep = Package.new("a/b u? ( c/d )")
     assert_equal(["a/b", "u? ( c/d )"], dep.map(&:to_s))
   end
 
   def test_iter_flatten
     # empty
-    dep = Dependencies.new
+    dep = Package.new
     assert_empty(dep.iter_flatten.entries)
 
     # single
-    dep = Dependencies.new("cat/pkg")
+    dep = Package.new("cat/pkg")
     assert_equal(["cat/pkg"], dep.iter_flatten.map(&:to_s))
 
     # multiple
-    dep = Dependencies.new("a/b u? ( c/d )")
+    dep = Package.new("a/b u? ( c/d )")
     assert_equal(["a/b", "c/d"], dep.iter_flatten.map(&:to_s))
   end
 
   def test_iter_recursive
     # empty
-    dep = Dependencies.new
+    dep = Package.new
     assert_empty(dep.iter_recursive.entries)
 
     # single
-    dep = Dependencies.new("cat/pkg")
+    dep = Package.new("cat/pkg")
     assert_equal(["cat/pkg"], dep.iter_flatten.map(&:to_s))
 
     # multiple
-    dep = Dependencies.new("a/b u? ( c/d )")
+    dep = Package.new("a/b u? ( c/d )")
     assert_equal(["a/b", "u? ( c/d )", "c/d"], dep.iter_recursive.map(&:to_s))
   end
 end

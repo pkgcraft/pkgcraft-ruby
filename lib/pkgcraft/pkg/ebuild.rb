@@ -10,17 +10,17 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_slot, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_subslot, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_bdepend, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_idepend, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_pdepend, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_rdepend, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_properties, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_required_use, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_restrict, [Pkg], :DepSet
-    attach_function :pkgcraft_pkg_ebuild_src_uri, [Pkg], :DepSet
+    attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_bdepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_idepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_pdepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_rdepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_properties, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_required_use, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_restrict, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_src_uri, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_defined_phases, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_homepage, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_keywords, [Pkg, LenPtr.by_ref], :pointer
@@ -62,13 +62,13 @@ module Pkgcraft
         ptr = C.pkgcraft_pkg_ebuild_dependencies(self, c_keys, length)
         raise Error::PkgcraftError if ptr.null?
 
-        DepSet.send(:from_ptr, ptr)
+        DependencySet.send(:from_ptr, ptr)
       end
 
       def depend
         if @depend.nil?
           ptr = C.pkgcraft_pkg_ebuild_depend(self)
-          @depend = Dependencies.send(:from_ptr, ptr)
+          @depend = Package.send(:from_ptr, ptr)
         end
         @depend
       end
@@ -76,7 +76,7 @@ module Pkgcraft
       def bdepend
         if @bdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_bdepend(self)
-          @bdepend = Dependencies.send(:from_ptr, ptr)
+          @bdepend = Package.send(:from_ptr, ptr)
         end
         @bdepend
       end
@@ -84,7 +84,7 @@ module Pkgcraft
       def idepend
         if @idepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_idepend(self)
-          @idepend = Dependencies.send(:from_ptr, ptr)
+          @idepend = Package.send(:from_ptr, ptr)
         end
         @idepend
       end
@@ -92,7 +92,7 @@ module Pkgcraft
       def pdepend
         if @pdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_pdepend(self)
-          @pdepend = Dependencies.send(:from_ptr, ptr)
+          @pdepend = Package.send(:from_ptr, ptr)
         end
         @pdepend
       end
@@ -100,7 +100,7 @@ module Pkgcraft
       def rdepend
         if @rdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_rdepend(self)
-          @rdepend = Dependencies.send(:from_ptr, ptr)
+          @rdepend = Package.send(:from_ptr, ptr)
         end
         @rdepend
       end
