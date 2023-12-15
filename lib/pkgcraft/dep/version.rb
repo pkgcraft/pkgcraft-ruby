@@ -88,8 +88,8 @@ module Pkgcraft
         raise Error::InvalidVersion if @ptr.null?
       end
 
-      def self.valid(str, raised: false)
-        valid = !C.pkgcraft_version_valid(str.to_s).null?
+      def self.parse(str, raised: false)
+        valid = !C.pkgcraft_version_parse(str.to_s).null?
         raise Error::InvalidVersion if !valid && raised
 
         valid

@@ -100,7 +100,7 @@ module Pkgcraft
     attach_function :pkgcraft_version_op, [Version], :int
     attach_function :pkgcraft_version_op_from_str, [:string], :int
     attach_function :pkgcraft_version_str, [Version], String
-    attach_function :pkgcraft_version_valid, [:string], :pointer
+    attach_function :pkgcraft_version_parse, [:string], :pointer
 
     # revision support
     attach_function :pkgcraft_revision_free, [:pointer], :void

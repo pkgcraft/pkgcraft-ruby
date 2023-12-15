@@ -38,15 +38,15 @@ class TestVersion < Minitest::Test
 
     # valid
     TESTDATA_TOML["version"]["valid"].each do |s|
-      assert(Version.valid(s))
+      assert(Version.parse(s))
       Version.new(s)
     end
 
     # invalid
     TESTDATA_TOML["version"]["invalid"].each do |s|
-      refute(Version.valid(s))
+      refute(Version.parse(s))
       assert_raises InvalidVersion do
-        Version.valid(s, raised: true)
+        Version.parse(s, raised: true)
       end
       assert_raises InvalidVersion do
         Version.new(s)
