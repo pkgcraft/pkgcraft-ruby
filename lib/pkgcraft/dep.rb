@@ -88,7 +88,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_cmp, [Dep, Dep], :int
     attach_function :pkgcraft_dep_str, [Dep], String
     attach_function :pkgcraft_dep_restrict, [Dep], Restrict
-    attach_function :pkgcraft_dep_valid, [:string, Eapi], :pointer
+    attach_function :pkgcraft_dep_parse, [:string, Eapi], :pointer
 
     # version support
     attach_function :pkgcraft_version_free, [:pointer], :void

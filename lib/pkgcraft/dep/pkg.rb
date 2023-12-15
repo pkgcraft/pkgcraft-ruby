@@ -83,9 +83,9 @@ module Pkgcraft
         raise Error::InvalidDep if @ptr.null?
       end
 
-      def self.valid(str, eapi = nil, raised: false)
+      def self.parse(str, eapi = nil, raised: false)
         eapi = Eapi.from_obj(eapi)
-        valid = !C.pkgcraft_dep_valid(str.to_s, eapi).null?
+        valid = !C.pkgcraft_dep_parse(str.to_s, eapi).null?
         raise Error::InvalidDep if !valid && raised
 
         valid
