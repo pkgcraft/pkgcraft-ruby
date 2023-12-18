@@ -196,8 +196,10 @@ class TestDep < Minitest::Test
         # intersects depending on status
         if d["status"]
           assert(obj1.intersects(obj2))
+          assert(obj2.intersects(obj1))
         else
           refute(obj1.intersects(obj2))
+          refute(obj2.intersects(obj1))
         end
       end
     end
