@@ -69,8 +69,10 @@ class TestCpv < Minitest::Test
       cpv2 = Cpv.new("cat/pkg-#{s2}")
       if op == "=="
         assert(cpv1.intersects(cpv2))
+        assert(cpv2.intersects(cpv1))
       else
         refute(cpv1.intersects(cpv2))
+        refute(cpv2.intersects(cpv1))
       end
     end
 
