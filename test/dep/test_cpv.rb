@@ -78,6 +78,7 @@ class TestCpv < Minitest::Test
     cpv = Cpv.new("cat/pkg-1")
     dep = Dep.new("=cat/pkg-1-r0")
     assert(cpv.intersects(dep))
+    assert(dep.intersects(cpv))
 
     # invalid type
     assert_raises TypeError do
