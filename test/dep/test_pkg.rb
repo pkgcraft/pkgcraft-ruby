@@ -183,18 +183,11 @@ class TestDep < Minitest::Test
     end
   end
 
-  # Convert string to Dep falling back to Cpv.
-  def parse(str)
-    Dep.new(str)
-  rescue InvalidDep
-    Cpv.new(str)
-  end
-
   def test_intersects
     TESTDATA_TOML["dep"]["intersects"].each do |d|
       d["vals"].combination(2).each do |s1, s2|
-        obj1 = parse(s1)
-        obj2 = parse(s2)
+        obj1 = Dep.new(s1)
+        obj2 = Dep.new(s2)
 
         # elements intersect themselves
         assert(obj1.intersects(obj1))
