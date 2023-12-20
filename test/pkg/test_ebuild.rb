@@ -251,19 +251,21 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_keywords
-    repo = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/none-0"]
     assert_empty(pkg.keywords)
 
-    # single
-    pkg = repo.create_pkg("cat/pkg-1", "KEYWORDS=amd64")
-    assert_equal(Set["amd64"], pkg.keywords)
+    # empty
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/empty-0"]
+    assert_empty(pkg.keywords)
 
-    # multiple
-    pkg = repo.create_pkg("cat/pkg-1", "KEYWORDS=amd64 ~arm64")
-    refute_empty(pkg.keywords)
+    # single line
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/single-0"]
     assert_equal(Set["amd64", "~arm64"], pkg.keywords)
+
+    # single line
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/multi-0"]
+    assert_equal(Set["~amd64", "arm64"], pkg.keywords)
   end
 
   def test_iuse

@@ -40,8 +40,6 @@ def load_repos
   config = Pkgcraft::Configs::Config.new
   Dir.glob("testdata/repos/*").each do |path|
     config.add_repo(path, id: File.basename(path))
-  rescue Pkgcraft::Error::PkgcraftError
-    # ignore purposely broken repos
   end
   config
 end
