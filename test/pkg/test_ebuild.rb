@@ -133,19 +133,29 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_license
-    repo = EbuildTemp.new
-    # undefined
-    pkg = repo.create_pkg("cat/pkg-1")
+    # none
+    pkg = TESTDATA_CONFIG.repos["metadata"]["optional/none-8"]
     assert_empty(pkg.license)
 
     # empty
-    pkg = repo.create_pkg("cat/pkg-1", "LICENSE=")
+    pkg = TESTDATA_CONFIG.repos["metadata"]["optional/empty-8"]
     assert_empty(pkg.license)
 
-    # defined
-    pkg = repo.create_pkg("cat/pkg-1", "LICENSE=BSD")
-    refute_nil(pkg.license)
-    assert_equal(License.new("BSD"), pkg.license)
+    # single-line
+    pkg = TESTDATA_CONFIG.repos["metadata"]["license/single-8"]
+    assert_equal(License.new("l1 l2"), pkg.license)
+
+    # multi-line
+    pkg = TESTDATA_CONFIG.repos["metadata"]["license/multi-8"]
+    assert_equal(License.new("l1 u? ( l2 )"), pkg.license)
+
+    # inherited and overridden
+    pkg = TESTDATA_CONFIG.repos["metadata"]["license/inherit-8"]
+    assert_equal(License.new("l1"), pkg.license)
+
+    # inherited and appended
+    pkg = TESTDATA_CONFIG.repos["metadata"]["license/append-8"]
+    assert_equal(License.new("l2 l1"), pkg.license)
   end
 
   def test_properties
@@ -252,11 +262,11 @@ class TestPkgEbuild < Minitest::Test
 
   def test_keywords
     # none
-    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/none-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["optional/none-8"]
     assert_empty(pkg.keywords)
 
     # empty
-    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/empty-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["optional/empty-8"]
     assert_empty(pkg.keywords)
 
     # single line
@@ -285,25 +295,20 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_inherits
-    repo = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = TESTDATA_CONFIG.repos["metadata"]["optional/none-8"]
     assert_empty(pkg.inherit)
     assert_empty(pkg.inherited)
 
-    # nested inherits
-    pkg = TESTDATA_CONFIG.repos["eclasses"]["pkg-tests/inherits-1"]
-    refute_empty(pkg.inherit)
-    assert_equal(Set["leaf"], pkg.inherit)
-    refute_empty(pkg.inherited)
-    assert_equal(Set["leaf", "base"], pkg.inherited)
+    # direct inherit
+    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/direct-0"]
+    assert_equal(Set["a"], pkg.inherit)
+    assert_equal(Set["a"], pkg.inherited)
 
-    # non-nested inherits
-    pkg = TESTDATA_CONFIG.repos["eclasses"]["pkg-tests/inherits-2"]
-    refute_empty(pkg.inherit)
-    assert_equal(Set["base"], pkg.inherit)
-    refute_empty(pkg.inherited)
-    assert_equal(Set["base"], pkg.inherited)
+    # indirect inherit
+    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/indirect-0"]
+    assert_equal(Set["b"], pkg.inherit)
+    assert_equal(Set["b", "a"], pkg.inherited)
   end
 
   def test_long_description
