@@ -23,7 +23,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_src_uri, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_defined_phases, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_homepage, [Pkg, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_pkg_ebuild_keywords, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_keywords_str, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_iuse, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_inherit, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_inherited, [Pkg, LenPtr.by_ref], :pointer
@@ -163,7 +163,7 @@ module Pkgcraft
 
       def keywords
         if @keywords.nil?
-          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_keywords), self)
+          values = C.ptr_to_string_array(C.method(:pkgcraft_pkg_ebuild_keywords_str), self)
           @keywords = Set.new(values).freeze
         end
         @keywords
