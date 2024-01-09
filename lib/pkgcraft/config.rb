@@ -17,7 +17,7 @@ module Pkgcraft
     attach_function :pkgcraft_config_load, [Config], :pointer
     attach_function :pkgcraft_config_load_portage_conf, [Config, :string], :pointer
     attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_config_repos_set, [Config, :int], Pkgcraft::Repos::RepoSet
+    attach_function :pkgcraft_config_repos_set, [Config, :pointer], Pkgcraft::Repos::RepoSet
     attach_function :pkgcraft_config_add_repo, [Config, :repo, :bool], :repo
     attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string, :bool], :repo
   end
@@ -110,12 +110,13 @@ module Pkgcraft
       end
 
       def all
-        @all = C.pkgcraft_config_repos_set(@config, 0) if @all.nil?
+        @all = C.pkgcraft_config_repos_set(@config, nil) if @all.nil?
         @all
       end
 
       def ebuild
-        @ebuild = C.pkgcraft_config_repos_set(@config, 1) if @ebuild.nil?
+        fmt = FFI::MemoryPointer.new(:pointer, 1)
+        @ebuild = C.pkgcraft_config_repos_set(@config, fmt) if @ebuild.nil?
         @ebuild
       end
 
