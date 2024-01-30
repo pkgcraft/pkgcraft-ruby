@@ -22,7 +22,7 @@ class TestDep < Minitest::Test
     assert_equal("r2", dep1.pr)
     assert_equal("1", dep1.pv)
     assert_equal("1-r2", dep1.pvr)
-    assert_equal("cat/pkg", dep1.cpn)
+    assert_equal(Cpn.new("cat/pkg"), dep1.cpn)
     assert_equal("cat/pkg-1-r2", dep1.cpv)
     assert_equal("=cat/pkg-1-r2", dep1.to_s)
     assert_includes(dep1.inspect, "=cat/pkg-1-r2")
@@ -35,7 +35,7 @@ class TestDep < Minitest::Test
     assert_equal("r0", dep2.pr)
     assert_equal("2", dep2.pv)
     assert_equal("2", dep2.pvr)
-    assert_equal("cat/pkg", dep2.cpn)
+    assert_equal(Cpn.new("cat/pkg"), dep2.cpn)
     assert_equal("cat/pkg-2", dep2.cpv)
     assert_equal("=cat/pkg-2", dep2.to_s)
     assert_includes(dep2.inspect, "=cat/pkg-2")
@@ -49,7 +49,7 @@ class TestDep < Minitest::Test
     assert_nil(dep.pr)
     assert_nil(dep.pv)
     assert_nil(dep.pvr)
-    assert_equal("cat/pkg", dep.cpn)
+    assert_equal(Cpn.new("cat/pkg"), dep.cpn)
     assert_equal("cat/pkg", dep.cpv)
     assert_equal("cat/pkg", dep.to_s)
     assert_includes(dep.inspect, "cat/pkg")
@@ -72,7 +72,7 @@ class TestDep < Minitest::Test
     assert_equal("r2", dep.pr)
     assert_equal("1", dep.pv)
     assert_equal("1-r2", dep.pvr)
-    assert_equal("cat/pkg", dep.cpn)
+    assert_equal(Cpn.new("cat/pkg"), dep.cpn)
     assert_equal("cat/pkg-1-r2", dep.cpv)
     assert_equal("!!>=cat/pkg-1-r2:0/2=::repo[a,b,c]", dep.to_s)
     assert_includes(dep.inspect, "!!>=cat/pkg-1-r2:0/2=::repo[a,b,c]")
@@ -227,34 +227,6 @@ class TestDep < Minitest::Test
       deps = Set.new(d["versions"].map { |s| Dep.new("=cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_equal(deps.length, length)
-    end
-  end
-end
-
-class TestCpn < Minitest::Test
-  include Pkgcraft
-  include Pkgcraft::Dep
-  include Pkgcraft::Error
-
-  def test_new
-    dep = Cpn.new("cat/pkg")
-    assert_nil(dep.version)
-    assert_nil(dep.revision)
-    assert_equal("pkg", dep.p)
-    assert_equal("pkg", dep.pf)
-    assert_nil(dep.pr)
-    assert_nil(dep.pv)
-    assert_nil(dep.pvr)
-    assert_equal("cat/pkg", dep.cpn)
-    assert_equal("cat/pkg", dep.cpv)
-    assert_equal("cat/pkg", dep.to_s)
-    assert_includes(dep.inspect, "cat/pkg")
-
-    # invalid
-    ["=cat/pkg-1", "cat/pkg-1", "", nil].each do |s|
-      assert_raises InvalidDep do
-        Cpn.new(s)
-      end
     end
   end
 end

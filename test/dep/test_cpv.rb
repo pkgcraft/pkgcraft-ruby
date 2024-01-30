@@ -22,7 +22,7 @@ class TestCpv < Minitest::Test
     assert_equal("r2", cpv1.pr)
     assert_equal("1", cpv1.pv)
     assert_equal("1-r2", cpv1.pvr)
-    assert_equal("cat/pkg", cpv1.cpn)
+    assert_equal(Cpn.new("cat/pkg"), cpv1.cpn)
     assert_equal("cat/pkg-1-r2", cpv1.to_s)
     assert_includes(cpv1.inspect, "cat/pkg-1-r2")
 
@@ -34,7 +34,7 @@ class TestCpv < Minitest::Test
     assert_equal("r0", cpv2.pr)
     assert_equal("2", cpv2.pv)
     assert_equal("2", cpv2.pvr)
-    assert_equal("cat/pkg", cpv2.cpn)
+    assert_equal(Cpn.new("cat/pkg"), cpv2.cpn)
     assert_equal("cat/pkg-2", cpv2.to_s)
     assert_includes(cpv2.inspect, "cat/pkg-2")
     assert_operator(cpv1, :<, cpv2)

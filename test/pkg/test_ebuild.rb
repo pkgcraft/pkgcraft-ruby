@@ -18,7 +18,7 @@ class TestPkgEbuild < Minitest::Test
     assert_equal("r2", pkg.pr)
     assert_equal("1", pkg.pv)
     assert_equal("1-r2", pkg.pvr)
-    assert_equal("cat/pkg", pkg.cpn)
+    assert_equal(Cpn.new("cat/pkg"), pkg.cpn)
   end
 
   def test_eapi

@@ -34,6 +34,7 @@ module Pkgcraft
     end
 
     class ConfigError < PkgcraftError; end
+    class InvalidCpn < PkgcraftError; end
     class InvalidCpv < PkgcraftError; end
     class InvalidDep < PkgcraftError; end
     class InvalidRepo < PkgcraftError; end

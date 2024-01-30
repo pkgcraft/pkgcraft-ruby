@@ -3,6 +3,13 @@
 module Pkgcraft
   # FFI bindings for Dep related functionality
   module C
+    # Wrapper for Cpn pointers
+    class Cpn < AutoPointer
+      def self.release(ptr)
+        C.pkgcraft_cpn_free(ptr)
+      end
+    end
+
     # Wrapper for Cpv pointers
     class Cpv < AutoPointer
       def self.release(ptr)
@@ -33,6 +40,7 @@ module Pkgcraft
   end
 end
 
+require_relative "dep/cpn"
 require_relative "dep/cpv"
 require_relative "dep/pkg"
 require_relative "dep/base"
@@ -41,6 +49,15 @@ require_relative "dep/version"
 module Pkgcraft
   # FFI bindings for Dep related functionality
   module C
+    # cpn support
+    attach_function :pkgcraft_cpn_free, [:pointer], :void
+    attach_function :pkgcraft_cpn_new, [:string], Cpn
+    attach_function :pkgcraft_cpn_category, [Cpn], String
+    attach_function :pkgcraft_cpn_package, [Cpn], String
+    attach_function :pkgcraft_cpn_hash, [Cpn], :uint64
+    attach_function :pkgcraft_cpn_cmp, [Cpn, Cpn], :int
+    attach_function :pkgcraft_cpn_str, [Cpn], String
+
     # cpv support
     attach_function :pkgcraft_cpv_free, [:pointer], :void
     attach_function :pkgcraft_cpv_new, [:string], Cpv
@@ -52,7 +69,7 @@ module Pkgcraft
     attach_function :pkgcraft_cpv_pr, [Cpv], String
     attach_function :pkgcraft_cpv_pv, [Cpv], String
     attach_function :pkgcraft_cpv_pvr, [Cpv], String
-    attach_function :pkgcraft_cpv_cpn, [Cpv], String
+    attach_function :pkgcraft_cpv_cpn, [Cpv], Pkgcraft::Dep::Cpn
     attach_function :pkgcraft_cpv_intersects, [Cpv, Cpv], :bool
     attach_function :pkgcraft_cpv_intersects_dep, [Cpv, Dep], :bool
     attach_function :pkgcraft_cpv_hash, [Cpv], :uint64
@@ -63,7 +80,6 @@ module Pkgcraft
     # dep support
     attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_new, [:string, Eapi], Dep
-    attach_function :pkgcraft_dep_new_cpn, [:string], Dep
     attach_function :pkgcraft_dep_blocker, [Dep], :int
     attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
     attach_function :pkgcraft_dep_category, [Dep], String
@@ -80,7 +96,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_pr, [Dep], String
     attach_function :pkgcraft_dep_pv, [Dep], String
     attach_function :pkgcraft_dep_pvr, [Dep], String
-    attach_function :pkgcraft_dep_cpn, [Dep], String
+    attach_function :pkgcraft_dep_cpn, [Dep], Pkgcraft::Dep::Cpn
     attach_function :pkgcraft_dep_cpv, [Dep], String
     attach_function :pkgcraft_dep_intersects, [Dep, Dep], :bool
     attach_function :pkgcraft_dep_intersects_cpv, [Dep, Cpv], :bool

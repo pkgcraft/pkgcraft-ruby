@@ -196,13 +196,5 @@ module Pkgcraft
         @hash
       end
     end
-
-    # Unversioned package dependency
-    class Cpn < Dep
-      def initialize(str)
-        @ptr = C.pkgcraft_dep_new_cpn(str.to_s)
-        raise Error::InvalidDep if @ptr.null?
-      end
-    end
   end
 end
