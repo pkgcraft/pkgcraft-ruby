@@ -88,7 +88,7 @@ module Pkgcraft
         path = path.to_s
         id = id.nil? ? path : id.to_s
         ptr = C.pkgcraft_config_add_repo_path(self, id, priority, path, external)
-        raise Error::PkgcraftError if ptr.null?
+        raise Error::ConfigError if ptr.null?
 
         # force repos attr refresh
         @repos = nil
