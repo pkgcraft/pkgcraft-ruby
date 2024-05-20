@@ -54,10 +54,8 @@ class TestConfig < Minitest::Test
       config.load_portage_conf(conf_path)
       assert(config.repos.key?("test"))
 
-      # reloading causes error
-      assert_raises PkgcraftError do
-        config.load_portage_conf(conf_path)
-      end
+      # reloading succeeds
+      config.load_portage_conf(conf_path)
 
       # reloading using a different id causes error
       data = <<~CONFIG
@@ -114,14 +112,12 @@ class TestConfig < Minitest::Test
     config.add_repo(r2, id: "r2")
     assert_equal([r1, r2], config.repos.entries)
 
-    # reloading causes error
-    assert_raises ConfigError do
-      config.add_repo(r1)
-    end
+    # reloading succeeds
+    assert_equal(r1, config.add_repo(r1))
 
     # reloading using a different id causes error
     assert_raises ConfigError do
-      config.add_repo(r1, id: "existing")
+      config.add_repo(r1.path, id: "existing")
     end
 
     # nonexistent repo
