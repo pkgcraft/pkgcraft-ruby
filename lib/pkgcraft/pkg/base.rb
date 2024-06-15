@@ -29,15 +29,15 @@ module Pkgcraft
     end
 
     # pkg support
-    attach_function :pkgcraft_pkg_format, [:pointer], :int
-    attach_function :pkgcraft_pkg_free, [:pointer], :void
+    attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
     attach_function :pkgcraft_pkg_cpv, [Pkg], Pkgcraft::Dep::Cpv
     attach_function :pkgcraft_pkg_eapi, [Pkg], Pkgcraft::Eapis::Eapi
-    attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
-    attach_function :pkgcraft_pkg_cmp, [Pkg, Pkg], :int
+    attach_function :pkgcraft_pkg_format, [:pointer], :int
+    attach_function :pkgcraft_pkg_free, [:pointer], :void
     attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
-    attach_function :pkgcraft_pkg_str, [Pkg], String
+    attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
     attach_function :pkgcraft_pkg_restrict, [Pkg], Restrict
+    attach_function :pkgcraft_pkg_str, [Pkg], String
   end
 
   # Package support
