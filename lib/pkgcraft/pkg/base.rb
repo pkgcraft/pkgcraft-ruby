@@ -35,6 +35,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_format, [:pointer], :int
     attach_function :pkgcraft_pkg_free, [:pointer], :void
     attach_function :pkgcraft_pkg_hash, [Pkg], :uint64
+    attach_function :pkgcraft_pkg_intersects_dep, [Pkg, Pkgcraft::Dep::Dep], :bool
     attach_function :pkgcraft_pkg_repo, [Pkg], :pointer
     attach_function :pkgcraft_pkg_restrict, [Pkg], Restrict
     attach_function :pkgcraft_pkg_str, [Pkg], String
@@ -88,6 +89,12 @@ module Pkgcraft
 
       def version
         cpv.version
+      end
+
+      def intersects(other)
+        return C.pkgcraft_pkg_intersects_dep(self, other) if other.is_a? Pkgcraft::Dep::Dep
+
+        raise TypeError.new("Invalid type: #{other.class}")
       end
 
       def <=>(other)

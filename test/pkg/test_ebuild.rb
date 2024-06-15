@@ -47,6 +47,28 @@ class TestPkgEbuild < Minitest::Test
     assert_equal(Version.new("1"), pkg.version)
   end
 
+  def test_intersects
+    repo = EbuildTemp.new(id: "test")
+    pkg = repo.create_pkg("cat/pkg-1-r2", "SLOT=0/1")
+    assert(pkg.intersects(Dep.new("cat/pkg")))
+    refute(pkg.intersects(Dep.new("a/b")))
+    assert(pkg.intersects(Dep.new("=cat/pkg-1-r2")))
+    refute(pkg.intersects(Dep.new(">cat/pkg-1-r2")))
+    assert(pkg.intersects(Dep.new("cat/pkg:0")))
+    refute(pkg.intersects(Dep.new("cat/pkg:1")))
+    assert(pkg.intersects(Dep.new("cat/pkg:0/1")))
+    refute(pkg.intersects(Dep.new("cat/pkg:0/2")))
+    assert(pkg.intersects(Dep.new("cat/pkg::test")))
+    refute(pkg.intersects(Dep.new("cat/pkg::repo")))
+
+    # invalid types
+    ["", nil].each do |obj|
+      assert_raises TypeError do
+        pkg.intersects(obj)
+      end
+    end
+  end
+
   def test_path
     repo = EbuildTemp.new
     path = repo.create_ebuild("cat/pkg-1")
