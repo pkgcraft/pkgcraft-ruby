@@ -29,7 +29,7 @@ module Pkgcraft
           msg = err[:message]
         end
 
-        super(msg)
+        super
       end
     end
 

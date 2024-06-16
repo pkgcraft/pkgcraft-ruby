@@ -76,7 +76,7 @@ module Pkgcraft
       def level=(severity)
         level = Logging.send(:convert_level, severity)
         C.pkgcraft_logging_enable(LogCallback, level)
-        super(severity)
+        super
       end
     end
 
