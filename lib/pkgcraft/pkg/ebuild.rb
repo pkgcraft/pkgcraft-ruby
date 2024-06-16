@@ -4,29 +4,29 @@ module Pkgcraft
   # FFI bindings for ebuild package related functionality
   module C
     # ebuild pkg support
-    attach_function :pkgcraft_pkg_ebuild_path, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_ebuild, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_description, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_slot, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_subslot, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
-    attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_bdepend, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_idepend, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_pdepend, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_rdepend, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_properties, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_required_use, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_restrict, [Pkg], :DependencySet
-    attach_function :pkgcraft_pkg_ebuild_src_uri, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_defined_phases, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_description, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_ebuild, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_homepage, [Pkg, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_pkg_ebuild_keywords_str, [Pkg, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_pkg_ebuild_iuse, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_idepend, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_inherit, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_inherited, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_iuse, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_keywords_str, [Pkg, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_path, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_pdepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_properties, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_rdepend, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_required_use, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_restrict, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_slot, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_src_uri, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_subslot, [Pkg], String
   end
 
   module Pkgs

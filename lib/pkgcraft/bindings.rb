@@ -13,9 +13,9 @@ module Pkgcraft
     ffi_lib ["pkgcraft"]
 
     # generic free support
-    attach_function :pkgcraft_str_free, [:pointer], :void
-    attach_function :pkgcraft_str_array_free, [:pointer, :size_t], :void
     attach_function :pkgcraft_array_free, [:pointer, :size_t], :void
+    attach_function :pkgcraft_str_array_free, [:pointer, :size_t], :void
+    attach_function :pkgcraft_str_free, [:pointer], :void
 
     # array length pointer for working with array return values
     class LenPtr < FFI::Struct

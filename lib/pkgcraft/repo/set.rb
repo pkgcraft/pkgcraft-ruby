@@ -13,16 +13,16 @@ module Pkgcraft
     end
 
     # repo set support
-    attach_function :pkgcraft_repo_set_repos, [RepoSet, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_set_cmp, [RepoSet, RepoSet], :int
+    attach_function :pkgcraft_repo_set_free, [:pointer], :void
     attach_function :pkgcraft_repo_set_hash, [RepoSet], :uint64
+    attach_function :pkgcraft_repo_set_is_empty, [RepoSet], :bool
     attach_function :pkgcraft_repo_set_iter, [RepoSet, Restrict], :pointer
     attach_function :pkgcraft_repo_set_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_set_iter_next, [:pointer], Pkgcraft::Pkgs::Pkg
     attach_function :pkgcraft_repo_set_len, [RepoSet], :uint64
-    attach_function :pkgcraft_repo_set_is_empty, [RepoSet], :bool
     attach_function :pkgcraft_repo_set_new, [:pointer, :uint64], RepoSet
-    attach_function :pkgcraft_repo_set_free, [:pointer], :void
+    attach_function :pkgcraft_repo_set_repos, [RepoSet, LenPtr.by_ref], :pointer
   end
 
   module Repos

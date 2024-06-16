@@ -34,37 +34,37 @@ module Pkgcraft
     # Dependency support
     typedef Dependency.by_ref, :Dependency
     attach_function :pkgcraft_dependency_cmp, [:Dependency, :Dependency], :int
-    attach_function :pkgcraft_dependency_hash, [:Dependency], :uint64
-    attach_function :pkgcraft_dependency_str, [:Dependency], String
-    attach_function :pkgcraft_dependency_parse, [:string, Eapi, :int], :Dependency
     attach_function :pkgcraft_dependency_free, [:pointer], :void
+    attach_function :pkgcraft_dependency_hash, [:Dependency], :uint64
     attach_function :pkgcraft_dependency_into_iter_flatten, [:Dependency], :pointer
     attach_function :pkgcraft_dependency_into_iter_recursive, [:Dependency], :pointer
+    attach_function :pkgcraft_dependency_parse, [:string, Eapi, :int], :Dependency
+    attach_function :pkgcraft_dependency_str, [:Dependency], String
 
     # DependencySet support
     typedef DependencySet.by_ref, :DependencySet
     attach_function :pkgcraft_dependency_set_eq, [:DependencySet, :DependencySet], :bool
-    attach_function :pkgcraft_dependency_set_hash, [:DependencySet], :uint64
-    attach_function :pkgcraft_dependency_set_str, [:DependencySet], String
-    attach_function :pkgcraft_dependency_set_len, [:DependencySet], :uint64
-    attach_function :pkgcraft_dependency_set_is_empty, [:DependencySet], :bool
-    attach_function :pkgcraft_dependency_set_parse, [:string, Eapi, :int], :DependencySet
     attach_function :pkgcraft_dependency_set_free, [:pointer], :void
+    attach_function :pkgcraft_dependency_set_hash, [:DependencySet], :uint64
     attach_function :pkgcraft_dependency_set_into_iter, [:DependencySet], :pointer
-    attach_function :pkgcraft_dependency_set_into_iter_next, [:pointer], :Dependency
-    attach_function :pkgcraft_dependency_set_into_iter_free, [:pointer], :void
     attach_function :pkgcraft_dependency_set_into_iter_flatten, [:DependencySet], :pointer
-    attach_function :pkgcraft_dependency_set_into_iter_flatten_next, [:pointer], :pointer
     attach_function :pkgcraft_dependency_set_into_iter_flatten_free, [:pointer], :void
+    attach_function :pkgcraft_dependency_set_into_iter_flatten_next, [:pointer], :pointer
+    attach_function :pkgcraft_dependency_set_into_iter_free, [:pointer], :void
+    attach_function :pkgcraft_dependency_set_into_iter_next, [:pointer], :Dependency
     attach_function :pkgcraft_dependency_set_into_iter_recursive, [:DependencySet], :pointer
-    attach_function :pkgcraft_dependency_set_into_iter_recursive_next, [:pointer], :Dependency
     attach_function :pkgcraft_dependency_set_into_iter_recursive_free, [:pointer], :void
+    attach_function :pkgcraft_dependency_set_into_iter_recursive_next, [:pointer], :Dependency
+    attach_function :pkgcraft_dependency_set_is_empty, [:DependencySet], :bool
+    attach_function :pkgcraft_dependency_set_len, [:DependencySet], :uint64
+    attach_function :pkgcraft_dependency_set_parse, [:string, Eapi, :int], :DependencySet
+    attach_function :pkgcraft_dependency_set_str, [:DependencySet], String
 
     # Uri support
     attach_function :pkgcraft_uri_filename, [Uri], String
+    attach_function :pkgcraft_uri_free, [:pointer], :void
     attach_function :pkgcraft_uri_str, [Uri], String
     attach_function :pkgcraft_uri_uri, [Uri], String
-    attach_function :pkgcraft_uri_free, [:pointer], :void
   end
 
   module Dep

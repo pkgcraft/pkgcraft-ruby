@@ -23,9 +23,9 @@ module Pkgcraft
     end
 
     callback :log_callback, [PkgcraftLog.by_ref], :void
-    attach_function :pkgcraft_logging_enable, [:log_callback, LogLevel], :void
     attach_function :pkgcraft_log_free, [:pointer], :void
     attach_function :pkgcraft_log_test, [:string, LogLevel], :void
+    attach_function :pkgcraft_logging_enable, [:log_callback, LogLevel], :void
   end
 
   # Logging support

@@ -23,11 +23,11 @@ module Pkgcraft
     typedef :pointer, :eapi_ptr
     attach_function :pkgcraft_eapi_as_str, [:eapi_ptr], String
     attach_function :pkgcraft_eapi_cmp, [Eapi, Eapi], :int
+    attach_function :pkgcraft_eapi_dep_keys, [:eapi_ptr, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapi_has, [Eapi, :string], :bool
     attach_function :pkgcraft_eapi_hash, [:eapi_ptr], :uint64
-    attach_function :pkgcraft_eapi_dep_keys, [:eapi_ptr, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis, [LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_eapis_official, [LenPtr.by_ref], :pointer
     attach_function :pkgcraft_eapis_range, [:string, LenPtr.by_ref], :pointer
   end
 

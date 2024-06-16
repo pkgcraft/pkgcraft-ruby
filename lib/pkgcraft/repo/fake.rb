@@ -3,8 +3,8 @@
 module Pkgcraft
   # FFI bindings for fake repo related functionality
   module C
-    attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
     attach_function :pkgcraft_repo_fake_extend, [:repo, :pointer, :size_t], :repo
+    attach_function :pkgcraft_repo_fake_new, [:string, :int, :pointer, :size_t], :pointer
   end
 
   module Repos

@@ -2,15 +2,15 @@
 
 module Pkgcraft
   # FFI bindings for temporary ebuild repo related functionality
+  # rubocop:disable Layout/LineLength
   module C
+    attach_function :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], String
+    attach_function :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], String
+    attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
     attach_function :pkgcraft_repo_ebuild_temp_new, [:string, :pointer], :pointer
     attach_function :pkgcraft_repo_ebuild_temp_path, [:pointer], :string
-    attach_function :pkgcraft_repo_ebuild_temp_free, [:pointer], :void
-    attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild, [:pointer, :string, :pointer, :uint64], String
-    attach_function \
-      :pkgcraft_repo_ebuild_temp_create_ebuild_raw, [:pointer, :string, :string], String
   end
+  # rubocop:enable Layout/LineLength
 
   module Repos
     # Temporary ebuild package repo.

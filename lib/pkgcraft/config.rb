@@ -12,14 +12,14 @@ module Pkgcraft
       end
     end
 
-    attach_function :pkgcraft_config_new, [], Config
+    attach_function :pkgcraft_config_add_repo, [Config, :repo, :bool], :repo
+    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string, :bool], :repo
     attach_function :pkgcraft_config_free, [:pointer], :void
     attach_function :pkgcraft_config_load, [Config], :pointer
     attach_function :pkgcraft_config_load_portage_conf, [Config, :string], :pointer
+    attach_function :pkgcraft_config_new, [], Config
     attach_function :pkgcraft_config_repos, [Config, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_config_repos_set, [Config, :pointer], Pkgcraft::Repos::RepoSet
-    attach_function :pkgcraft_config_add_repo, [Config, :repo, :bool], :repo
-    attach_function :pkgcraft_config_add_repo_path, [Config, :string, :int, :string, :bool], :repo
   end
 
   # Config support

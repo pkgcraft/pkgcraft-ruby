@@ -4,28 +4,28 @@ module Pkgcraft
   # FFI bindings for generic repo related functionality
   module C
     typedef :pointer, :repo
+    attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_repo_cmp, [:repo, :repo], :int
+    attach_function :pkgcraft_repo_contains_path, [:repo, :string], :bool
+    attach_function :pkgcraft_repo_format, [:repo], :int
+    attach_function :pkgcraft_repo_free, [:repo], :void
+    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
     attach_function :pkgcraft_repo_hash, [:repo], :uint64
     attach_function :pkgcraft_repo_id, [:repo], String
-    attach_function :pkgcraft_repo_path, [:repo], String
-    attach_function :pkgcraft_repo_contains_path, [:repo, :string], :bool
-    attach_function :pkgcraft_repo_categories, [:repo, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
-    attach_function :pkgcraft_repo_len, [:repo], :uint64
     attach_function :pkgcraft_repo_is_empty, [:repo], :bool
+    attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_cpv, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_cpv_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_cpv_next, [:pointer], Pkgcraft::Dep::Cpv
-    attach_function :pkgcraft_repo_iter, [:repo], :pointer
     attach_function :pkgcraft_repo_iter_free, [:pointer], :void
     attach_function :pkgcraft_repo_iter_next, [:pointer], Pkgcraft::Pkgs::Pkg
     attach_function :pkgcraft_repo_iter_restrict, [:repo, Restrict], :pointer
     attach_function :pkgcraft_repo_iter_restrict_free, [:repo], :void
     attach_function :pkgcraft_repo_iter_restrict_next, [:pointer], Pkgcraft::Pkgs::Pkg
-    attach_function :pkgcraft_repo_format, [:repo], :int
-    attach_function :pkgcraft_repo_free, [:repo], :void
-    attach_function :pkgcraft_repo_from_path, [:string, :int, :string, :bool], :repo
+    attach_function :pkgcraft_repo_len, [:repo], :uint64
+    attach_function :pkgcraft_repo_packages, [:repo, :string, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_repo_path, [:repo], String
+    attach_function :pkgcraft_repo_versions, [:repo, :string, :string, LenPtr.by_ref], :pointer
   end
 
   # Repo support

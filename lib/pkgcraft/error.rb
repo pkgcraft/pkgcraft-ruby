@@ -13,8 +13,8 @@ module Pkgcraft
       end
     end
 
-    attach_function :pkgcraft_error_last, [], Error.by_ref
     attach_function :pkgcraft_error_free, [:pointer], :void
+    attach_function :pkgcraft_error_last, [], Error.by_ref
   end
 
   # Error support

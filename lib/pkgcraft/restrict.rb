@@ -84,13 +84,13 @@ module Pkgcraft
   # FFI bindings for Restrict related functionality
   module C
     attach_function :pkgcraft_restrict_and, [Restrict, Restrict], Pkgcraft::Restricts::Restrict
-    attach_function :pkgcraft_restrict_or, [Restrict, Restrict], Pkgcraft::Restricts::Restrict
-    attach_function :pkgcraft_restrict_xor, [Restrict, Restrict], Pkgcraft::Restricts::Restrict
-    attach_function :pkgcraft_restrict_not, [Restrict], Pkgcraft::Restricts::Restrict
     attach_function :pkgcraft_restrict_eq, [Restrict, Restrict], :bool
-    attach_function :pkgcraft_restrict_hash, [Restrict], :uint64
     attach_function :pkgcraft_restrict_free, [:pointer], :void
+    attach_function :pkgcraft_restrict_hash, [Restrict], :uint64
+    attach_function :pkgcraft_restrict_not, [Restrict], Pkgcraft::Restricts::Restrict
+    attach_function :pkgcraft_restrict_or, [Restrict, Restrict], Pkgcraft::Restricts::Restrict
     attach_function :pkgcraft_restrict_parse_dep, [:string], Restrict
     attach_function :pkgcraft_restrict_parse_pkg, [:string], Restrict
+    attach_function :pkgcraft_restrict_xor, [Restrict, Restrict], Pkgcraft::Restricts::Restrict
   end
 end
