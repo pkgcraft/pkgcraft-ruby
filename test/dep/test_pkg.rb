@@ -110,6 +110,15 @@ class TestDep < Minitest::Test
     assert_equal(dep2.versioned, dep1)
   end
 
+  def test_no_use_deps
+    # no change returns the same object
+    dep1 = Dep.new(">=cat/pkg-1-r2:3/4")
+    assert_same(dep1, dep1.no_use_deps)
+
+    dep2 = Dep.new(">=cat/pkg-1-r2:3/4[a,!b?]")
+    assert_equal(dep2.no_use_deps, dep1)
+  end
+
   def optional_value(expected, value)
     if expected.nil?
       assert_nil(value)

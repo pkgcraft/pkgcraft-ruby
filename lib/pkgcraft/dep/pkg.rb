@@ -196,6 +196,13 @@ module Pkgcraft
         self
       end
 
+      def no_use_deps
+        ptr = C.pkgcraft_dep_no_use_deps(self)
+        return Dep.send(:from_ptr, ptr) if ptr != @ptr
+
+        self
+      end
+
       def intersects(other)
         return C.pkgcraft_dep_intersects(self, other) if other.is_a? Dep
 
@@ -236,6 +243,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_intersects, [Dep, Dep], :bool
     attach_function :pkgcraft_dep_intersects_cpv, [Dep, Cpv], :bool
     attach_function :pkgcraft_dep_new, [:string, Eapi], Dep
+    attach_function :pkgcraft_dep_no_use_deps, [Dep], :pointer
     attach_function :pkgcraft_dep_p, [Dep], String
     attach_function :pkgcraft_dep_package, [Dep], String
     attach_function :pkgcraft_dep_parse, [:string, Eapi], :pointer
