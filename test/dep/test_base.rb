@@ -40,12 +40,10 @@ class TestDependencySet < Minitest::Test
     assert(d.contains?(Dependency.package("c/d")))
     assert(d.contains?(Dependency.package("u2? ( b/c )")))
 
-    # substrings
+    # stringified, flattened values
     assert(d.contains?("a/b"))
-    assert(d.contains?("u2? ( b/c )"))
-    assert(d.contains?("u2?"))
-    assert(d.contains?(" ( "))
-    refute(d.contains?("z"))
+    assert(d.contains?("b/c"))
+    refute(d.contains?("u2? ( b/c )"))
 
     # all other object types return False
     refute(d.contains?(nil))
