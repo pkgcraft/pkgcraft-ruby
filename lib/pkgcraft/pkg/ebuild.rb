@@ -9,6 +9,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_depend, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_dependencies, [Pkg, :pointer, :size_t], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_description, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_deprecated, [Pkg], :bool
     attach_function :pkgcraft_pkg_ebuild_ebuild, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_homepage, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_idepend, [Pkg], :DependencySet
@@ -18,6 +19,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_keywords_str, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
+    attach_function :pkgcraft_pkg_ebuild_masked, [Pkg], :bool
     attach_function :pkgcraft_pkg_ebuild_path, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_pdepend, [Pkg], :DependencySet
     attach_function :pkgcraft_pkg_ebuild_properties, [Pkg], :DependencySet
@@ -43,6 +45,14 @@ module Pkgcraft
         raise Error::PkgcraftError if s.nil?
 
         s
+      end
+
+      def deprecated
+        C.pkgcraft_pkg_ebuild_deprecated(self)
+      end
+
+      def masked
+        C.pkgcraft_pkg_ebuild_masked(self)
       end
 
       def description

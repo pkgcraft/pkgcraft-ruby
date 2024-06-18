@@ -99,6 +99,20 @@ class TestPkgEbuild < Minitest::Test
     end
   end
 
+  def test_deprecated
+    pkg = TESTDATA_CONFIG.repos["metadata"]["deprecated/deprecated-0"]
+    assert(pkg.deprecated)
+    pkg = TESTDATA_CONFIG.repos["metadata"]["deprecated/deprecated-1"]
+    refute(pkg.deprecated)
+  end
+
+  def test_masked
+    pkg = TESTDATA_CONFIG.repos["metadata"]["masked/masked-0"]
+    assert(pkg.masked)
+    pkg = TESTDATA_CONFIG.repos["metadata"]["masked/masked-1"]
+    refute(pkg.masked)
+  end
+
   def test_description
     repo = EbuildTemp.new
     pkg = repo.create_pkg("cat/pkg-1", "DESCRIPTION=description")
