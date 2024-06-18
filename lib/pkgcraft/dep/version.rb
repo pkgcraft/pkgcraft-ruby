@@ -130,4 +130,26 @@ module Pkgcraft
       end
     end
   end
+
+  # FFI bindings for Version related functionality
+  module C
+    # version support
+    attach_function :pkgcraft_version_cmp, [Version, Version], :int
+    attach_function :pkgcraft_version_free, [:pointer], :void
+    attach_function :pkgcraft_version_hash, [Version], :uint64
+    attach_function :pkgcraft_version_intersects, [Version, Version], :bool
+    attach_function :pkgcraft_version_new, [:string], Version
+    attach_function :pkgcraft_version_op, [Version], :int
+    attach_function :pkgcraft_version_op_from_str, [:string], :int
+    attach_function :pkgcraft_version_parse, [:string], :pointer
+    attach_function :pkgcraft_version_revision, [Version], Revision
+    attach_function :pkgcraft_version_str, [Version], String
+
+    # revision support
+    attach_function :pkgcraft_revision_cmp, [Revision, Revision], :int
+    attach_function :pkgcraft_revision_free, [:pointer], :void
+    attach_function :pkgcraft_revision_hash, [Revision], :uint64
+    attach_function :pkgcraft_revision_new, [:string], Revision
+    attach_function :pkgcraft_revision_str, [Revision], String
+  end
 end

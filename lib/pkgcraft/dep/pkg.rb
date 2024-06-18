@@ -204,4 +204,36 @@ module Pkgcraft
       end
     end
   end
+
+  # FFI bindings for Dep related functionality
+  module C
+    attach_function :pkgcraft_dep_blocker, [Dep], :int
+    attach_function :pkgcraft_dep_blocker_from_str, [:string], :int
+    attach_function :pkgcraft_dep_category, [Dep], String
+    attach_function :pkgcraft_dep_cmp, [Dep, Dep], :int
+    attach_function :pkgcraft_dep_cpn, [Dep], Cpn
+    attach_function :pkgcraft_dep_cpv, [Dep], String
+    attach_function :pkgcraft_dep_free, [:pointer], :void
+    attach_function :pkgcraft_dep_hash, [Dep], :uint64
+    attach_function :pkgcraft_dep_intersects, [Dep, Dep], :bool
+    attach_function :pkgcraft_dep_intersects_cpv, [Dep, Cpv], :bool
+    attach_function :pkgcraft_dep_new, [:string, Eapi], Dep
+    attach_function :pkgcraft_dep_p, [Dep], String
+    attach_function :pkgcraft_dep_package, [Dep], String
+    attach_function :pkgcraft_dep_parse, [:string, Eapi], :pointer
+    attach_function :pkgcraft_dep_pf, [Dep], String
+    attach_function :pkgcraft_dep_pr, [Dep], String
+    attach_function :pkgcraft_dep_pv, [Dep], String
+    attach_function :pkgcraft_dep_pvr, [Dep], String
+    attach_function :pkgcraft_dep_repo, [Dep], String
+    attach_function :pkgcraft_dep_restrict, [Dep], Restrict
+    attach_function :pkgcraft_dep_slot, [Dep], String
+    attach_function :pkgcraft_dep_slot_op, [Dep], :int
+    attach_function :pkgcraft_dep_slot_op_from_str, [:string], :int
+    attach_function :pkgcraft_dep_str, [Dep], String
+    attach_function :pkgcraft_dep_subslot, [Dep], String
+    attach_function :pkgcraft_dep_unversioned, [Dep], :pointer
+    attach_function :pkgcraft_dep_use_deps_str, [Dep, LenPtr.by_ref], :pointer
+    attach_function :pkgcraft_dep_version, [Dep], Version
+  end
 end

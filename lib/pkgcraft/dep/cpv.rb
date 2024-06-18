@@ -83,4 +83,25 @@ module Pkgcraft
       end
     end
   end
+
+  # FFI bindings for Cpv related functionality
+  module C
+    attach_function :pkgcraft_cpv_category, [Cpv], String
+    attach_function :pkgcraft_cpv_cmp, [Cpv, Cpv], :int
+    attach_function :pkgcraft_cpv_cpn, [Cpv], Cpn
+    attach_function :pkgcraft_cpv_free, [:pointer], :void
+    attach_function :pkgcraft_cpv_hash, [Cpv], :uint64
+    attach_function :pkgcraft_cpv_intersects, [Cpv, Cpv], :bool
+    attach_function :pkgcraft_cpv_intersects_dep, [Cpv, Dep], :bool
+    attach_function :pkgcraft_cpv_new, [:string], Cpv
+    attach_function :pkgcraft_cpv_p, [Cpv], String
+    attach_function :pkgcraft_cpv_package, [Cpv], String
+    attach_function :pkgcraft_cpv_pf, [Cpv], String
+    attach_function :pkgcraft_cpv_pr, [Cpv], String
+    attach_function :pkgcraft_cpv_pv, [Cpv], String
+    attach_function :pkgcraft_cpv_pvr, [Cpv], String
+    attach_function :pkgcraft_cpv_restrict, [Cpv], Restrict
+    attach_function :pkgcraft_cpv_str, [Cpv], String
+    attach_function :pkgcraft_cpv_version, [Cpv], Version
+  end
 end

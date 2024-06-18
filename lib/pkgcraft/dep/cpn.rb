@@ -47,4 +47,15 @@ module Pkgcraft
       end
     end
   end
+
+  # FFI bindings for Cpn related functionality
+  module C
+    attach_function :pkgcraft_cpn_category, [Cpn], String
+    attach_function :pkgcraft_cpn_cmp, [Cpn, Cpn], :int
+    attach_function :pkgcraft_cpn_free, [:pointer], :void
+    attach_function :pkgcraft_cpn_hash, [Cpn], :uint64
+    attach_function :pkgcraft_cpn_new, [:string], Cpn
+    attach_function :pkgcraft_cpn_package, [Cpn], String
+    attach_function :pkgcraft_cpn_str, [Cpn], String
+  end
 end
