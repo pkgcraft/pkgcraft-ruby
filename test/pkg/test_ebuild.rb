@@ -129,7 +129,7 @@ class TestPkgEbuild < Minitest::Test
 
     # empty
     deps = pkg.dependencies
-    assert_empty(deps.to_s)
+    assert_empty(deps)
 
     # single
     pkg = repo.create_pkg("cat/pkg-1", "DEPEND=cat/pkg")
