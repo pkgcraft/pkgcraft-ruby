@@ -50,6 +50,8 @@ class TestPkgEbuild < Minitest::Test
   def test_intersects
     repo = EbuildTemp.new(id: "test")
     pkg = repo.create_pkg("cat/pkg-1-r2", "SLOT=0/1")
+
+    # Dep intersections
     assert(pkg.intersects(Dep.new("cat/pkg")))
     refute(pkg.intersects(Dep.new("a/b")))
     assert(pkg.intersects(Dep.new("=cat/pkg-1-r2")))
@@ -60,6 +62,14 @@ class TestPkgEbuild < Minitest::Test
     refute(pkg.intersects(Dep.new("cat/pkg:0/2")))
     assert(pkg.intersects(Dep.new("cat/pkg::test")))
     refute(pkg.intersects(Dep.new("cat/pkg::repo")))
+
+    # Cpv intersections
+    assert(pkg.intersects(Cpv.new("cat/pkg-1-r2")))
+    refute(pkg.intersects(Cpv.new("cat/pkg-1")))
+
+    # Cpn intersections
+    assert(pkg.intersects(Cpn.new("cat/pkg")))
+    refute(pkg.intersects(Cpn.new("a/b")))
 
     # invalid types
     ["", nil].each do |obj|
