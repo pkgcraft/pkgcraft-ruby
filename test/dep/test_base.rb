@@ -32,6 +32,24 @@ class TestDependencySet < Minitest::Test
       dep.iter_recursive.map(&:to_s)
     )
   end
+
+  def test_contains
+    d = DependencySet.package("!u1? ( a/b u2? ( b/c ) ) c/d")
+
+    # Dependency objects
+    assert(d.contains?(Dependency.package("c/d")))
+    assert(d.contains?(Dependency.package("u2? ( b/c )")))
+
+    # substrings
+    assert(d.contains?("a/b"))
+    assert(d.contains?("u2? ( b/c )"))
+    assert(d.contains?("u2?"))
+    assert(d.contains?(" ( "))
+    refute(d.contains?("z"))
+
+    # all other object types return False
+    refute(d.contains?(nil))
+  end
 end
 
 class TestPackage < Minitest::Test

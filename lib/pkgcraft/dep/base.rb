@@ -2,6 +2,7 @@
 
 module Pkgcraft
   # FFI bindings for DependencySet related functionality
+  # rubocop:disable Layout/LineLength
   module C
     # Dependency wrapper
     class Dependency < FFI::ManagedStruct
@@ -34,6 +35,8 @@ module Pkgcraft
     # Dependency support
     typedef Dependency.by_ref, :Dependency
     attach_function :pkgcraft_dependency_cmp, [:Dependency, :Dependency], :int
+    attach_function :pkgcraft_dependency_contains_dependency, [:Dependency, :Dependency], :bool
+    attach_function :pkgcraft_dependency_contains_str, [:Dependency, :string], :bool
     attach_function :pkgcraft_dependency_free, [:pointer], :void
     attach_function :pkgcraft_dependency_hash, [:Dependency], :uint64
     attach_function :pkgcraft_dependency_into_iter_flatten, [:Dependency], :pointer
@@ -43,6 +46,8 @@ module Pkgcraft
 
     # DependencySet support
     typedef DependencySet.by_ref, :DependencySet
+    attach_function :pkgcraft_dependency_set_contains_dependency, [:DependencySet, :Dependency], :bool
+    attach_function :pkgcraft_dependency_set_contains_str, [:DependencySet, :string], :bool
     attach_function :pkgcraft_dependency_set_eq, [:DependencySet, :DependencySet], :bool
     attach_function :pkgcraft_dependency_set_free, [:pointer], :void
     attach_function :pkgcraft_dependency_set_hash, [:DependencySet], :uint64
@@ -66,6 +71,7 @@ module Pkgcraft
     attach_function :pkgcraft_uri_str, [Uri], String
     attach_function :pkgcraft_uri_uri, [Uri], String
   end
+  # rubocop:enable Layout/LineLength
 
   module Dep
     # Dependency objects.
@@ -132,6 +138,13 @@ module Pkgcraft
 
       def iter_recursive
         IterRecursive.new(self)
+      end
+
+      def contains?(obj)
+        return C.pkgcraft_dependency_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
+        return C.pkgcraft_dependency_contains_str(@ptr, obj) if obj.is_a? String
+
+        false
       end
 
       def <=>(other)
@@ -246,6 +259,13 @@ module Pkgcraft
 
       def iter_recursive
         IterRecursive.new(self)
+      end
+
+      def contains?(obj)
+        return C.pkgcraft_dependency_set_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
+        return C.pkgcraft_dependency_set_contains_str(@ptr, obj) if obj.is_a? String
+
+        false
       end
 
       def ==(other)
