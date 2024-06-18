@@ -38,7 +38,7 @@ require "pkgcraft"
 # load repos from shared test data
 def load_repos
   config = Pkgcraft::Configs::Config.new
-  Dir.glob("testdata/repos/*").each do |path|
+  Dir.glob("testdata/repos/valid/*").each do |path|
     config.add_repo(path, id: File.basename(path))
   end
   config

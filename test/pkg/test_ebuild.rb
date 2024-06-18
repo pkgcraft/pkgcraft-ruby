@@ -302,11 +302,11 @@ class TestPkgEbuild < Minitest::Test
     assert_empty(pkg.keywords)
 
     # single line
-    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/single-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/single-8"]
     assert_equal(Set["amd64", "~arm64"], pkg.keywords)
 
     # single line
-    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/multi-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["keywords/multi-8"]
     assert_equal(Set["~amd64", "arm64"], pkg.keywords)
   end
 
@@ -333,12 +333,12 @@ class TestPkgEbuild < Minitest::Test
     assert_empty(pkg.inherited)
 
     # direct inherit
-    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/direct-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/direct-8"]
     assert_equal(Set["a"], pkg.inherit)
     assert_equal(Set["a"], pkg.inherited)
 
     # indirect inherit
-    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/indirect-0"]
+    pkg = TESTDATA_CONFIG.repos["metadata"]["inherit/indirect-8"]
     assert_equal(Set["b"], pkg.inherit)
     assert_equal(Set["b", "a"], pkg.inherited)
   end
