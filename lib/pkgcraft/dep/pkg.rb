@@ -164,7 +164,8 @@ module Pkgcraft
       end
 
       def cpn
-        C.pkgcraft_dep_cpn(self)
+        ptr = C.pkgcraft_dep_cpn(self)
+        Cpn.send(:from_ptr, ptr)
       end
 
       def cpv
