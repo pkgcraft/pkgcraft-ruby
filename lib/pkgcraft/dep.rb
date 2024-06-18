@@ -103,6 +103,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_slot_op_from_str, [:string], :int
     attach_function :pkgcraft_dep_str, [Dep], String
     attach_function :pkgcraft_dep_subslot, [Dep], String
+    attach_function :pkgcraft_dep_unversioned, [Dep], :pointer
     attach_function :pkgcraft_dep_use_deps_str, [Dep, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_dep_version, [Dep], Pkgcraft::Dep::Version
 

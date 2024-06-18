@@ -171,6 +171,13 @@ module Pkgcraft
         C.pkgcraft_dep_cpv(self)
       end
 
+      def unversioned
+        ptr = C.pkgcraft_dep_unversioned(self)
+        return Dep.send(:from_ptr, ptr) if ptr != @ptr
+
+        self
+      end
+
       def intersects(other)
         return C.pkgcraft_dep_intersects(self, other) if other.is_a? Dep
 

@@ -92,6 +92,15 @@ class TestDep < Minitest::Test
     end
   end
 
+  def unversioned
+    # no change returns the same object
+    dep1 = Dep.new("cat/pkg")
+    assert_same(dep, dep.unversioned)
+
+    dep2 = Dep.new("=cat/pkg-1-r2")
+    assert_equal(dep1, dep2)
+  end
+
   def optional_value(expected, value)
     if expected.nil?
       assert_nil(value)
