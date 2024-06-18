@@ -76,6 +76,16 @@ module Pkgcraft
       include Pkgcraft::Eapis
       include Comparable
 
+      # Create a Dep from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.instance_variable_set(:@ptr, ptr)
+        obj.instance_variable_set(:@Version, SENTINEL)
+        obj
+      end
+
+      private_class_method :from_ptr
+
       def initialize(str, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
         @ptr = C.pkgcraft_dep_new(str.to_s, eapi)
@@ -179,6 +189,13 @@ module Pkgcraft
         self
       end
 
+      def versioned
+        ptr = C.pkgcraft_dep_versioned(self)
+        return Dep.send(:from_ptr, ptr) if ptr != @ptr
+
+        self
+      end
+
       def intersects(other)
         return C.pkgcraft_dep_intersects(self, other) if other.is_a? Dep
 
@@ -236,5 +253,6 @@ module Pkgcraft
     attach_function :pkgcraft_dep_unversioned, [Dep], :pointer
     attach_function :pkgcraft_dep_use_deps_str, [Dep, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_dep_version, [Dep], Version
+    attach_function :pkgcraft_dep_versioned, [Dep], :pointer
   end
 end
