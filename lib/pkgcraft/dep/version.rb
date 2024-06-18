@@ -46,6 +46,15 @@ module Pkgcraft
       include InspectPointerRender
       include Comparable
 
+      # Create a Revision from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.instance_variable_set(:@ptr, ptr)
+        obj
+      end
+
+      private_class_method :from_ptr
+
       def initialize(str)
         @ptr = C.pkgcraft_revision_new(str.to_s)
         raise Error::InvalidVersion if @ptr.null?
@@ -105,7 +114,7 @@ module Pkgcraft
       def revision
         if @revision.equal?(SENTINEL)
           ptr = C.pkgcraft_version_revision(self)
-          @revision = ptr.null? ? nil : ptr
+          @revision = ptr.null? ? nil : Revision.send(:from_ptr, ptr)
         end
         @revision
       end
