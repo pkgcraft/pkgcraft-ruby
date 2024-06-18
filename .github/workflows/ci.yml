@@ -117,7 +117,7 @@ jobs:
       run: bundle exec rake
 
     - name: Upload coverage to Codecov
-      if: ${{ inputs.event-type == '' && github.ref_name == 'main' }}
+      if: ${{ inputs.event-type == '' && github.ref_name == 'main' && matrix.ruby-version == '3.3' }}
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
