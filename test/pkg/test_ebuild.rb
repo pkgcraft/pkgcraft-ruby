@@ -160,7 +160,7 @@ class TestPkgEbuild < Minitest::Test
       # defined
       pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
       refute_nil(pkg.send(attr))
-      assert_equal(Package.new("cat/pkg"), pkg.send(attr))
+      assert_equal(DependencySet.package("cat/pkg"), pkg.send(attr))
     end
   end
 
@@ -175,19 +175,19 @@ class TestPkgEbuild < Minitest::Test
 
     # single-line
     pkg = TESTDATA_CONFIG.repos["metadata"]["license/single-8"]
-    assert_equal(License.new("l1 l2"), pkg.license)
+    assert_equal(DependencySet.license("l1 l2"), pkg.license)
 
     # multi-line
     pkg = TESTDATA_CONFIG.repos["metadata"]["license/multi-8"]
-    assert_equal(License.new("l1 u? ( l2 )"), pkg.license)
+    assert_equal(DependencySet.license("l1 u? ( l2 )"), pkg.license)
 
     # inherited and overridden
     pkg = TESTDATA_CONFIG.repos["metadata"]["license/inherit-8"]
-    assert_equal(License.new("l1"), pkg.license)
+    assert_equal(DependencySet.license("l1"), pkg.license)
 
     # inherited and appended
     pkg = TESTDATA_CONFIG.repos["metadata"]["license/append-8"]
-    assert_equal(License.new("l2 l1"), pkg.license)
+    assert_equal(DependencySet.license("l2 l1"), pkg.license)
   end
 
   def test_properties
@@ -203,7 +203,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=live")
     refute_nil(pkg.properties)
-    assert_equal(Properties.new("live"), pkg.properties)
+    assert_equal(DependencySet.properties("live"), pkg.properties)
   end
 
   def test_required_use
@@ -219,7 +219,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
     refute_nil(pkg.required_use)
-    assert_equal(RequiredUse.new("u1? ( u2 )"), pkg.required_use)
+    assert_equal(DependencySet.required_use("u1? ( u2 )"), pkg.required_use)
   end
 
   def test_restrict
@@ -235,7 +235,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=test")
     refute_nil(pkg.restrict)
-    assert_equal(Restrict.new("test"), pkg.restrict)
+    assert_equal(DependencySet.restrict("test"), pkg.restrict)
   end
 
   def test_src_uri
@@ -251,7 +251,7 @@ class TestPkgEbuild < Minitest::Test
     # defined
     pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
     refute_nil(pkg.src_uri)
-    assert_equal(SrcUri.new("https://a.com/file.tar.gz"), pkg.src_uri)
+    assert_equal(DependencySet.src_uri("https://a.com/file.tar.gz"), pkg.src_uri)
   end
 
   def test_defined_phases

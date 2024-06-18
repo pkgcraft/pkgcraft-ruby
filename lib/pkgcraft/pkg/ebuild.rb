@@ -68,7 +68,7 @@ module Pkgcraft
       def depend
         if @depend.nil?
           ptr = C.pkgcraft_pkg_ebuild_depend(self)
-          @depend = Package.send(:from_ptr, ptr)
+          @depend = DependencySet.send(:from_ptr, ptr)
         end
         @depend
       end
@@ -76,7 +76,7 @@ module Pkgcraft
       def bdepend
         if @bdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_bdepend(self)
-          @bdepend = Package.send(:from_ptr, ptr)
+          @bdepend = DependencySet.send(:from_ptr, ptr)
         end
         @bdepend
       end
@@ -84,7 +84,7 @@ module Pkgcraft
       def idepend
         if @idepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_idepend(self)
-          @idepend = Package.send(:from_ptr, ptr)
+          @idepend = DependencySet.send(:from_ptr, ptr)
         end
         @idepend
       end
@@ -92,7 +92,7 @@ module Pkgcraft
       def pdepend
         if @pdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_pdepend(self)
-          @pdepend = Package.send(:from_ptr, ptr)
+          @pdepend = DependencySet.send(:from_ptr, ptr)
         end
         @pdepend
       end
@@ -100,7 +100,7 @@ module Pkgcraft
       def rdepend
         if @rdepend.nil?
           ptr = C.pkgcraft_pkg_ebuild_rdepend(self)
-          @rdepend = Package.send(:from_ptr, ptr)
+          @rdepend = DependencySet.send(:from_ptr, ptr)
         end
         @rdepend
       end
@@ -108,7 +108,7 @@ module Pkgcraft
       def license
         if @license.nil?
           ptr = C.pkgcraft_pkg_ebuild_license(self)
-          @license = License.send(:from_ptr, ptr)
+          @license = DependencySet.send(:from_ptr, ptr)
         end
         @license
       end
@@ -116,7 +116,7 @@ module Pkgcraft
       def properties
         if @properties.nil?
           ptr = C.pkgcraft_pkg_ebuild_properties(self)
-          @properties = Properties.send(:from_ptr, ptr)
+          @properties = DependencySet.send(:from_ptr, ptr)
         end
         @properties
       end
@@ -124,7 +124,7 @@ module Pkgcraft
       def required_use
         if @required_use.nil?
           ptr = C.pkgcraft_pkg_ebuild_required_use(self)
-          @required_use = RequiredUse.send(:from_ptr, ptr)
+          @required_use = DependencySet.send(:from_ptr, ptr)
         end
         @required_use
       end
@@ -132,7 +132,7 @@ module Pkgcraft
       def restrict
         if @restrict.nil?
           ptr = C.pkgcraft_pkg_ebuild_restrict(self)
-          @restrict = Restrict.send(:from_ptr, ptr)
+          @restrict = DependencySet.send(:from_ptr, ptr)
         end
         @restrict
       end
@@ -140,7 +140,7 @@ module Pkgcraft
       def src_uri
         if @src_uri.nil?
           ptr = C.pkgcraft_pkg_ebuild_src_uri(self)
-          @src_uri = SrcUri.send(:from_ptr, ptr)
+          @src_uri = DependencySet.send(:from_ptr, ptr)
         end
         @src_uri
       end

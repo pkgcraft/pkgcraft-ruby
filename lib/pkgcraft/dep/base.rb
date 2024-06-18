@@ -70,37 +70,61 @@ module Pkgcraft
   module Dep
     # Dependency objects.
     class Dependency
+      include Pkgcraft::Eapis
       include InspectStruct
       attr_reader :ptr
 
       # Create a Dependency from a pointer.
       def self.from_ptr(ptr)
-        case ptr[:kind]
-        when 0
-          obj = Enabled.allocate
-        when 1
-          obj = Disabled.allocate
-        when 2
-          obj = AllOf.allocate
-        when 3
-          obj = AnyOf.allocate
-        when 4
-          obj = ExactlyOneOf.allocate
-        when 5
-          obj = AtMostOneOf.allocate
-        when 6
-          obj = UseEnabled.allocate
-        when 7
-          obj = UseDisabled.allocate
-        else
-          "unsupported Dependency kind: #{ptr[:kind]}"
-        end
-
+        obj = allocate
         obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
       private_class_method :from_ptr
+
+      def self.package(str = nil, eapi = EAPI_LATEST)
+        eapi = Eapi.from_obj(eapi)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, eapi, 0)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
+
+      def self.src_uri(str = nil)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, EAPI_LATEST, 1)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
+
+      def self.license(str = nil)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, EAPI_LATEST, 2)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
+
+      def self.properties(str = nil)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, EAPI_LATEST, 3)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
+
+      def self.required_use(str = nil)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, EAPI_LATEST, 4)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
+
+      def self.restrict(str = nil)
+        ptr = C.pkgcraft_dependency_parse(str.to_s, EAPI_LATEST, 5)
+        raise Error::PkgcraftError if ptr.null?
+
+        Dependency.send(:from_ptr, ptr)
+      end
 
       def iter_flatten
         IterFlatten.new(self)
@@ -128,15 +152,6 @@ module Pkgcraft
       end
     end
 
-    class Enabled < Dependency; end
-    class Disabled < Dependency; end
-    class AllOf < Dependency; end
-    class AnyOf < Dependency; end
-    class ExactlyOneOf < Dependency; end
-    class AtMostOneOf < Dependency; end
-    class UseDisabled < Dependency; end
-    class UseEnabled < Dependency; end
-
     # Set of dependency objects.
     class DependencySet
       include Pkgcraft::Eapis
@@ -145,52 +160,55 @@ module Pkgcraft
       attr_reader :ptr
 
       # Create a DependencySet from a pointer.
-      def self.from_ptr(ptr, obj = nil)
-        if obj.nil?
-          case ptr[:set]
-          when 0
-            obj = Package.allocate
-          when 1
-            obj = SrcUri.allocate
-          when 2
-            obj = License.allocate
-          when 3
-            obj = Properties.allocate
-          when 4
-            obj = RequiredUse.allocate
-          when 5
-            obj = Restrict.allocate
-          else
-            "unsupported DependencySet kind: #{ptr[:set]}"
-          end
-        end
+      def self.from_ptr(ptr)
+        obj = allocate
         obj.instance_variable_set(:@ptr, ptr)
         obj
       end
 
       private_class_method :from_ptr
 
-      def initialize(str = nil, eapi = EAPI_LATEST)
+      def self.package(str = nil, eapi = EAPI_LATEST)
         eapi = Eapi.from_obj(eapi)
-        if is_a? Package
-          kind = 0
-        elsif is_a? SrcUri
-          kind = 1
-        elsif is_a? License
-          kind = 2
-        elsif is_a? Properties
-          kind = 3
-        elsif is_a? RequiredUse
-          kind = 4
-        elsif is_a? Restrict
-          kind = 5
-        else
-          "unsupported DependencySet kind: #{ptr[:set]}"
-        end
-        ptr = C.pkgcraft_dependency_set_parse(str.to_s, eapi, kind)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, eapi, 0)
         raise Error::PkgcraftError if ptr.null?
 
-        DependencySet.send(:from_ptr, ptr, self)
+        DependencySet.send(:from_ptr, ptr)
+      end
+
+      def self.src_uri(str = nil)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, EAPI_LATEST, 1)
+        raise Error::PkgcraftError if ptr.null?
+
+        DependencySet.send(:from_ptr, ptr)
+      end
+
+      def self.license(str = nil)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, EAPI_LATEST, 2)
+        raise Error::PkgcraftError if ptr.null?
+
+        DependencySet.send(:from_ptr, ptr)
+      end
+
+      def self.properties(str = nil)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, EAPI_LATEST, 3)
+        raise Error::PkgcraftError if ptr.null?
+
+        DependencySet.send(:from_ptr, ptr)
+      end
+
+      def self.required_use(str = nil)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, EAPI_LATEST, 4)
+        raise Error::PkgcraftError if ptr.null?
+
+        DependencySet.send(:from_ptr, ptr)
+      end
+
+      def self.restrict(str = nil)
+        ptr = C.pkgcraft_dependency_set_parse(str.to_s, EAPI_LATEST, 5)
+        raise Error::PkgcraftError if ptr.null?
+
+        DependencySet.send(:from_ptr, ptr)
       end
 
       # Iterator over a DependencySet.
@@ -314,7 +332,6 @@ module Pkgcraft
         @ptr = FFI::AutoPointer.new(
           iter_p, C.method(:pkgcraft_dependency_set_into_iter_recursive_free)
         )
-        @set = obj.ptr[:set]
       end
 
       def each
@@ -328,13 +345,6 @@ module Pkgcraft
     end
 
     private_constant :IterRecursive
-
-    class Package < DependencySet; end
-    class License < DependencySet; end
-    class Properties < DependencySet; end
-    class RequiredUse < DependencySet; end
-    class Restrict < DependencySet; end
-    class SrcUri < DependencySet; end
 
     # URI objects for the SRC_URI DependencySet.
     class Uri < C::Uri
