@@ -18,6 +18,7 @@ module Pkgcraft
     attach_function :pkgcraft_pkg_ebuild_iuse, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_keywords_str, [Pkg, LenPtr.by_ref], :pointer
     attach_function :pkgcraft_pkg_ebuild_license, [Pkg], :DependencySet
+    attach_function :pkgcraft_pkg_ebuild_live, [Pkg], :bool
     attach_function :pkgcraft_pkg_ebuild_long_description, [Pkg], String
     attach_function :pkgcraft_pkg_ebuild_masked, [Pkg], :bool
     attach_function :pkgcraft_pkg_ebuild_path, [Pkg], String
@@ -49,6 +50,10 @@ module Pkgcraft
 
       def deprecated
         C.pkgcraft_pkg_ebuild_deprecated(self)
+      end
+
+      def live
+        C.pkgcraft_pkg_ebuild_live(self)
       end
 
       def masked

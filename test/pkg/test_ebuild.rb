@@ -106,6 +106,13 @@ class TestPkgEbuild < Minitest::Test
     refute(pkg.deprecated)
   end
 
+  def test_live
+    pkg = TESTDATA_CONFIG.repos["qa-primary"]["Keywords/KeywordsLive-9999"]
+    assert(pkg.live)
+    pkg = TESTDATA_CONFIG.repos["qa-primary"]["Keywords/KeywordsLive-0"]
+    refute(pkg.live)
+  end
+
   def test_masked
     pkg = TESTDATA_CONFIG.repos["metadata"]["masked/masked-0"]
     assert(pkg.masked)
