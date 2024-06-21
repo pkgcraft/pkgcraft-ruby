@@ -6,8 +6,8 @@ module Pkgcraft
   # FFI bindings for pkgcraft
   module C
     # version requirements for pkgcraft-c
-    MIN_VERSION = "0.0.15"
-    MAX_VERSION = "0.0.15"
+    MIN_VERSION = "0.0.16"
+    MAX_VERSION = "0.0.16"
 
     extend FFI::Library
     ffi_lib ["pkgcraft"]
