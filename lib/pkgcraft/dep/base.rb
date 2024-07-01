@@ -38,6 +38,7 @@ module Pkgcraft
     attach_function :pkgcraft_dependency_contains_dep, [:Dependency, Dep], :bool
     attach_function :pkgcraft_dependency_contains_dependency, [:Dependency, :Dependency], :bool
     attach_function :pkgcraft_dependency_contains_str, [:Dependency, :string], :bool
+    attach_function :pkgcraft_dependency_contains_uri, [:Dependency, Uri], :bool
     attach_function :pkgcraft_dependency_free, [:pointer], :void
     attach_function :pkgcraft_dependency_hash, [:Dependency], :uint64
     attach_function :pkgcraft_dependency_into_iter_flatten, [:Dependency], :pointer
@@ -50,6 +51,7 @@ module Pkgcraft
     attach_function :pkgcraft_dependency_set_contains_dep, [:DependencySet, Dep], :bool
     attach_function :pkgcraft_dependency_set_contains_dependency, [:DependencySet, :Dependency], :bool
     attach_function :pkgcraft_dependency_set_contains_str, [:DependencySet, :string], :bool
+    attach_function :pkgcraft_dependency_set_contains_uri, [:DependencySet, Uri], :bool
     attach_function :pkgcraft_dependency_set_eq, [:DependencySet, :DependencySet], :bool
     attach_function :pkgcraft_dependency_set_free, [:pointer], :void
     attach_function :pkgcraft_dependency_set_hash, [:DependencySet], :uint64
@@ -146,6 +148,7 @@ module Pkgcraft
         return C.pkgcraft_dependency_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
         return C.pkgcraft_dependency_contains_str(@ptr, obj) if obj.is_a? String
         return C.pkgcraft_dependency_contains_dep(@ptr, obj) if obj.is_a? Dep
+        return C.pkgcraft_dependency_contains_uri(@ptr, obj) if obj.is_a? Uri
 
         false
       end
@@ -268,6 +271,7 @@ module Pkgcraft
         return C.pkgcraft_dependency_set_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
         return C.pkgcraft_dependency_set_contains_str(@ptr, obj) if obj.is_a? String
         return C.pkgcraft_dependency_set_contains_dep(@ptr, obj) if obj.is_a? Dep
+        return C.pkgcraft_dependency_set_contains_uri(@ptr, obj) if obj.is_a? Uri
 
         false
       end
