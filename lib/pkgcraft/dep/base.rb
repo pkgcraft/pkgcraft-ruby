@@ -35,6 +35,7 @@ module Pkgcraft
     # Dependency support
     typedef Dependency.by_ref, :Dependency
     attach_function :pkgcraft_dependency_cmp, [:Dependency, :Dependency], :int
+    attach_function :pkgcraft_dependency_contains_dep, [:Dependency, Dep], :bool
     attach_function :pkgcraft_dependency_contains_dependency, [:Dependency, :Dependency], :bool
     attach_function :pkgcraft_dependency_contains_str, [:Dependency, :string], :bool
     attach_function :pkgcraft_dependency_free, [:pointer], :void
@@ -46,6 +47,7 @@ module Pkgcraft
 
     # DependencySet support
     typedef DependencySet.by_ref, :DependencySet
+    attach_function :pkgcraft_dependency_set_contains_dep, [:DependencySet, Dep], :bool
     attach_function :pkgcraft_dependency_set_contains_dependency, [:DependencySet, :Dependency], :bool
     attach_function :pkgcraft_dependency_set_contains_str, [:DependencySet, :string], :bool
     attach_function :pkgcraft_dependency_set_eq, [:DependencySet, :DependencySet], :bool
@@ -143,6 +145,7 @@ module Pkgcraft
       def contains?(obj)
         return C.pkgcraft_dependency_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
         return C.pkgcraft_dependency_contains_str(@ptr, obj) if obj.is_a? String
+        return C.pkgcraft_dependency_contains_dep(@ptr, obj) if obj.is_a? Dep
 
         false
       end
@@ -264,6 +267,7 @@ module Pkgcraft
       def contains?(obj)
         return C.pkgcraft_dependency_set_contains_dependency(@ptr, obj.ptr) if obj.is_a? Dependency
         return C.pkgcraft_dependency_set_contains_str(@ptr, obj) if obj.is_a? String
+        return C.pkgcraft_dependency_set_contains_dep(@ptr, obj) if obj.is_a? Dep
 
         false
       end
