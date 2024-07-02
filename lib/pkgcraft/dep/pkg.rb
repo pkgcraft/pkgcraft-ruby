@@ -179,7 +179,8 @@ module Pkgcraft
       end
 
       def cpv
-        C.pkgcraft_dep_cpv(self)
+        ptr = C.pkgcraft_dep_cpv(self)
+        ptr.null? ? nil : Cpv.send(:from_ptr, ptr)
       end
 
       def unversioned
@@ -237,7 +238,7 @@ module Pkgcraft
     attach_function :pkgcraft_dep_category, [Dep], String
     attach_function :pkgcraft_dep_cmp, [Dep, Dep], :int
     attach_function :pkgcraft_dep_cpn, [Dep], Cpn
-    attach_function :pkgcraft_dep_cpv, [Dep], String
+    attach_function :pkgcraft_dep_cpv, [Dep], Cpv
     attach_function :pkgcraft_dep_free, [:pointer], :void
     attach_function :pkgcraft_dep_hash, [Dep], :uint64
     attach_function :pkgcraft_dep_intersects, [Dep, Dep], :bool

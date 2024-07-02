@@ -7,6 +7,15 @@ module Pkgcraft
       include InspectPointerRender
       include Comparable
 
+      # Create a Cpv from a pointer.
+      def self.from_ptr(ptr)
+        obj = allocate
+        obj.instance_variable_set(:@ptr, ptr)
+        obj
+      end
+
+      private_class_method :from_ptr
+
       def initialize(str)
         @ptr = C.pkgcraft_cpv_new(str.to_s)
         raise Error::InvalidCpv if @ptr.null?
