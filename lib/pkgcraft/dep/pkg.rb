@@ -153,26 +153,6 @@ module Pkgcraft
         C.pkgcraft_dep_repo(self)
       end
 
-      def p
-        C.pkgcraft_dep_p(self)
-      end
-
-      def pf
-        C.pkgcraft_dep_pf(self)
-      end
-
-      def pr
-        C.pkgcraft_dep_pr(self)
-      end
-
-      def pv
-        C.pkgcraft_dep_pv(self)
-      end
-
-      def pvr
-        C.pkgcraft_dep_pvr(self)
-      end
-
       def cpn
         ptr = C.pkgcraft_dep_cpn(self)
         Cpn.send(:from_ptr, ptr)
@@ -245,13 +225,8 @@ module Pkgcraft
     attach_function :pkgcraft_dep_intersects_cpv, [Dep, Cpv], :bool
     attach_function :pkgcraft_dep_new, [:string, Eapi], Dep
     attach_function :pkgcraft_dep_no_use_deps, [Dep], :pointer
-    attach_function :pkgcraft_dep_p, [Dep], String
     attach_function :pkgcraft_dep_package, [Dep], String
     attach_function :pkgcraft_dep_parse, [:string, Eapi], :pointer
-    attach_function :pkgcraft_dep_pf, [Dep], String
-    attach_function :pkgcraft_dep_pr, [Dep], String
-    attach_function :pkgcraft_dep_pv, [Dep], String
-    attach_function :pkgcraft_dep_pvr, [Dep], String
     attach_function :pkgcraft_dep_repo, [Dep], String
     attach_function :pkgcraft_dep_restrict, [Dep], Restrict
     attach_function :pkgcraft_dep_slot, [Dep], String
