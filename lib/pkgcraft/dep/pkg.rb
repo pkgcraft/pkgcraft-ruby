@@ -186,8 +186,8 @@ module Pkgcraft
 
       def intersects(other)
         return C.pkgcraft_dep_intersects(self, other) if other.is_a? Dep
-
         return C.pkgcraft_dep_intersects_cpv(self, other) if other.is_a? Cpv
+        return C.pkgcraft_pkg_intersects_dep(other, self) if other.is_a? Pkgcraft::Pkgs::Pkg
 
         raise TypeError.new("Invalid type: #{other.class}")
       end

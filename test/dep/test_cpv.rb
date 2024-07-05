@@ -7,6 +7,7 @@ require "test_helper"
 class TestCpv < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Error
+  include Pkgcraft::Repos
 
   def test_new
     # revision
@@ -76,15 +77,24 @@ class TestCpv < Minitest::Test
       end
     end
 
-    # dep
-    cpv = Cpv.new("cat/pkg-1")
+    # Dep objects
+    cpv1 = Cpv.new("cat/pkg-1")
+    cpv2 = Cpv.new("cat/pkg-2")
     dep = Dep.new("=cat/pkg-1-r0")
-    assert(cpv.intersects(dep))
-    assert(dep.intersects(cpv))
+    assert(cpv1.intersects(dep))
+    assert(dep.intersects(cpv1))
+    refute(cpv2.intersects(dep))
+    refute(dep.intersects(cpv2))
+
+    # packages
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert(cpv1.intersects(pkg))
+    refute(cpv2.intersects(pkg))
 
     # invalid type
     assert_raises TypeError do
-      cpv.intersects("cat/pkg-1")
+      cpv1.intersects("cat/pkg-1")
     end
   end
 

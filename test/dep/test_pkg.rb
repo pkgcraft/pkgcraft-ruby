@@ -9,6 +9,7 @@ class TestDep < Minitest::Test
   include Pkgcraft::Dep
   include Pkgcraft::Eapis
   include Pkgcraft::Error
+  include Pkgcraft::Repos
 
   def test_new
     # revision
@@ -211,10 +212,24 @@ class TestDep < Minitest::Test
       end
     end
 
+    # Cpv objects
+    dep1 = Dep.new("=cat/pkg-1")
+    dep2 = Dep.new(">cat/pkg-1")
+    cpv = Cpv.new("cat/pkg-1")
+    assert(dep1.intersects(cpv))
+    assert(cpv.intersects(dep1))
+    refute(dep2.intersects(cpv))
+    refute(cpv.intersects(dep2))
+
+    # packages
+    repo = EbuildTemp.new
+    pkg = repo.create_pkg("cat/pkg-1")
+    assert(dep1.intersects(pkg))
+    refute(dep2.intersects(pkg))
+
     # invalid type
-    dep = Dep.new("=cat/pkg-1")
     assert_raises TypeError do
-      dep.intersects("=cat/pkg-1")
+      dep1.intersects("=cat/pkg-1")
     end
   end
 
