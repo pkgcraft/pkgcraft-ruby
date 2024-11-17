@@ -116,7 +116,8 @@ class TestRepoBase < Minitest::Test
     r2 = temp2.repo
 
     # equal
-    repos = Set.new([r1, r1])
+    repos = [r1, r1]
+    repos = Set.new(repos)
     assert_equal(1, repos.length)
 
     # unequal

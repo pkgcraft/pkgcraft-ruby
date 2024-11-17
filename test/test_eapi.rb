@@ -75,7 +75,8 @@ class TestEapi < Minitest::Test
 
   def test_hash
     # equal
-    eapis = Set.new([EAPI8, EAPI8])
+    eapis = [EAPI8, EAPI8]
+    eapis = Set.new(eapis)
     assert_equal(1, eapis.length)
 
     # unequal
