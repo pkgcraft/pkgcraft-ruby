@@ -85,7 +85,7 @@ module Pkgcraft
       end
 
       def repo
-        @repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(self), true) if @repo.nil?
+        @repo = Repos::Repo.send(:from_ptr, C.pkgcraft_pkg_repo(self), false) if @repo.nil?
         @repo
       end
 

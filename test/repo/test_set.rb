@@ -14,7 +14,8 @@ class TestRepoSet < Minitest::Test
     assert_empty(set.repos)
 
     # single
-    r1 = EbuildTemp.new(id: "r1")
+    temp = EbuildTemp.new(id: "r1")
+    r1 = temp.repo
     set = RepoSet.new(r1)
     assert_equal(Set[r1], set.repos)
 
@@ -38,8 +39,9 @@ class TestRepoSet < Minitest::Test
     set = RepoSet.new
     refute(set.contains?("cat/pkg-1"))
 
-    r1 = EbuildTemp.new(id: "r1")
-    r1.create_ebuild("cat/pkg-1")
+    temp = EbuildTemp.new(id: "r1")
+    temp.create_pkg("cat/pkg-1")
+    r1 = temp.repo
     r2 = Fake.new(["cat/pkg-2"], id: "r2")
     set = RepoSet.new(r1, r2)
     assert(set.contains?(r1))
@@ -81,8 +83,9 @@ class TestRepoSet < Minitest::Test
     assert_empty(set.entries)
 
     r1 = Fake.new(["cat/pkg-1"], id: "r1")
-    r2 = EbuildTemp.new(id: "r2")
-    r2.create_ebuild("cat/pkg-1")
+    temp = EbuildTemp.new(id: "r2")
+    temp.create_pkg("cat/pkg-1")
+    r2 = temp.repo
 
     # single
     set = RepoSet.new(r1)

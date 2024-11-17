@@ -87,8 +87,8 @@ class TestCpv < Minitest::Test
     refute(dep.intersects(cpv2))
 
     # packages
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
     assert(cpv1.intersects(pkg))
     refute(cpv2.intersects(pkg))
 

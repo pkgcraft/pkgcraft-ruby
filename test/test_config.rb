@@ -11,7 +11,8 @@ class TestConfig < Minitest::Test
   def test_repos
     config = Config.new
     assert_empty(config.repos)
-    config.add_repo(EbuildTemp.new(id: "r1"))
+    temp = EbuildTemp.new(id: "r1")
+    config.add_repo(temp.repo)
     refute_empty(config.repos)
   end
 
@@ -31,7 +32,8 @@ class TestConfig < Minitest::Test
       config.load_portage_conf(conf_path)
       assert_empty(config.repos)
 
-      r1 = EbuildTemp.new(id: "r1")
+      temp1 = EbuildTemp.new(id: "r1")
+      r1 = temp1.repo
 
       # bad ini format
       data = <<~CONFIG
@@ -77,7 +79,8 @@ class TestConfig < Minitest::Test
       CONFIG
       File.write("#{conf_path}/repos.conf/1.conf", d1)
 
-      r2 = EbuildTemp.new(id: "r2")
+      temp2 = EbuildTemp.new(id: "r2")
+      r2 = temp2.repo
       d2 = <<~CONFIG
         [r2]
         location = #{r2.path}
@@ -91,8 +94,10 @@ class TestConfig < Minitest::Test
   end
 
   def test_add_repo
-    r1 = EbuildTemp.new(id: "r1")
-    r2 = EbuildTemp.new(id: "r2")
+    temp1 = EbuildTemp.new(id: "r1")
+    r1 = temp1.repo
+    temp2 = EbuildTemp.new(id: "r2")
+    r2 = temp2.repo
 
     # string
     config = Config.new
@@ -141,7 +146,8 @@ class TestRepos < Minitest::Test
     config = Config.new
     assert_empty(config.repos)
     assert_equal(0, config.repos.length)
-    repo = config.add_repo(EbuildTemp.new(id: "r1"))
+    temp = EbuildTemp.new(id: "r1")
+    repo = config.add_repo(temp.repo)
     assert_equal(1, config.repos.length)
     assert_equal(config.repos["r1"], repo)
     assert(config.repos.key?("r1"))
@@ -158,7 +164,8 @@ class TestRepos < Minitest::Test
     assert_empty(config.repos.ebuild)
 
     # multiple
-    r1 = EbuildTemp.new(id: "r1")
+    temp = EbuildTemp.new(id: "r1")
+    r1 = temp.repo
     r2 = Fake.new(id: "r2")
     config.add_repo(r1)
     config.add_repo(r2)

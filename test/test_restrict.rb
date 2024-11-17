@@ -23,9 +23,10 @@ class TestRestrict < Minitest::Test
   end
 
   def test_logic_ops
-    repo = EbuildTemp.new
-    pkg1 = repo.create_pkg("cat/pkg-1")
-    pkg2 = repo.create_pkg("cat/pkg-2")
+    temp = EbuildTemp.new
+    pkg1 = temp.create_pkg("cat/pkg-1")
+    pkg2 = temp.create_pkg("cat/pkg-2")
+    repo = temp.repo
 
     r1 = Restrict.new("cat/pkg-1")
     r2 = Restrict.new("cat/pkg-2")

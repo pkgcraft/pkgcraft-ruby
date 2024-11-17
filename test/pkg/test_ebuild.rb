@@ -10,8 +10,8 @@ class TestPkgEbuild < Minitest::Test
   include Pkgcraft::Repos
 
   def test_cpv
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1-r2")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1-r2")
     assert_equal(Cpv.new("cat/pkg-1-r2"), pkg.cpv)
     assert_equal("pkg-1", pkg.p)
     assert_equal("pkg-1-r2", pkg.pf)
@@ -23,33 +23,33 @@ class TestPkgEbuild < Minitest::Test
 
   def test_eapi
     # default
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_equal(EAPI_LATEST_OFFICIAL, pkg.eapi)
 
     # explicit
-    pkg = repo.create_pkg("cat/pkg-1", "EAPI=7")
+    pkg = temp.create_pkg("cat/pkg-1", "EAPI=7")
     refute_nil(pkg.eapi)
     assert_equal(EAPI7, pkg.eapi)
   end
 
   def test_repo
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
     refute_nil(pkg.repo)
-    assert_equal(repo, pkg.repo)
+    assert_equal(temp.repo, pkg.repo)
   end
 
   def test_version
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
     refute_nil(pkg.version)
     assert_equal(Version.new("1"), pkg.version)
   end
 
   def test_intersects
-    repo = EbuildTemp.new(id: "test")
-    pkg = repo.create_pkg("cat/pkg-1-r2", "SLOT=0/1")
+    temp = EbuildTemp.new(id: "test")
+    pkg = temp.create_pkg("cat/pkg-1-r2", "SLOT=0/1")
 
     # Dep intersections
     assert(pkg.intersects(Dep.new("cat/pkg")))
@@ -80,15 +80,14 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_path
-    repo = EbuildTemp.new
-    path = repo.create_ebuild("cat/pkg-1")
-    pkg = repo.iter("cat/pkg-1").first
-    assert_equal(path, pkg.path)
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
+    assert(pkg.path.to_s.start_with?(temp.repo.path.to_s))
   end
 
   def test_ebuild
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
     data = File.read(pkg.path)
     assert_equal(data, pkg.ebuild)
 
@@ -121,27 +120,27 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_description
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1", "DESCRIPTION=description")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1", "DESCRIPTION=description")
     assert_equal("description", pkg.description)
   end
 
   def test_slot_and_subslot
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1", "SLOT=1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1", "SLOT=1")
     assert_equal("1", pkg.slot)
     assert_equal("1", pkg.subslot)
-    pkg = repo.create_pkg("cat/pkg-1", "SLOT=1/2")
+    pkg = temp.create_pkg("cat/pkg-1", "SLOT=1/2")
     assert_equal("1", pkg.slot)
     assert_equal("2", pkg.subslot)
-    pkg = repo.create_pkg("cat/pkg-1", "SLOT=slot")
+    pkg = temp.create_pkg("cat/pkg-1", "SLOT=slot")
     assert_equal("slot", pkg.slot)
     assert_equal("slot", pkg.subslot)
   end
 
   def test_dependencies
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
 
     # invalid keys
     assert_raises PkgcraftError do
@@ -153,12 +152,12 @@ class TestPkgEbuild < Minitest::Test
     assert_empty(deps)
 
     # single
-    pkg = repo.create_pkg("cat/pkg-1", "DEPEND=cat/pkg")
+    pkg = temp.create_pkg("cat/pkg-1", "DEPEND=cat/pkg")
     deps = pkg.dependencies
     assert_equal("cat/pkg", deps.to_s)
 
     # multiple
-    pkg = repo.create_pkg("cat/pkg-1", "DEPEND=u? ( cat/pkg )", "BDEPEND=a/b")
+    pkg = temp.create_pkg("cat/pkg-1", "DEPEND=u? ( cat/pkg )", "BDEPEND=a/b")
     deps = pkg.dependencies
     assert_equal("a/b u? ( cat/pkg )", deps.to_s)
 
@@ -168,18 +167,18 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_dep_attrs
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     EAPI_LATEST.dep_keys.map(&:downcase).each do |attr|
       # undefined
-      pkg = repo.create_pkg("cat/pkg-1")
+      pkg = temp.create_pkg("cat/pkg-1")
       assert_empty(pkg.send(attr))
 
       # empty
-      pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=")
+      pkg = temp.create_pkg("cat/pkg-1", "#{attr.upcase}=")
       assert_empty(pkg.send(attr))
 
       # defined
-      pkg = repo.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
+      pkg = temp.create_pkg("cat/pkg-1", "#{attr.upcase}=cat/pkg")
       refute_nil(pkg.send(attr))
       assert_equal(DependencySet.package("cat/pkg"), pkg.send(attr))
     end
@@ -212,103 +211,111 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_properties
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # undefined
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.properties)
 
     # empty
-    pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=")
+    pkg = temp.create_pkg("cat/pkg-1", "PROPERTIES=")
     assert_empty(pkg.properties)
 
     # defined
-    pkg = repo.create_pkg("cat/pkg-1", "PROPERTIES=live")
+    pkg = temp.create_pkg("cat/pkg-1", "PROPERTIES=live")
     refute_nil(pkg.properties)
     assert_equal(DependencySet.properties("live"), pkg.properties)
   end
 
   def test_required_use
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # undefined
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.required_use)
 
     # empty
-    pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=")
+    pkg = temp.create_pkg("cat/pkg-1", "REQUIRED_USE=")
     assert_empty(pkg.required_use)
 
     # defined
-    pkg = repo.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
+    pkg = temp.create_pkg("cat/pkg-1", "REQUIRED_USE=u1? ( u2 )")
     refute_nil(pkg.required_use)
     assert_equal(DependencySet.required_use("u1? ( u2 )"), pkg.required_use)
   end
 
   def test_restrict
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # undefined
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.restrict)
 
     # empty
-    pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=")
+    pkg = temp.create_pkg("cat/pkg-1", "RESTRICT=")
     assert_empty(pkg.restrict)
 
     # defined
-    pkg = repo.create_pkg("cat/pkg-1", "RESTRICT=test")
+    pkg = temp.create_pkg("cat/pkg-1", "RESTRICT=test")
     refute_nil(pkg.restrict)
     assert_equal(DependencySet.restrict("test"), pkg.restrict)
   end
 
   def test_src_uri
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # undefined
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.src_uri)
 
     # empty
-    pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=")
+    pkg = temp.create_pkg("cat/pkg-1", "SRC_URI=")
     assert_empty(pkg.src_uri)
 
     # defined
-    pkg = repo.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
+    pkg = temp.create_pkg("cat/pkg-1", "SRC_URI=https://a.com/file.tar.gz")
     refute_nil(pkg.src_uri)
     assert_equal(DependencySet.src_uri("https://a.com/file.tar.gz"), pkg.src_uri)
   end
 
   def test_defined_phases
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.defined_phases)
 
     # single
-    data = "src_configure() { :; }"
-    pkg = repo.create_pkg("cat/pkg-1", data:)
+    data = <<~PHASES
+      EAPI=8
+      DESCRIPTION=test
+      SLOT=0
+      src_configure() { :; }
+    PHASES
+    pkg = temp.create_pkg_from_str("cat/pkg-1", data)
     assert_equal(Set["src_configure"], pkg.defined_phases)
 
     # multiple
     data = <<~PHASES
+      EAPI=8
+      DESCRIPTION=test
+      SLOT=0
       src_prepare() { :; }
       src_configure() { :; }
       src_compile() { :; }
     PHASES
-    pkg = repo.create_pkg("cat/pkg-1", data:)
+    pkg = temp.create_pkg_from_str("cat/pkg-1", data)
     refute_empty(pkg.defined_phases)
     assert_equal(Set["src_prepare", "src_configure", "src_compile"], pkg.defined_phases)
   end
 
   def test_homepage
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.homepage)
 
     # single
-    pkg = repo.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com")
+    pkg = temp.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com")
     assert_equal(Set["https://a.com"], pkg.homepage)
 
     # multiple
-    pkg = repo.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com https://b.com")
+    pkg = temp.create_pkg("cat/pkg-1", "HOMEPAGE=https://a.com https://b.com")
     refute_empty(pkg.homepage)
     assert_equal(Set["https://a.com", "https://b.com"], pkg.homepage)
   end
@@ -332,17 +339,17 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_iuse
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_empty(pkg.iuse)
 
     # single
-    pkg = repo.create_pkg("cat/pkg-1", "IUSE=a")
+    pkg = temp.create_pkg("cat/pkg-1", "IUSE=a")
     assert_equal(Set["a"], pkg.iuse)
 
     # multiple
-    pkg = repo.create_pkg("cat/pkg-1", "IUSE=a b c")
+    pkg = temp.create_pkg("cat/pkg-1", "IUSE=a b c")
     refute_empty(pkg.iuse)
     assert_equal(Set["a", "b", "c"], pkg.iuse)
   end
@@ -365,17 +372,17 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_long_description
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     # none
-    pkg = repo.create_pkg("cat/pkg-1")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_nil(pkg.long_description)
   end
 
   def test_cmp
-    repo = EbuildTemp.new
-    pkg1 = repo.create_pkg("cat/pkg-1")
-    pkg2 = repo.create_pkg("cat/pkg-2")
-    pkg3 = repo.create_pkg("cat/pkg-1-r0")
+    temp = EbuildTemp.new
+    pkg1 = temp.create_pkg("cat/pkg-1")
+    pkg2 = temp.create_pkg("cat/pkg-2")
+    pkg3 = temp.create_pkg("cat/pkg-1-r0")
     assert_operator(pkg1, :<, pkg2)
     assert_operator(pkg1, :<=, pkg2)
     assert_equal(pkg1, pkg3)
@@ -390,9 +397,9 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_hash
-    repo = EbuildTemp.new
+    temp = EbuildTemp.new
     TESTDATA_TOML["version"]["hashing"].each do |d|
-      set = Set.new(d["versions"].map { |s| repo.create_pkg("cat/pkg-#{s}") }.compact)
+      set = Set.new(d["versions"].map { |s| temp.create_pkg("cat/pkg-#{s}") }.compact)
       length = d["equal"] ? 1 : d["versions"].length
       assert_includes(set, set.entries.first)
       assert_equal(set.length, length)
@@ -400,8 +407,8 @@ class TestPkgEbuild < Minitest::Test
   end
 
   def test_string
-    repo = EbuildTemp.new(id: "repo")
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new(id: "repo")
+    pkg = temp.create_pkg("cat/pkg-1")
     assert_equal("cat/pkg-1::repo", pkg.to_s)
     assert_includes(pkg.inspect, "cat/pkg-1::repo")
   end

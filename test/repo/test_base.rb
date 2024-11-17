@@ -9,94 +9,97 @@ class TestRepoBase < Minitest::Test
   include Pkgcraft::Error
 
   def test_path
-    repo = EbuildTemp.new
-    path = repo.create_ebuild("cat/pkg-1")
-    assert(path.to_s.start_with?(repo.path.to_s))
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
+    assert(pkg.path.to_s.start_with?(temp.repo.path.to_s))
   end
 
   def test_categories
     # empty
-    repo = EbuildTemp.new
-    assert_empty(repo.categories)
+    temp = EbuildTemp.new
+    assert_empty(temp.repo.categories)
 
     # single
-    repo.create_ebuild("cat/pkg-1")
-    assert_equal(["cat"], repo.categories)
+    temp.create_pkg("cat/pkg-1")
+    assert_equal(["cat"], temp.repo.categories)
 
     # multiple
-    repo.create_ebuild("cat/pkg-2")
-    repo.create_ebuild("a/b-1")
-    assert_equal(["a", "cat"], repo.categories)
+    temp.create_pkg("cat/pkg-2")
+    temp.create_pkg("a/b-1")
+    assert_equal(["a", "cat"], temp.repo.categories)
   end
 
   def test_packages
-    repo = EbuildTemp.new
-    assert_empty(repo.packages("cat"))
+    temp = EbuildTemp.new
+    assert_empty(temp.repo.packages("cat"))
 
     # single
-    repo.create_ebuild("cat/pkg-1")
-    assert_equal(["pkg"], repo.packages("cat"))
+    temp.create_pkg("cat/pkg-1")
+    assert_equal(["pkg"], temp.repo.packages("cat"))
 
     # multiple
-    repo.create_ebuild("cat/pkg-2")
-    repo.create_ebuild("cat/a-1")
-    assert_equal(["a", "pkg"], repo.packages("cat"))
+    temp.create_pkg("cat/pkg-2")
+    temp.create_pkg("cat/a-1")
+    assert_equal(["a", "pkg"], temp.repo.packages("cat"))
   end
 
   def test_versions
-    repo = EbuildTemp.new
-    assert_empty(repo.versions("cat", "pkg"))
+    temp = EbuildTemp.new
+    assert_empty(temp.repo.versions("cat", "pkg"))
 
     # single
-    repo.create_ebuild("cat/pkg-1")
-    assert_equal([Version.new("1")], repo.versions("cat", "pkg"))
+    temp.create_pkg("cat/pkg-1")
+    assert_equal([Version.new("1")], temp.repo.versions("cat", "pkg"))
 
     # multiple
-    repo.create_ebuild("cat/pkg-2")
-    assert_equal([Version.new("1"), Version.new("2")], repo.versions("cat", "pkg"))
+    temp.create_pkg("cat/pkg-2")
+    assert_equal([Version.new("1"), Version.new("2")], temp.repo.versions("cat", "pkg"))
   end
 
   def test_length
-    repo = EbuildTemp.new
-    assert_equal(0, repo.length)
+    temp = EbuildTemp.new
+    assert_equal(0, temp.repo.length)
 
     # single
-    repo.create_ebuild("cat/pkg-1")
-    assert_equal(1, repo.length)
+    temp.create_pkg("cat/pkg-1")
+    assert_equal(1, temp.repo.length)
 
     # multiple
-    repo.create_ebuild("cat/pkg-2")
-    assert_equal(2, repo.length)
+    temp.create_pkg("cat/pkg-2")
+    assert_equal(2, temp.repo.length)
   end
 
   def test_empty
-    repo = EbuildTemp.new
-    assert_empty(repo)
-    repo.create_ebuild("cat/pkg-1")
-    refute_empty(repo)
+    temp = EbuildTemp.new
+    assert_empty(temp.repo)
+    temp.create_pkg("cat/pkg-1")
+    refute_empty(temp.repo)
   end
 
   def test_contains
-    repo = EbuildTemp.new
-    pkg = repo.create_pkg("cat/pkg-1")
+    temp = EbuildTemp.new
+    pkg = temp.create_pkg("cat/pkg-1")
 
     # path
-    assert(repo.contains?("cat/pkg"))
+    assert(temp.repo.contains?("cat/pkg"))
 
     # nonexistent path
-    refute(repo.contains?("nonexistent/path"))
+    refute(temp.repo.contains?("nonexistent/path"))
 
     # Cpv
-    assert(repo.contains?(Cpv.new("cat/pkg-1")))
+    assert(temp.repo.contains?(Cpv.new("cat/pkg-1")))
 
     # Pkg
-    assert(repo.contains?(pkg))
+    assert(temp.repo.contains?(pkg))
   end
 
   def test_cmp
-    r1 = EbuildTemp.new(id: "1")
-    r2 = EbuildTemp.new(id: "2")
-    r3 = EbuildTemp.new(id: "3", priority: 1)
+    temp1 = EbuildTemp.new(id: "1")
+    r1 = temp1.repo
+    temp2 = EbuildTemp.new(id: "2")
+    r2 = temp2.repo
+    temp3 = EbuildTemp.new(id: "3", priority: 1)
+    r3 = temp3.repo
     assert_operator(r1, :<, r2)
     assert_operator(r3, :<, r1)
 
@@ -107,8 +110,10 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_hash
-    r1 = EbuildTemp.new(id: "1")
-    r2 = EbuildTemp.new(id: "2")
+    temp1 = EbuildTemp.new(id: "1")
+    r1 = temp1.repo
+    temp2 = EbuildTemp.new(id: "2")
+    r2 = temp2.repo
 
     # equal
     repos = Set.new([r1, r1])
@@ -120,43 +125,44 @@ class TestRepoBase < Minitest::Test
   end
 
   def test_string
-    repo = EbuildTemp.new(id: "repo")
-    assert_equal("repo", repo.to_s)
-    assert_includes(repo.inspect, "repo")
+    temp = EbuildTemp.new(id: "repo")
+    assert_equal("repo", temp.repo.to_s)
+    assert_includes(temp.repo.inspect, "repo")
   end
 
   def test_iter_cpv
     # empty
-    repo = EbuildTemp.new
-    assert_empty(repo)
+    temp = EbuildTemp.new
+    assert_empty(temp.repo)
 
     # single
-    pkg1 = repo.create_pkg("cat/pkg-1")
-    assert_equal([pkg1.cpv], repo.iter_cpv.entries)
+    pkg1 = temp.create_pkg("cat/pkg-1")
+    assert_equal([pkg1.cpv], temp.repo.iter_cpv.entries)
 
     # multiple
-    pkg2 = repo.create_pkg("a/b-1")
-    assert_equal([pkg2.cpv, pkg1.cpv], repo.iter_cpv.entries)
+    pkg2 = temp.create_pkg("a/b-1")
+    assert_equal([pkg2.cpv, pkg1.cpv], temp.repo.iter_cpv.entries)
   end
 
   def test_iter
     # empty
-    repo = EbuildTemp.new
-    assert_empty(repo)
+    temp = EbuildTemp.new
+    assert_empty(temp.repo)
 
     # single
-    pkg1 = repo.create_pkg("cat/pkg-1")
-    assert_equal([pkg1], repo.entries)
+    pkg1 = temp.create_pkg("cat/pkg-1")
+    assert_equal([pkg1], temp.repo.entries)
 
     # multiple
-    pkg2 = repo.create_pkg("a/b-1")
-    assert_equal([pkg2, pkg1], repo.entries)
+    pkg2 = temp.create_pkg("a/b-1")
+    assert_equal([pkg2, pkg1], temp.repo.entries)
   end
 
   def test_iter_restrict
-    repo = EbuildTemp.new
-    pkg1 = repo.create_pkg("cat/pkg-1")
-    pkg2 = repo.create_pkg("cat/pkg-2")
+    temp = EbuildTemp.new
+    pkg1 = temp.create_pkg("cat/pkg-1")
+    pkg2 = temp.create_pkg("cat/pkg-2")
+    repo = temp.repo
     assert_equal([pkg1], repo.iter("cat/pkg-1").entries)
     assert_equal([pkg1], repo.iter(Cpv.new("cat/pkg-1")).entries)
     assert_equal([pkg1, pkg2], repo.iter(Dep.new(">=cat/pkg-1")).entries)

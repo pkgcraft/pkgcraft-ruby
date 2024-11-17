@@ -39,12 +39,12 @@ class TestRepoFake < Minitest::Test
 
     # single
     repo.extend(["cat/pkg-1"])
-    refute_empty(repo)
+    assert_equal(1, repo.length)
 
+    # mutations allowed after adding to a config
     config = Config.new
     config.add_repo(repo)
-    assert_raises PkgcraftError do
-      repo.extend(["cat/pkg-2"])
-    end
+    repo.extend(["cat/pkg-2"])
+    assert_equal(2, repo.length)
   end
 end
